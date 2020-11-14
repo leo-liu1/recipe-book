@@ -1,7 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import firebase from 'firebase';
 import 'firebase/firestore';
+
+import Bookmarks from './pages/Bookmarks';
+import Fridge from './pages/Fridge';
+import Landing from './pages/Landing';
+import Recommendations from './pages/Recommendations';
+import Search from './pages/Search';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -16,25 +22,38 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Landing</Link>
+            </li>
+            <li>
+              <Link to="/bookmarks">Bookmarks</Link>
+            </li>
+            <li>
+              <Link to="/fridge">Fridge</Link>
+            </li>
+          </ul>
+        </nav>
+
+        {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+        <Switch>
+          <Route path="/bookmarks">
+            <Bookmarks />
+          </Route>
+          <Route path="/fridge">
+            <Fridge />
+          </Route>
+          <Route path="/">
+            <Landing />
+          </Route>
+        </Switch>
+      </div>
+    </BrowserRouter>
   );
 }
-
-export default App;

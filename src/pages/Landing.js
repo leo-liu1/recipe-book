@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default function Recommendations() {
+export default function Landing() {
     return (<></>);
 }
