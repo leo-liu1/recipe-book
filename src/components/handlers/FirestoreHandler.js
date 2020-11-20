@@ -20,9 +20,19 @@ export default class FirestoreHandler{
 				console.log('Error getting document', err);
 			});
 	}
+
+	updateUserIngredient(Ingredient ingredient){
+		firebase.firestore().collection('ingredients').where("userID", "==", this.userID).where("spoonacularName", "==", ingredient.getSpoonacularName()).get()
+		.then(snapshot => {
+			snapshot.forEach(doc => {
+				firebase.firestore().collection('ingredients').doc(doc.id).update(ingredient.getFirestoreData());
+			});
+		});
+	}
+
 	getAllUserIngredients(){
 		let ingredients=[];
-		firebase.firestore().collection('ingredients').get().then(snapshot => {
+		firebase.firestore().collection('ingredients').where("userID", "==", this.userID).get().then(snapshot => {
 			snapshot.forEach(doc => {
 				ingredients.push(new Ingredient(doc.name, doc.spoonacularName, doc.type, doc.expirationDate, doc.quantity, doc.imageURL));
 			});
