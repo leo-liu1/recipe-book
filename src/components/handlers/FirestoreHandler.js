@@ -20,4 +20,14 @@ export default class FirestoreHandler{
 				console.log('Error getting document', err);
 			});
 	}
+	getAllUserIngredients(){
+		let ingredients=[];
+		firebase.firestore().collection('ingredients').get().then(snapshot => {
+			snapshot.forEach(doc => {
+				ingredients.push(new Ingredient(doc.name, doc.spoonacularName, doc.type, doc.expirationDate, doc.quantity, doc.imageURL));
+			});
+		});
+		return ingredients;
+	}
+	
 }
