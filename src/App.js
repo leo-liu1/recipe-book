@@ -9,6 +9,8 @@ import Fridge from './pages/Fridge';
 import Landing from './pages/Landing';
 import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
+import Signup from './pages/Signup';
+import Login from './pages/Login';
 
 import './css/App.scss';
 
@@ -25,25 +27,33 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+const isAuthenticated = true;
+
 export default function App() {
   return (
     <BrowserRouter>
         <Navbar />
         <Switch>
           <Route exact path="/">
-            <Landing />
+            {isAuthenticated ? <Fridge /> : <Landing />}
           </Route>
           <Route path="/bookmarks">
             <Bookmarks />
-          </Route>
-          <Route path="/fridge">
-            <Fridge />
           </Route>
           <Route path="/recommendations">
             <Recommendations />
           </Route>
           <Route path="/search">
             <Search />
+          </Route>
+          <Route path="/signup">
+            <Signup />
+          </Route>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/logout">
+            <Login />
           </Route>
         </Switch>
     </BrowserRouter>
