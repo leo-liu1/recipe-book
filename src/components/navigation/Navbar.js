@@ -9,7 +9,7 @@ import { ReactComponent as Fridge } from './../../assets/fridge.svg';
 export default function Navbar() {
     return (<nav className="navigation">
         <div className="left">
-            <Link to="/fridge" className="icon">
+            <Link to="/" className="icon">
                 <Fridge />
             </Link>
             <Link to="/bookmarks">Bookmarks</Link>
