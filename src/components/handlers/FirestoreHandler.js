@@ -1,19 +1,21 @@
-import Ingredient from '../classes/Ingredient.js'
+import Ingredient from '../classes/Ingredient.js';
+import firebase from 'firebase';
+import 'firebase/firestore';
 
 export default class FirestoreHandler{
 	constructor(userID){
 		this.userID = userID;
 	}
 	
-	addUserIngredient(Ingredient ingredient){
-		firebase.firestore().collection('ingredient').add(ingredient.getFirestoreData());
+	addUserIngredient(ingredient){
+		return firebase.firestore().collection('ingredient').add({ ...ingredient.getFirestoreData(), userID: this.userID });
 	}
 	
-	removeUserIngredient(Ingredient ingredient){
-		var result = firebase.firestore().collection('ingredients').where("userID", "==", this.userID).where("spoonacularName", "==", ingredient.getSpoonacularName()).get()
+	removeUserIngredient(ingredient){
+		return firebase.firestore().collection('ingredients').where("userID", "==", this.userID).where("spoonacularName", "==", ingredient.getSpoonacularName()).get()
 		    .then(snapshot => {
 				snapshot.forEach(doc => {
-					var deleteDoc = firebase.firestore().collection('ingredients').doc(doc.id).delete();
+					firebase.firestore().collection('ingredients').doc(doc.id).delete();
 				});
 			})
 			.catch(err => {
@@ -21,7 +23,7 @@ export default class FirestoreHandler{
 			});
 	}
 
-	updateUserIngredient(Ingredient ingredient){
+	updateUserIngredient(ingredient){
 		firebase.firestore().collection('ingredients').where("userID", "==", this.userID).where("spoonacularName", "==", ingredient.getSpoonacularName()).get()
 		.then(snapshot => {
 			snapshot.forEach(doc => {

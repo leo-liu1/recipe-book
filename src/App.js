@@ -28,10 +28,9 @@ firebase.initializeApp(firebaseConfig);
 export default function App() {
   return (
     <BrowserRouter>
-      <div>
         <Navbar />
         <Switch>
-          <Route path="/">
+          <Route exact path="/">
             <Landing />
           </Route>
           <Route path="/bookmarks">
@@ -47,7 +46,6 @@ export default function App() {
             <Search />
           </Route>
         </Switch>
-      </div>
     </BrowserRouter>
   );
 }
