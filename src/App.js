@@ -1,13 +1,17 @@
-import React from "react";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import firebase from 'firebase';
 import 'firebase/firestore';
+
+import Navbar from './components/navigation/Navbar';
 
 import Bookmarks from './pages/Bookmarks';
 import Fridge from './pages/Fridge';
 import Landing from './pages/Landing';
 import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
+
+import './css/App.scss';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -26,31 +30,22 @@ export default function App() {
   return (
     <BrowserRouter>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Landing</Link>
-            </li>
-            <li>
-              <Link to="/bookmarks">Bookmarks</Link>
-            </li>
-            <li>
-              <Link to="/fridge">Fridge</Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
+        <Navbar />
         <Switch>
+          <Route path="/">
+            <Landing />
+          </Route>
           <Route path="/bookmarks">
             <Bookmarks />
           </Route>
           <Route path="/fridge">
             <Fridge />
           </Route>
-          <Route path="/">
-            <Landing />
+          <Route path="/recommendations">
+            <Recommendations />
+          </Route>
+          <Route path="/search">
+            <Search />
           </Route>
         </Switch>
       </div>
