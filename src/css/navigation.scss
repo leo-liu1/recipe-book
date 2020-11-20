@@ -6,6 +6,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
+    font-family: sans-serif;
+
+    a {
+        text-decoration: none;
+        color: black;
+    }
 
     .left {
         display: flex;
