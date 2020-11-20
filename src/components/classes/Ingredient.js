@@ -39,7 +39,7 @@ export default class Ingredient {
         }
     }
 	
-	getSpponacularName(){
+	getSpoonacularName(){
 		return this.spoonacularName;
 	}
 }
