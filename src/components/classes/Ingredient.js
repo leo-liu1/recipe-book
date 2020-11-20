@@ -38,4 +38,8 @@ export default class Ingredient {
             imageURL: this.imageURL,
         }
     }
+	
+	getSpponacularName(){
+		return this.spoonacularName;
+	}
 }
