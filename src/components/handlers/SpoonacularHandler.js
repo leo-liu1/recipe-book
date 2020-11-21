@@ -6,12 +6,12 @@ export default class SpoonacularHandler{
 	authenticate(){}
 	
 	searchRecipeById(recipeID){
-		let requestString = https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/ + "recipeID" + "/information";
+		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/information";
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
 				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+				"x-rapidapi-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
@@ -24,15 +24,16 @@ export default class SpoonacularHandler{
 	}
 	
 	searchRecipeByIngredients(Ingredient_List){
-		const ingredientsString = Ingredient_List.map(ingredient => ingredient+'%2C');
-		let requestString = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?ingredients=";
+		//const ingredientsString = Ingredient_List.map(ingredient => ingredient+'%2C');
+		const ingredientsString = Ingredient_List.join(",+");
+		let requestString = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=";
 		requestString = requestString + ingredientsString + "&number=5";
 		
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
 				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+				"x-rapidapi-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
@@ -45,12 +46,12 @@ export default class SpoonacularHandler{
 	}
 	
 	searchIngredient(name){
-		fetch("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/parseIngredients", {
+		fetch("https://api.spoonacular.com/recipes/parseIngredients", {
 			"method": "POST",
 			"headers": {
 				"content-type": "application/x-www-form-urlencoded",
 				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+				"x-rapidapi-host": "spoonacular.com"
 			},
 			"body": {
 				"ingredientList": name
@@ -65,12 +66,12 @@ export default class SpoonacularHandler{
 	}
 	
 	searchSimilarRecipes(recipeID){
-		let requestString = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/" + recipeID + "/similar";
+		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/similar";
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
 				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com"
+				"x-rapidapi-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
