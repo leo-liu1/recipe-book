@@ -26,7 +26,8 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-export const auth = firebaseConfig.auth();
+
+export const auth = firebase.auth();
 
 const isAuthenticated = true;
 
