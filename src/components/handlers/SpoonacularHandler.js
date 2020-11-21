@@ -10,8 +10,8 @@ export default class SpoonacularHandler{
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
@@ -32,8 +32,8 @@ export default class SpoonacularHandler{
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
@@ -52,8 +52,8 @@ export default class SpoonacularHandler{
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
@@ -70,8 +70,8 @@ export default class SpoonacularHandler{
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
