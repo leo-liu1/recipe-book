@@ -10,8 +10,8 @@ export default class SpoonacularHandler{
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
@@ -32,8 +32,8 @@ export default class SpoonacularHandler{
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
@@ -46,22 +46,22 @@ export default class SpoonacularHandler{
 	}
 	
 	searchIngredient(name){
-		fetch("https://api.spoonacular.com/recipes/parseIngredients", {
-			"method": "POST",
+		let requestString = "https://api.spoonacular.com/food/ingredients/search?query=";
+		requestString = requestString + name + "&number=1";
+		
+		fetch(requestString, {
+			"method": "GET",
 			"headers": {
-				"content-type": "application/x-www-form-urlencoded",
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
-			},
-			"body": {
-				"ingredientList": name
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
-			return response[0].name;
+			return response[0].id;
 		})
 		.catch(err => {
 			console.error(err);
+			return {};
 		});
 	}
 	
@@ -70,8 +70,8 @@ export default class SpoonacularHandler{
 		fetch(requestString, {
 			"method": "GET",
 			"headers": {
-				"x-rapidapi-key": this.API_Key,
-				"x-rapidapi-host": "spoonacular.com"
+				"x-api-key": this.API_Key,
+				"x-api-host": "spoonacular.com"
 			}
 		})
 		.then(response => {
