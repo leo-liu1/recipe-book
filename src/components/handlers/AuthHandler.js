@@ -8,12 +8,12 @@ export function useAuth() {
 };
 
 export function ProvideAuth({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [user, setuser] = useState(null);
 
   function signup(email, password) {
     return auth.createUserWithEmailAndPassword(email, password)
     .then(response => {
-        setCurrentUser(response.user);
+        setuser(response.user);
         return response.user;
       });
   };
@@ -21,7 +21,7 @@ export function ProvideAuth({ children }) {
   function login(email, password) {
     return auth.signInWithEmailAndPassword(email, password)
     .then(response => {
-        setCurrentUser(response.user);
+        setuser(response.user);
         return response.user;
       });
   };
@@ -29,16 +29,22 @@ export function ProvideAuth({ children }) {
   function logout() {
     return auth.signOut()
     .then(() => {
-        setCurrentUser(false);
+        setuser(false);
     });
+  };
+
+  function getUserID(){
+    if (auth.currentUser !== null){
+        return auth.currentUser.uid;
+    }
   };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
-      if (currentUser) {
-        setCurrentUser(currentUser);
+      if (user) {
+        setuser(user);
       }else{
-        setCurrentUser(false);
+        setuser(false);
       }
     });
 
@@ -46,10 +52,11 @@ export function ProvideAuth({ children }) {
   }, []);
 
   const value = {
-    currentUser,
-    login,
+    user,
     signup,
+    login,
     logout,
+    getUserID
   }
 
   return (
