@@ -8,7 +8,7 @@ export default class FirestoreHandler{
 	}
 	
 	addUserIngredient(ingredient){
-		return firebase.firestore().collection('ingredient').add({ ...ingredient.getFirestoreData(), userID: this.userID });
+		return firebase.firestore().collection('ingredients').add({ ...ingredient.getFirestoreData(), userID: this.userID });
 	}
 	
 	removeUserIngredient(ingredient){
@@ -41,5 +41,20 @@ export default class FirestoreHandler{
 		});
 		return ingredients;
 	}
+	addUserBookmakedRecipes(recipe){
+		return firebase.firestore().collection('bookmarks').add({ ...recipe.getFirestoreData(), userID: this.userID });
+	}
+	removeUserBookmakedRecipes(recipe){
+		return firebase.firestore().collection('bookmarks').where("userID", "==", this.userID).where("recipeID", "==", recipe.getRecipeID()).get()
+		    .then(snapshot => {
+				snapshot.forEach(doc => {
+					firebase.firestore().collection('bookmarks').doc(doc.id).delete();
+				});
+			})
+			.catch(err => {
+				console.log('Error getting document', err);
+			});
+	}
+
 	
 }
