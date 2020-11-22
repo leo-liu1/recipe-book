@@ -55,6 +55,9 @@ export default class FirestoreHandler{
 				console.log('Error getting document', err);
 			});
 	}
+	addRecipeHistory(recipe){
+		return firebase.firestore().collection('history').add({ ...recipe.getFirestoreData(), userID: this.userID });
+	}
 
 	
 }
