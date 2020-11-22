@@ -12,6 +12,7 @@ import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
+import Ingredient from './components/classes/Ingredient'
 
 import './css/App.scss';
 
@@ -32,13 +33,26 @@ export const auth = firebase.auth();
 
 const isAuthenticated = true;
 
+// Just for testing fridge, will get rid of later
+const boxes = [
+  new Ingredient('beef', null, 'Meat', Date.now(), 1, null),
+  new Ingredient('beef2', null, 'Meat', Date.now(), 2, null),
+  new Ingredient('beef3', null, 'Meat', Date.now(), 3, null),
+  new Ingredient('beef4', null, 'Meat', Date.now(), 4, null),
+  new Ingredient('beef5', null, 'Meat', Date.now(), 5, null),
+  new Ingredient('beef6', null, 'Meat', Date.now(), 6, null),
+  new Ingredient('milk', null, 'Dairy', Date.now(), 2, null),
+  new Ingredient('corn', null, 'Vegetable', Date.now(), 2, null),
+  new Ingredient('rice', null, 'Carbs', Date.now(), 2, null),
+];
+
 export default function App() {
   return (
     <BrowserRouter>
         <Navbar />
         <Switch>
           <Route exact path="/">
-            {isAuthenticated ? <Fridge /> : <Landing />}
+            {isAuthenticated ? <Fridge ingredients={boxes}/> : <Landing />}
           </Route>
           <Route path="/bookmarks">
             <Bookmarks />
