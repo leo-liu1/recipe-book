@@ -52,7 +52,7 @@ export function ProvideAuth({ children }) {
   }, []);
 
   const value = {
-    user,
+    user, //Is user authenticated
     signup,
     login,
     logout,
