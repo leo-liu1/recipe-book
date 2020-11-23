@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import firebase from 'firebase';
-import "firebase/auth"
+import firebase from 'firebase/app';
+import 'firebase/auth';
+import { ProvideAuth } from './components/handlers/AuthHandler';
 
 import Navbar from './components/navigation/Navbar';
 
@@ -27,9 +28,7 @@ const firebaseConfig = {
   measureId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
-firebase.initializeApp(firebaseConfig);
-
-export const auth = firebase.auth();
+export const fire = firebase.initializeApp(firebaseConfig);
 
 const isAuthenticated = true;
 
@@ -48,6 +47,7 @@ const boxes = [
 
 export default function App() {
   return (
+    <ProvideAuth>
     <BrowserRouter>
         <Navbar />
         <Switch>
@@ -74,5 +74,6 @@ export default function App() {
           </Route>
         </Switch>
     </BrowserRouter>
+    </ProvideAuth>
   );
 }
