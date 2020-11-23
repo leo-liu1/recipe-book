@@ -1,16 +1,21 @@
 import React, { useRef, useState } from 'react';
 import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../components/handlers/AuthHandler"
+import { useAuth } from "../components/handlers/AuthHandler";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const emailRef = useRef()
   const pswdRef = useRef()
-  const { login } = useAuth()
+  const { login, logout, getUserID, isUserAuthenticated } = useAuth()
 
   async function submitHandler(e) {
     e.preventDefault()
+    if ( isUserAuthenticated() ) {
+      //logout();
+      return setError("You are already logged in.");
+    }
     try {
       setError("")
       setLoading(true)
@@ -23,9 +28,10 @@ export default function Login() {
 
   return (
     <>
-      <Card>
+      <Card className="text-center">
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
+          { getUserID() }
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={submitHandler}>
             <Form.Group id="email">

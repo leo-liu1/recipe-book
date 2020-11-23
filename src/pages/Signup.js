@@ -1,33 +1,34 @@
 import React, { useRef, useState } from 'react';
-import { Form, Button, Card, Alert } from "react-bootstrap";
-import { useAuth } from "../components/handlers/AuthHandler"
+import { Form, Button, Card, Alert } from 'react-bootstrap';
+import { useAuth } from '../components/handlers/AuthHandler';
+import { Link } from 'react-router-dom';
 
 export default function Signup() {
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const emailRef = useRef()
-  const pswdRef = useRef()
-  const pswdConfirmRef = useRef()
-  const { signup } = useAuth()
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const emailRef = useRef();
+  const pswdRef = useRef();
+  const pswdConfirmRef = useRef();
+  const { signup } = useAuth();
 
   async function submitHandler(e){
-    e.preventDefault()
+    e.preventDefault();
     if (pswdRef.current.value !== pswdConfirmRef.current.value) {
-      return setError("Confirm password is not matching your password.")
+      return setError("Confirm password is not matching your password.");
     }
 
     if((emailRef.current.value == "") || (pswdRef.current.value == "")){
-      return setError("Email and Password can't be empty.")
+      return setError("Email and Password can't be empty.");
     }
 
     try {
-      setError("")
-      setLoading(true)
-      await signup(emailRef.current.value, pswdRef.current.value)
+      setError("");
+      setLoading(true);
+      await signup(emailRef.current.value, pswdRef.current.value);
     } catch {
-      setError("Fail to create an account!")
+      setError("Fail to create an account!");
     }
-    setLoading(false)
+    setLoading(false);
   }
 
   return (
