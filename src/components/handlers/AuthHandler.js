@@ -1,4 +1,4 @@
-import { auth } from "../../App.js";
+import { fire } from "../../App.js";
 import React, { useState, useEffect, useContext, createContext } from "react";
 
 const AuthContext = createContext();
@@ -10,37 +10,49 @@ export function useAuth() {
 export function ProvideAuth({ children }) {
   const [user, setuser] = useState(null);
 
-  function signup(email, password) {
-    return auth.createUserWithEmailAndPassword(email, password)
+  const signup = (email, password) => {
+    return fire.auth().createUserWithEmailAndPassword(email, password)
     .then(response => {
+        //debugger
         setuser(response.user);
         return response.user;
       });
   };
 
-  function login(email, password) {
-    return auth.signInWithEmailAndPassword(email, password)
+  const login = (email, password) => {
+  return fire.auth().signInWithEmailAndPassword(email, password)
     .then(response => {
-        setuser(response.user);
-        return response.user;
-      });
-  };
+      setuser(response.user);
+      return response.user;
+    }, error => {
+        console.log(error);
+    });
+};
 
-  function logout() {
-    return auth.signOut()
+  const logout = () => {
+    return fire.auth().signOut()
     .then(() => {
         setuser(false);
     });
   };
 
-  function getUserID(){
-    if (auth.currentUser !== null){
-        return auth.currentUser.uid;
+  const getUserID = () => {
+    if (fire.auth().currentUser !== null){
+        return fire.auth().currentUser.uid;
+    }
+  };
+
+  const isUserAuthenticated = () => {
+    if (fire.auth().currentUser){
+      return true;
+    }
+    else{
+      return false;
     }
   };
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(user => {
+    const unsubscribe = fire.auth().onAuthStateChanged(user => {
       if (user) {
         setuser(user);
       }else{
@@ -52,11 +64,12 @@ export function ProvideAuth({ children }) {
   }, []);
 
   const value = {
-    user, //Is user authenticated
+    user,
     signup,
     login,
     logout,
-    getUserID
+    getUserID,
+    isUserAuthenticated
   }
 
   return (
