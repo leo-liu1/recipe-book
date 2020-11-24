@@ -13,12 +13,12 @@ export default function NavbarSearch() {
         if (location.pathname === SEARCH_PATH) {
             const urlParams = new URLSearchParams(location.search);
             const query = urlParams.get('q');
-
             if (prevSearch !== query) {
-                inputRef.current.value = query;
                 setPrevSearch(query);
+                inputRef.current.value = query;
             }
         } else if (!searched) {
+            setPrevSearch('');
             inputRef.current.value = '';
         }
         

@@ -72,21 +72,21 @@ function Routing() {
         </Route>
         <Route path="/bookmarks">
           <Navbar isAuthenticated={isAuthenticated} />
-          {isAuthenticated ? <Bookmarks /> : <Redirect push to="/login" />}
+          {isAuthenticated ? <Bookmarks /> : <Redirect to="/login" />}
         </Route>
         <Route path="/recommendations">
           <Navbar isAuthenticated={isAuthenticated} />
-          {isAuthenticated ? <Recommendations /> : <Redirect push to="/login" />}
+          {isAuthenticated ? <Recommendations /> : <Redirect to="/login" />}
         </Route>
         <Route path="/search">
           <Navbar isAuthenticated={isAuthenticated} />
           <Search />
         </Route>
         <Route path="/signup">
-          {isAuthenticated ? <Redirect push to="/" /> : <Signup />}
+          {isAuthenticated ? <Redirect to="/" /> : <Signup />}
         </Route>
         <Route path="/login">
-          {isAuthenticated ? <Redirect push to="/" /> : <Login />}
+          {isAuthenticated ? <Redirect to="/" /> : <Login />}
         </Route>
       </Switch>
     </BrowserRouter>
