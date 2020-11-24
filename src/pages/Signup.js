@@ -17,7 +17,7 @@ export default function Signup() {
       return setError("Confirm password is not matching your password.");
     }
 
-    if((emailRef.current.value == "") || (pswdRef.current.value == "")){
+    if((emailRef.current.value === "") || (pswdRef.current.value === "")){
       return setError("Email and Password can't be empty.");
     }
 
