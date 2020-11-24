@@ -31,15 +31,15 @@ export const firebase = Firebase.initializeApp(firebaseConfig);
 
 // Just for testing fridge, will get rid of later
 const boxes = [
-  new Ingredient('beef', null, 'Meat', Date.now(), 1, null),
-  new Ingredient('beef2', null, 'Meat', Date.now(), 2, null),
-  new Ingredient('beef3', null, 'Meat', Date.now(), 3, null),
-  new Ingredient('beef4', null, 'Meat', Date.now(), 4, null),
-  new Ingredient('beef5', null, 'Meat', Date.now(), 5, null),
-  new Ingredient('beef6', null, 'Meat', Date.now(), 6, null),
-  new Ingredient('milk', null, 'Dairy', Date.now(), 2, null),
-  new Ingredient('corn', null, 'Vegetable', Date.now(), 2, null),
-  new Ingredient('rice', null, 'Carbs', Date.now(), 2, null),
+  new Ingredient('beef', null, 'Meat', Date.now(), {amount: 1, unit: "cow"}, null),
+  new Ingredient('beef2', null, 'Meat', Date.now(), {amount: 2, unit: "lbs"}, null),
+  new Ingredient('beef3', null, 'Meat', Date.now(), {amount: 3, unit: "kg"}, null),
+  new Ingredient('beef4', null, 'Meat', Date.now(), {amount: 4, unit: "poo"}, null),
+  new Ingredient('beef5', null, 'Meat', Date.now(), {amount: 5, unit: "hmm"}, null),
+  new Ingredient('beef6', null, 'Meat', Date.now(), {amount: 6, unit: "moo"}, null),
+  new Ingredient('milk', null, 'Dairy', Date.now(), {amount: -1, unit: "oz"}, null),
+  new Ingredient('corn', null, 'Vegetable', Date.now(), {amount: 1, unit: "lbs"}, null),
+  new Ingredient('rice', null, 'Carbs', Date.now(), {amount: 1, unit: "?"}, null),
 ];
 
 export default function App() {
@@ -47,7 +47,7 @@ export default function App() {
     <ProvideAuth>
       <Routing />
     </ProvideAuth>
-);
+  );
 }
 
 function Routing() {
