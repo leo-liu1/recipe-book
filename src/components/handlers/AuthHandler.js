@@ -39,7 +39,9 @@ export function ProvideAuth({ children }) {
 
   const getUserID = () => {
     if (firebase.auth().currentUser !== null){
-        return firebase.auth().currentUser.uid;
+      return firebase.auth().currentUser.uid;
+    } else {
+      return null;
     }
   };
 

@@ -3,6 +3,7 @@ import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Firebase from 'firebase/app';
 
 import { ProvideAuth, useAuth } from './components/handlers/AuthHandler';
+import { ProvideFirestore } from './components/handlers/FirestoreHandler';
 import Navbar from './components/navigation/Navbar';
 
 import Bookmarks from './pages/Bookmarks';
@@ -45,7 +46,9 @@ const boxes = [
 export default function App() {
   return (
     <ProvideAuth>
-      <Routing />
+      <ProvideFirestore>
+        <Routing />
+      </ProvideFirestore>
     </ProvideAuth>
   );
 }
