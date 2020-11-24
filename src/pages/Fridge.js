@@ -8,12 +8,22 @@ import vegetableImage from './../assets/vegetable.jpg'
 
 import './../css/fridge.scss';
 
-export default function Fridge(props) {
-    return (
-        <div className="fridge">
-            {props.ingredients.map(b => <Box key={b.name} ingredient={b} />)}
-        </div>
-    );
+export default class Fridge extends React.Component {
+    createMenu(ingredient) {
+        alert(ingredient.name);
+    }
+
+    render() {
+        return (
+            <div className="fridge">
+                {this.props.ingredients.map(ingredient => <Box
+                    key={ingredient.name}
+                    ingredient={ingredient}
+                    fridgeClick={this.createMenu}
+                />)}
+            </div>
+        );
+    }
 }
 
 class Box extends React.Component {
@@ -27,7 +37,7 @@ class Box extends React.Component {
     render() {
         const expDate = new Date(this.state.ingredient.expirationDate);
         return (
-            <div className="box">
+            <div className="box" onClick={() => this.props.fridgeClick(this.props.ingredient)}>
                 <img className="image"
                      src={this.state.ingredient.imageURL
                          ? this.state.ingredient.imageURL
@@ -37,6 +47,8 @@ class Box extends React.Component {
             </div>
         );
     }
+
+
 
     getDefaultImage(type) {
         switch(type) {
