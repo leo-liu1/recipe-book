@@ -1,9 +1,8 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import { ProvideAuth } from './components/handlers/AuthHandler';
+import Firebase from 'firebase/app';
 
+import { ProvideAuth, useAuth } from './components/handlers/AuthHandler';
 import Navbar from './components/navigation/Navbar';
 
 import Bookmarks from './pages/Bookmarks';
@@ -28,9 +27,7 @@ const firebaseConfig = {
   measureId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
-export const fire = firebase.initializeApp(firebaseConfig);
-
-const isAuthenticated = true;
+export const firebase = Firebase.initializeApp(firebaseConfig);
 
 // Just for testing fridge, will get rid of later
 const boxes = [
@@ -48,32 +45,40 @@ const boxes = [
 export default function App() {
   return (
     <ProvideAuth>
+      <Routing />
+    </ProvideAuth>
+  );
+}
+
+function Routing() {
+  const { isUserAuthenticated } = useAuth();
+
+  return (
     <BrowserRouter>
-        <Navbar />
-        <Switch>
-          <Route exact path="/">
-            {isAuthenticated ? <Fridge ingredients={boxes}/> : <Landing />}
-          </Route>
-          <Route path="/bookmarks">
-            <Bookmarks />
-          </Route>
-          <Route path="/recommendations">
-            <Recommendations />
-          </Route>
-          <Route path="/search">
-            <Search />
-          </Route>
+      <Navbar isAuthenticated={isUserAuthenticated()} />
+      <Switch>
+        <Route exact path="/">
+          {isUserAuthenticated() ? <Fridge ingredients={boxes}/> : <Landing />}
+        </Route>
+        <Route path="/bookmarks">
+          <Bookmarks />
+        </Route>
+        <Route path="/recommendations">
+          <Recommendations />
+        </Route>
+        <Route path="/search">
+          <Search />
+        </Route>
+        {!isUserAuthenticated() &&
+        (<>
           <Route path="/signup">
             <Signup />
           </Route>
           <Route path="/login">
             <Login />
           </Route>
-          <Route path="/logout">
-            <Login />
-          </Route>
-        </Switch>
+        </>)}
+      </Switch>
     </BrowserRouter>
-    </ProvideAuth>
-  );
+  )
 }

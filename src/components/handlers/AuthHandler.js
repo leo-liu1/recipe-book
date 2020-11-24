@@ -1,4 +1,5 @@
-import { fire } from "../../App.js";
+import firebase from 'firebase';
+import 'firebase/auth';
 import React, { useState, useEffect, useContext, createContext } from "react";
 
 const AuthContext = createContext();
@@ -11,7 +12,7 @@ export function ProvideAuth({ children }) {
   const [user, setuser] = useState(null);
 
   const signup = (email, password) => {
-    return fire.auth().createUserWithEmailAndPassword(email, password)
+    return firebase.auth().createUserWithEmailAndPassword(email, password)
     .then(response => {
         //debugger
         setuser(response.user);
@@ -20,7 +21,7 @@ export function ProvideAuth({ children }) {
   };
 
   const login = (email, password) => {
-  return fire.auth().signInWithEmailAndPassword(email, password)
+  return firebase.auth().signInWithEmailAndPassword(email, password)
     .then(response => {
       setuser(response.user);
       return response.user;
@@ -30,20 +31,20 @@ export function ProvideAuth({ children }) {
 };
 
   const logout = () => {
-    return fire.auth().signOut()
+    return firebase.auth().signOut()
     .then(() => {
         setuser(false);
     });
   };
 
   const getUserID = () => {
-    if (fire.auth().currentUser !== null){
-        return fire.auth().currentUser.uid;
+    if (firebase.auth().currentUser !== null){
+        return firebase.auth().currentUser.uid;
     }
   };
 
   const isUserAuthenticated = () => {
-    if (fire.auth().currentUser){
+    if (firebase.auth().currentUser){
       return true;
     }
     else{
@@ -52,7 +53,7 @@ export function ProvideAuth({ children }) {
   };
 
   useEffect(() => {
-    const unsubscribe = fire.auth().onAuthStateChanged(user => {
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       if (user) {
         setuser(user);
       }else{

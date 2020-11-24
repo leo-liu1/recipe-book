@@ -1,7 +1,10 @@
+$nav-color: #A8D6FE;
+$button-color: #0275D8;
+
 .navigation {
     width: calc(100% - 40px);
     height: 68px;
-    background-color: #A8D6FE;
+    background-color: $nav-color;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -49,9 +52,28 @@
             justify-content: space-between;
             width: 100px;
         }
+
+        .logout {
+            cursor: pointer;
+        }
     }
 
     .search {
-        width: 300px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .input {
+            width: 300px;
+        }
+
+        .button {
+            background: $button-color;
+            border: 1px solid $button-color;
+            box-sizing: border-box;
+            border-radius: 4px;
+            color: white;
+            margin-left: 20px;
+        }
     }
 }

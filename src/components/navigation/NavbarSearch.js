@@ -1,5 +1,8 @@
 import React from 'react';
 
 export default function NavbarSearch() {
-    return (<input placeholder="Search for a recipe..." className="search"/>);
+    return (<div className="search">
+        <input placeholder="Search for a recipe..." className="input"/>
+        <button className="button">Search</button>
+    </div>);
 }

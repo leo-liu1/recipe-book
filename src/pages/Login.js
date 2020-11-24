@@ -8,7 +8,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const emailRef = useRef()
   const pswdRef = useRef()
-  const { login, logout, getUserID, isUserAuthenticated } = useAuth()
+  const { login, getUserID, isUserAuthenticated } = useAuth()
 
   async function submitHandler(e) {
     e.preventDefault()

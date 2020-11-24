@@ -1,14 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { useAuth } from '../handlers/AuthHandler';
 import NavbarSearch from './NavbarSearch';
 
 import '../../css/navigation.scss';
 import { ReactComponent as Fridge } from './../../assets/fridge.svg';
 
-const isAuthenticated = false;
+export default function Navbar({ isAuthenticated }) {
+    const { logout } = useAuth();
 
-export default function Navbar() {
     return (<nav className="navigation">
         <div className="left">
             <Link to="/" className="title">
@@ -23,7 +24,7 @@ export default function Navbar() {
         <NavbarSearch />
         <div className="right">
             {isAuthenticated ?
-                (<Link to="/logout">Logout</Link>) :
+                (<div className="logout" onClick={() => {logout(); console.log("logged out")}}>Logout</div>) :
                 (<div className="login">
                     <Link to="/login">Login</Link>
                     <Link to="/signup">Signup</Link>
