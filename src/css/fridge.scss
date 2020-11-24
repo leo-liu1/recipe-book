@@ -3,7 +3,7 @@
     flex-direction: row;
     flex-wrap: wrap;
 
-    justify-content: left;
+    justify-content: center;
     align-items: center;
     position: relative;
     width: 100%;
@@ -21,10 +21,17 @@
         color: #333;
         width: 140px;
         height: 160px;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.12),
+            0 2px 2px rgba(0,0,0,0.12),
+            0 4px 4px rgba(0,0,0,0.12),
+            0 8px 8px rgba(0,0,0,0.12),
+            0 16px 16px rgba(0,0,0,0.12);
 
         .image {
             height: 100px;
             width: 100px;
+            border-radius: 5%;
+            border: 2px solid #bbb;
         }
     }
 }
@@ -44,4 +51,38 @@
     margin: 2px;
     padding-top: 2px;
     padding-bottom: 0;
+}
+
+.form {
+    justify-content: center;
+    position: absolute;
+    margin: 0 auto;
+    padding: 10px;
+    border: 1px solid #bbb;
+    background-color: #A8D6FE;
+    border-radius: 5%;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.12),
+        0 2px 2px rgba(0,0,0,0.12),
+        0 4px 4px rgba(0,0,0,0.12),
+        0 8px 8px rgba(0,0,0,0.12),
+        0 16px 16px rgba(0,0,0,0.12);
+
+    .input {
+        display: block;
+        margin: 2px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .input-text {
+        margin: 2px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
+
+    .create-button {
+        margin: 2px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+    }
 }
