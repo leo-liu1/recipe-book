@@ -18,7 +18,7 @@
         bottom: 0;
         background-position: 50% 65%;
         background-size: cover;
-        background-image: url('./../../assets/landing.jpeg');
+        background-image: url('../../assets/images/landing.jpg');
         opacity: 0.75;
     }
 
@@ -49,6 +49,7 @@
 
             .subtitle {
                 font-size: 20px;
+                font-weight: 500;
             }
         }
     }

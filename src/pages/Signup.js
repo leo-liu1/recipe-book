@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useAuth } from '../components/handlers/AuthHandler';
 import { Link } from 'react-router-dom';
 
-import { ReactComponent as FridgeIcon } from '../assets/fridge.svg';
+import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
 export default function Signup() {
   const [error, setError] = useState("");

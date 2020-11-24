@@ -1,6 +1,6 @@
 import firebase from 'firebase';
-import FirestoreHandler from './../components/handlers/FirestoreHandler';
-import Ingredient from './../components/classes/Ingredient';
+import FirestoreHandler from '../components/handlers/FirestoreHandler';
+import Ingredient from '../components/classes/Ingredient';
 
 const firebaseConfig = {
 	apiKey: process.env.REACT_APP_FIREBASE_API_KEY,

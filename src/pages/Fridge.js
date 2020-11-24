@@ -1,11 +1,11 @@
 import React from 'react';
 import { Fab } from 'react-tiny-fab';
 
-import meatImage from './../assets/meat.jpg'
-import dairyImage from './../assets/dairy.jpg'
-import carbImage from './../assets/carb.jpg'
-import fruitImage from './../assets/fruit.jpg'
-import vegetableImage from './../assets/vegetable.jpg'
+import meatImage from '../assets/images/meat.jpg'
+import dairyImage from '../assets/images/dairy.jpg'
+import carbImage from '../assets/images/carb.jpg'
+import fruitImage from '../assets/images/fruit.jpg'
+import vegetableImage from '../assets/images/vegetable.jpg'
 
 import 'react-tiny-fab/dist/styles.css';
 

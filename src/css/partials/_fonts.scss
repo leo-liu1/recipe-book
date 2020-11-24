@@ -1,0 +1,52 @@
+$avenir-next-folder: '../../assets/fonts/AvenirNext';
+
+@font-face {
+  font-family: 'Avenir Next';
+  font-weight: 400;
+  src: url('#{$avenir-next-folder}-400/AvenirNext-400.eot'); /* IE9 Compat Modes */
+  src:
+    url('#{$avenir-next-folder}-400/AvenirNext-400.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('#{$avenir-next-folder}-400/AvenirNext-400.woff') format('woff'), /* Modern Browsers */
+    url('#{$avenir-next-folder}-400/AvenirNext-400.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'Avenir Next';
+  font-weight: 500;
+  src: url('#{$avenir-next-folder}-500/AvenirNext-500.eot'); /* IE9 Compat Modes */
+  src:
+    url('#{$avenir-next-folder}-500/AvenirNext-500.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('#{$avenir-next-folder}-500/AvenirNext-500.woff') format('woff'), /* Modern Browsers */
+    url('#{$avenir-next-folder}-500/AvenirNext-500.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'Avenir Next';
+  font-weight: 600;
+  src: url('#{$avenir-next-folder}-600/AvenirNext-600.eot'); /* IE9 Compat Modes */
+  src:
+    url('#{$avenir-next-folder}-600/AvenirNext-600.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('#{$avenir-next-folder}-600/AvenirNext-600.woff') format('woff'), /* Modern Browsers */
+    url('#{$avenir-next-folder}-600/AvenirNext-600.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'Avenir Next';
+  font-weight: 700;
+  src: url('#{$avenir-next-folder}-700/AvenirNext-700.eot'); /* IE9 Compat Modes */
+  src:
+    url('#{$avenir-next-folder}-700/AvenirNext-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('#{$avenir-next-folder}-700/AvenirNext-700.woff') format('woff'), /* Modern Browsers */
+    url('#{$avenir-next-folder}-700/AvenirNext-700.ttf') format('truetype'), /* Safari, Android, iOS */
+}
+
+@font-face {
+  font-family: 'Avenir Next';
+  font-weight: 400;
+  font-style: italic;
+  src: url('#{$avenir-next-folder}-400-italic/AvenirNext-400-italic.eot'); /* IE9 Compat Modes */
+  src:
+  url('#{$avenir-next-folder}-400-italic/AvenirNext-400-italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('#{$avenir-next-folder}-400-italic/AvenirNext-400-italic.woff') format('woff'), /* Modern Browsers */
+  url('#{$avenir-next-folder}-400-italic/AvenirNext-400-italic.ttf') format('truetype'), /* Safari, Android, iOS */
+}

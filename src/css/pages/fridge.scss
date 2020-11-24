@@ -36,7 +36,7 @@
 
         .title {
             font-size: medium;
-            font-family: sans-serif;
+            font-family: $font;
             margin: 2px;
             padding-top: 4px;
             padding-bottom: 0;
@@ -45,7 +45,7 @@
         
         .subtitle {
             font-size: small;
-            font-family: sans-serif;
+            font-family: $font;
             margin: 2px;
             padding-top: 2px;
             padding-bottom: 0;

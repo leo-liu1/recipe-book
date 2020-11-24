@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../handlers/AuthHandler';
 import NavbarSearch from './NavbarSearch';
 
-import { ReactComponent as FridgeIcon } from '../../assets/fridge.svg';
-import { ReactComponent as BookmarksIcon } from '../../assets/bookmarks.svg';
-import { ReactComponent as RecommendationsIcon } from '../../assets/recommendations.svg';
+import { ReactComponent as FridgeIcon } from '../../assets/icons/fridge.svg';
+import { ReactComponent as BookmarksIcon } from '../../assets/icons/bookmarks.svg';
+import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recommendations.svg';
 
 export default function Navbar({ isAuthenticated }) {
     const { logout } = useAuth();

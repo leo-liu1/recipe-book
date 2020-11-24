@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ReactComponent as FridgeIcon } from './../assets/fridge.svg';
+import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
 export default function Landing() {
     return (<div className="landing">
