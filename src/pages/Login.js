@@ -1,56 +1,61 @@
 import React, { useRef, useState } from 'react';
-import { Form, Button, Card, Alert } from "react-bootstrap";
 import { useAuth } from "../components/handlers/AuthHandler";
 import { Link } from "react-router-dom";
+
+import { ReactComponent as FridgeIcon } from '../assets/fridge.svg';
 
 export default function Login() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const emailRef = useRef()
   const pswdRef = useRef()
-  const { login, getUserID, isUserAuthenticated } = useAuth()
+  const { login, isUserAuthenticated } = useAuth()
 
   async function submitHandler(e) {
-    e.preventDefault()
+    e.preventDefault();
+
     if ( isUserAuthenticated() ) {
-      //logout();
-      return setError("You are already logged in.");
+      return setError("You are already logged in");
     }
     try {
-      setError("")
-      setLoading(true)
-      await login(emailRef.current.value, pswdRef.current.value)
+      setError("");
+      setLoading(true);
+      await login(emailRef.current.value, pswdRef.current.value);
     } catch {
-      setError("Fail to log in!")
+      setError("Failed to log in");
     }
-    setLoading(false)
+    setLoading(false);
   }
 
   return (
-    <>
-      <Card className="text-center">
-        <Card.Body>
-          <h2 className="text-center mb-4">Log In</h2>
-          { getUserID() }
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={submitHandler}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={pswdRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" type="submit">
+    <div className="login-container">
+      <div className="form-box">
+        <Link to="/" className="logo">
+          <FridgeIcon className="logo-image"/>
+          <div className="logo-text">Recipe to Cook</div>
+        </Link>
+        <div className="form-content">
+          <div className="form-title">Log In</div>
+          <form onSubmit={submitHandler}>
+            <div className="input">
+              <label>Email</label>
+              <input type="email" ref={emailRef} placeholder="chef@recipetocook.com" required />
+            </div>
+            <div className="input">
+              <label>Password</label>
+              <input type="password" ref={pswdRef} placeholder="********" required />
+            </div>
+            <div className="error">{error}</div>
+            <button disabled={loading} type="submit" className="action">
               Log In
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-3">
-        Need an account? <Link to="/signup">Sign Up</Link>
+            </button>
+          </form>
+        </div>
+        <div className="alternative">
+          <div className="text">Need an account?</div>
+          <Link to="/signup" className="link">Sign Up</Link>
+        </div>
       </div>
-    </>
-  )
+    </div>
+  );
 }

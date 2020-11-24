@@ -1,12 +1,11 @@
 import React from 'react';
 
-import './../css/pages.scss';
-import { ReactComponent as Fridge } from './../assets/fridge.svg';
+import { ReactComponent as FridgeIcon } from './../assets/fridge.svg';
 
 export default function Landing() {
     return (<div className="landing">
         <div className="container">
-            <Fridge />
+            <FridgeIcon />
             <div className="text">
                 <div className="title">
                     Recipe to Cook

@@ -65,18 +65,21 @@ function Routing() {
 
   return (
     <BrowserRouter>
-      <Navbar isAuthenticated={isAuthenticated} />
       <Switch>
         <Route exact path="/">
+          <Navbar isAuthenticated={isAuthenticated} />
           {isAuthenticated ? <Fridge ingredients={boxes}/> : <Landing />}
         </Route>
         <Route path="/bookmarks">
-          <Bookmarks />
+          <Navbar isAuthenticated={isAuthenticated} />
+          {isAuthenticated ? <Bookmarks /> : <Redirect to="/login" />}
         </Route>
         <Route path="/recommendations">
-          <Recommendations />
+          <Navbar isAuthenticated={isAuthenticated} />
+          {isAuthenticated ? <Recommendations /> : <Redirect to="/login" />}
         </Route>
         <Route path="/search">
+          <Navbar isAuthenticated={isAuthenticated} />
           <Search />
         </Route>
         <Route path="/signup">

@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { useAuth } from '../components/handlers/AuthHandler';
 import { Link } from 'react-router-dom';
+
+import { ReactComponent as FridgeIcon } from '../assets/fridge.svg';
 
 export default function Signup() {
   const [error, setError] = useState("");
@@ -14,11 +15,11 @@ export default function Signup() {
   async function submitHandler(e){
     e.preventDefault();
     if (pswdRef.current.value !== pswdConfirmRef.current.value) {
-      return setError("Confirm password is not matching your password.");
+      return setError("Passwords do not match");
     }
 
     if((emailRef.current.value === "") || (pswdRef.current.value === "")){
-      return setError("Email and Password can't be empty.");
+      return setError("Email and Password cannot be empty");
     }
 
     try {
@@ -26,39 +27,44 @@ export default function Signup() {
       setLoading(true);
       await signup(emailRef.current.value, pswdRef.current.value);
     } catch {
-      setError("Fail to create an account!");
+      setError("Failed to create an account");
     }
     setLoading(false);
   }
 
   return (
-    <>
-      <Card>
-        <Card.Body>
-          <h2 className="text-center mb-4">Sign Up</h2>
-          {error && <Alert variant="danger">{error}</Alert>}
-          <Form onSubmit={submitHandler}>
-            <Form.Group id="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" ref={emailRef} required />
-            </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control type="password" ref={pswdRef} required />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type="password" ref={pswdConfirmRef} required />
-            </Form.Group>
-            <Button disabled={loading} className="w-100" type="submit">
+    <div className="signup-container">
+      <div className="form-box">
+        <Link to="/" className="logo">
+          <FridgeIcon className="logo-image"/>
+          <div className="logo-text">Recipe to Cook</div>
+        </Link>
+        <div className="form-content">
+          <div className="form-title">Create an account</div>
+          <form onSubmit={submitHandler}>
+          <div className="input">
+              <label>Email</label>
+              <input type="email" ref={emailRef} placeholder="chef@recipetocook.com" required />
+          </div>
+          <div className="input">
+              <label>Create a password</label>
+              <input type="password" ref={pswdRef} placeholder="********" required />
+          </div>
+          <div className="input">
+              <label>Confirm password</label>
+              <input type="password" ref={pswdConfirmRef} placeholder="********" required />
+          </div>
+          <div className="error">{error}</div>
+          <button disabled={loading} type="submit" className="action">
               Sign Up
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-      <div className="w-100 text-center mt-3">
-        Already have an account? <Link to="/login">Log In</Link>
+          </button>
+          </form>
+        </div>
+        <div className="alternative">
+          <div className="text">Already signed up?</div>
+          <Link to="/login" className="link">Log In</Link>
+        </div>
       </div>
-    </>
-  )
+    </div>
+  );
 }

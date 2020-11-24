@@ -1,3 +1,5 @@
+@import '../partials/variables';
+
 .landing {
     display: flex;
     justify-content: center;
@@ -5,7 +7,7 @@
     position: relative;
 
     width: 100%;
-    height: calc(100vh - 68px);
+    height: calc(100vh - #{$navbar-height});
 
     &::before {
         content: "";
@@ -16,7 +18,7 @@
         bottom: 0;
         background-position: 50% 65%;
         background-size: cover;
-        background-image: url('./../assets/landing.jpeg');
+        background-image: url('./../../assets/landing.jpeg');
         opacity: 0.75;
     }
 
@@ -37,11 +39,12 @@
 
             margin-left: 50px;
 
-            font-family: sans-serif;
+            font-family: $font;
             color: white;
 
             .title {
                 font-size: 40px;
+                font-weight: 600;
             }
 
             .subtitle {

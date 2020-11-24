@@ -6,8 +6,6 @@ import carbImage from './../assets/carb.jpg'
 import fruitImage from './../assets/fruit.jpg'
 import vegetableImage from './../assets/vegetable.jpg'
 
-import './../css/fridge.scss';
-
 export default class Fridge extends React.Component {
     createMenu(ingredient) {
         alert(ingredient.name);

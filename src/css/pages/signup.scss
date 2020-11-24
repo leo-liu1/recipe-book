@@ -1,0 +1,23 @@
+@import '../partials/variables';
+@import '../partials/components';
+
+.signup-container {
+    @extend %sign-container;
+    background-color: $primary-color;
+
+    .form-box {
+        .form-content {
+            background-color: white;
+
+            .input {
+                input {
+                    background-color: $off-white;
+
+                    &:focus {
+                        border-color: rgba(0, 0, 0, 0.25);
+                    }
+                }
+            }
+        }
+    }
+}

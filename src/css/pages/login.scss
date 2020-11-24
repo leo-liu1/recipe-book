@@ -1,0 +1,17 @@
+@import '../partials/components';
+
+.login-container {
+    @extend %sign-container;
+
+    .form-box {
+        .form-content {
+            background-color: $off-white;
+
+            .input {
+                input {
+                    background-color: white;
+                }
+            }
+        }
+    }
+}
