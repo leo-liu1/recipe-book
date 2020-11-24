@@ -32,7 +32,7 @@ class Box extends React.Component {
                      src={this.state.ingredient.imageURL
                          ? this.state.ingredient.imageURL
                          : this.getDefaultImage(this.state.ingredient.type)}/>
-                <p className="subtitle">{this.state.ingredient.name} ({this.state.ingredient.quantity.amount} {this.state.ingredient.quantity.unit})</p>
+                <p className="title">{this.state.ingredient.name} ({this.state.ingredient.quantity.amount} {this.state.ingredient.quantity.unit})</p>
                 <p className="subtitle">Expires: {expDate.toLocaleDateString()}</p>
             </div>
         );
