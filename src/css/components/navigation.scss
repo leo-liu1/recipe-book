@@ -47,9 +47,11 @@
         place-content: flex-end;
         align-items: center;
         width: 32.5%;
+        font-weight: bold;
 
         .navbar-link {
             margin-right: 50px;
+            height: 32px;
 
             .navbar-icon {
                 width: 32px;
