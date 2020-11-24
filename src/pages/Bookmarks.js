@@ -12,6 +12,8 @@ let sampleIngredient = new Ingredient(
 );
 
 export default function Bookmarks() {
+    document.title = "Bookmarks";
+
     const { addUserIngredient, removeUserIngredient } = useFirestore();
 
     return (<div>

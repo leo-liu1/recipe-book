@@ -18,6 +18,8 @@ export default class Fridge extends React.Component {
             formIngredientName: "",
         };
 
+        document.title = "Fridge";
+
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }

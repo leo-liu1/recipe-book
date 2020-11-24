@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
 export default function Signup() {
+  document.title = "Signup";
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const emailRef = useRef();

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, Redirect } from 'react-router-dom';
 
 import { useAuth } from '../handlers/AuthHandler';
 import NavbarSearch from './NavbarSearch';
@@ -9,35 +9,43 @@ import { ReactComponent as BookmarksIcon } from '../../assets/icons/bookmarks.sv
 import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recommendations.svg';
 
 export default function Navbar({ isAuthenticated }) {
+    const [loggedOut, setLoggedOut] = useState(false);
     const { logout } = useAuth();
 
-    return (<nav className="navigation">
-        <div className="container">
-            <div className="left">
-                <Link to="/" className="title">
-                    <FridgeIcon className="logo-icon"/>
-                    <div className="text">
-                        Recipe to Cook
-                    </div>
-                </Link>
+    if (loggedOut) {
+        logout();
+    }
+
+    return (<>
+        {loggedOut && <Redirect push to="/" />}
+        <nav className="navigation">
+            <div className="container">
+                <div className="left">
+                    <Link to="/" className="title">
+                        <FridgeIcon className="logo-icon"/>
+                        <div className="text">
+                            Recipe to Cook
+                        </div>
+                    </Link>
+                </div>
+                <NavbarSearch />
+                <div className="right">
+                    {isAuthenticated ?
+                        (<>
+                            <Link to="/bookmarks" className="navbar-link">
+                                <BookmarksIcon className="navbar-icon"/>
+                            </Link>
+                            <Link to="/recommendations" className="navbar-link">
+                                <RecommendationsIcon className="navbar-icon"/>
+                            </Link>
+                            <div className="logout" onClick={() => { setLoggedOut(true); }}>Logout</div>
+                        </>) :
+                        (<div className="login">
+                            <Link to="/login">Login</Link>
+                            <Link to="/signup" className="signup">Sign Up</Link>
+                        </div>)}
+                </div>
             </div>
-            <NavbarSearch />
-            <div className="right">
-                {isAuthenticated ?
-                    (<>
-                        <Link to="/bookmarks" className="navbar-link">
-                            <BookmarksIcon className="navbar-icon"/>
-                        </Link>
-                        <Link to="/recommendations" className="navbar-link">
-                            <RecommendationsIcon className="navbar-icon"/>
-                        </Link>
-                        <div className="logout" onClick={() => {logout(); console.log("logged out")}}>Logout</div>
-                    </>) :
-                    (<div className="login">
-                        <Link to="/login">Login</Link>
-                        <Link to="/signup" className="signup">Sign Up</Link>
-                    </div>)}
-            </div>
-        </div>
-    </nav>);
+        </nav>
+    </>);
 }
