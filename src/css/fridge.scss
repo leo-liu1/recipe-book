@@ -17,9 +17,20 @@
         border: 1px solid #bbb;
         background-color: #eee;
         display: flex;
+        flex-direction: column;
         color: #333;
-        width: 100px;
-        height: 100px;
-    }
+        width: 140px;
+        height: 160px;
 
+        .image {
+            height: 100px;
+            width: 100px;
+        }
+    }
+}
+
+.subtitle {
+    margin: 2px;
+    padding-top: 2px;
+    padding-bottom: 0;
 }
