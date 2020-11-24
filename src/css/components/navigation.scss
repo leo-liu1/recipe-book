@@ -2,97 +2,110 @@
 @import '../partials/components';
 
 .navigation {
-    width: calc(100% - 40px);
+    width: 100%;
     height: $navbar-height;
     background-color: $primary-color;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    font-family: $font;
-    font-size: 1rem;
+    justify-content: center;
 
-    a {
-        text-decoration: none;
-        color: black;
-    }
-
-    .left {
+    .container {
+        max-width: $container-width;
+        width: 100%;
+        height: 100%;
         display: flex;
-        flex-direction: row;
-        align-items: center;
         justify-content: space-between;
-        width: 32.5%;
-
-        .title {
+        align-items: center;
+        padding: 0 30px;
+        font-family: $font;
+        font-size: 1rem;
+    
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    
+        .left {
             display: flex;
             flex-direction: row;
             align-items: center;
-
-            .logo-icon {
-                width: 50px;
-                height: 50px;
-            }
-
-            .text {
-                margin-left: 1.25rem;
-                font-size: 1.5rem;
-                font-weight: 600;
-            }
-        }
-    }
-
-    .right {
-        display: flex;
-        place-content: flex-end;
-        align-items: center;
-        width: 32.5%;
-        font-weight: 500;
-
-        .navbar-link {
-            margin-right: 50px;
-            height: 32px;
-
-            .navbar-icon {
-                width: 32px;
-                height: 32px;
-            }
-        }
-
-        .login {
-            display: flex;
             justify-content: space-between;
-
-            .signup {
-                margin-left: 2rem;
+            width: 32.5%;
+    
+            .title {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+    
+                .logo-icon {
+                    width: 50px;
+                    height: 50px;
+                }
+    
+                .text {
+                    margin-left: 1.25rem;
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                }
             }
         }
-
-        .logout {
-            cursor: pointer;
-        }
-    }
-
-    .search {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-
-        .input {
-            width: 300px;
-            font-size: 1.125rem;
-            outline: none;
-            border-radius: 3px;
-            border-color: transparent;
-            padding: 5px 10px;
-        }
-
-        .button {
-            @extend %button;
-            font-size: 1.125rem;
-            margin-left: 24px;
-            padding: 5px 10px;
+    
+        .right {
+            display: flex;
+            place-content: flex-end;
+            align-items: center;
+            width: 32.5%;
             font-weight: 500;
+    
+            .navbar-link {
+                margin-right: 50px;
+                height: 32px;
+    
+                .navbar-icon {
+                    width: 32px;
+                    height: 32px;
+                }
+            }
+    
+            .login {
+                display: flex;
+                align-items: center;
+    
+                .signup {
+                    @extend %button;
+                    padding: 5px 10px;
+                    font-weight: 500;
+                    margin-left: 2rem;
+                    border-radius: 9999px;
+                }
+            }
+    
+            .logout {
+                cursor: pointer;
+            }
+        }
+    
+        .search {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+    
+            .input {
+                width: 300px;
+                font-size: 1.125rem;
+                outline: none;
+                border-radius: 3px;
+                border-color: transparent;
+                padding: 5px 10px;
+            }
+    
+            .button {
+                @extend %button;
+                font-size: 1.125rem;
+                margin-left: 24px;
+                padding: 5px 10px;
+                font-weight: 500;
+                border-radius: 5px;
+            }
         }
     }
 }
