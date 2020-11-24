@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 import Firebase from 'firebase/app';
 
 import { ProvideAuth, useAuth } from './components/handlers/AuthHandler';
@@ -52,13 +52,20 @@ export default function App() {
 
 function Routing() {
   const { isUserAuthenticated } = useAuth();
+  const [isAuthenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const auth = isUserAuthenticated();
+
+    setAuthenticated(auth);
+  }, [isUserAuthenticated]);
 
   return (
     <BrowserRouter>
-      <Navbar isAuthenticated={isUserAuthenticated()} />
+      <Navbar isAuthenticated={isAuthenticated} />
       <Switch>
         <Route exact path="/">
-          {isUserAuthenticated() ? <Fridge ingredients={boxes}/> : <Landing />}
+          {isAuthenticated ? <Fridge ingredients={boxes}/> : <Landing />}
         </Route>
         <Route path="/bookmarks">
           <Bookmarks />
@@ -69,15 +76,12 @@ function Routing() {
         <Route path="/search">
           <Search />
         </Route>
-        {!isUserAuthenticated() &&
-        (<>
-          <Route path="/signup">
-            <Signup />
-          </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-        </>)}
+        <Route path="/signup">
+          {isAuthenticated ? <Redirect to="/" /> : <Signup />}
+        </Route>
+        <Route path="/login">
+          {isAuthenticated ? <Redirect to="/" /> : <Login />}
+        </Route>
       </Switch>
     </BrowserRouter>
   )
