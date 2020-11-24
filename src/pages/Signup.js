@@ -18,8 +18,12 @@ export default function Signup() {
       return setError("Passwords do not match");
     }
 
-    if((emailRef.current.value === "") || (pswdRef.current.value === "")){
+    if ((emailRef.current.value === "") || (pswdRef.current.value === "")) {
       return setError("Email and Password cannot be empty");
+    }
+
+    if (pswdRef.current.value.length < 6) {
+      return setError("Password must be at least 6 characters long");
     }
 
     try {

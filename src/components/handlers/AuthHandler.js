@@ -27,6 +27,7 @@ export function ProvideAuth({ children }) {
       return response.user;
     }, error => {
         console.log(error);
+        throw(error);
     });
 };
 

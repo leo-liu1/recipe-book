@@ -35,7 +35,7 @@ export default function Login() {
           <div className="logo-text">Recipe to Cook</div>
         </Link>
         <div className="form-content">
-          <div className="form-title">Log In</div>
+          <div className="form-title">Log in</div>
           <form onSubmit={submitHandler}>
             <div className="input">
               <label>Email</label>
