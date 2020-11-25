@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
+import Ingredient from '../classes/Ingredient.js';
 import Recipe from '../classes/Recipe.js';
 import firebase from 'firebase';
 import 'firebase/firestore';
@@ -25,7 +26,13 @@ export function ProvideRecommend({ children }) {
 
     const getRecommends = () => {
         return getRecipeHistory().forEach(recipe => {
-            return searchSimilarRecipes(recipe.recipeID) 
+            var similarRecipe = searchSimilarRecipes(recipe.recipeID);
+			var recipeInfo = searchRecipeById(similarRecipe["id"]);
+			var ingredients = recipeInfo.extendedIngredients.forEach(ingredient => {
+				return Ingredient(ingredient.name, ingredient.name, ingredient.aisle, None, ingredient.amount, ingredient.image);
+			});
+				
+			return Recipe(similarRecipe.title, similarRecipe.id, ingredients, similarRecipe.imageURLs[0], recipeInfo.sourceUrl);
         });
     }
     const value = {
