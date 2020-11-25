@@ -29,7 +29,7 @@ export function ProvideAuth({ children }) {
         console.log(error);
         throw(error);
     });
-};
+  };
 
   const logout = () => {
     return firebase.auth().signOut()
