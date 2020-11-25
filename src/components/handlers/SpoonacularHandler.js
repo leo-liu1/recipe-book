@@ -75,7 +75,7 @@ export default class SpoonacularHandler{
 			}
 		})
 		.then(response => {
-			return response;
+			return response[0];
 		})
 		.catch(err => {
 			console.error(err);
