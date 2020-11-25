@@ -137,9 +137,20 @@ export function ProvideFirestore({ children }) {
 			.where("userID", "==", userID)
 			.get();
 		
-		return snapshot.docs.map((doc) => {
-			return new Recipe(doc.data());
+		var freq_list = new Map();
+		var recipes = [];
+		snapshot.docs.map((doc) => {
+			var name = doc.data().name;
+            var recipeID = doc.data().recipeID;
+            var ingredients = doc.data().ingredients;
+            var imageURL = doc.data().imageURL;
+            var recipeURL = doc.data().recipeURL;
+            var missingIngredients = doc.data().missingIngredients;
+			var recipe = new Recipe(name, recipeID, ingredients, imageURL, recipeURL, missingIngredients);
+			freq_list.set(recipe, doc.data().frequency);
+			recipes.push(recipe);
 		});
+		return recipes.sort((a,b) => freq_list.get(b) - freq_list.get(a)).slice(0,3);
 	}
 
 	const value = {
@@ -150,6 +161,7 @@ export function ProvideFirestore({ children }) {
 		addUserBookmakedRecipes,
 		removeUserBookmakedRecipes,
 		addRecipeHistory,
+		getRecipeHistory,
 	}
 
 	return (
