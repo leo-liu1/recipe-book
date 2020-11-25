@@ -101,9 +101,32 @@ export function ProvideFirestore({ children }) {
 	}
 
 	const addRecipeHistory = (recipe) => {
-		return firebase.firestore()
-			.collection('history')
-			.add({ ...recipe.getFirestoreData(), userID: userID });
+		try{
+			const snapshot = await firebase.firestore()
+						.collection('history')
+						.where("userID", "==", userID)
+						.where("recipeID", "==", recipe.getRecipeID())
+						.get();
+			if(snapshot.empty){
+				return firebase.firestore()
+						.collection('history')
+						.add({ ...recipe.getFirestoreData(), userID: userID, frequency: 1});
+			}
+			else{
+				return Promise.all(snapshot.docs.map((doc) => {
+					var docRef = firestore().collection("history").doc(doc.id);
+					return firebase.firestore().runTransaction(function(transaction) {
+						return transaction.get(docRef).then(function(Doc) {
+							var newfreq = Doc.data().frequency + 1;
+							transaction.update(docRef, { frequency: newfreq });
+						});
+					});
+				}));
+			}
+			
+		} catch (err){
+			console.log('Error removing recipes', err);
+		}
 	}
 
 	const value = {
