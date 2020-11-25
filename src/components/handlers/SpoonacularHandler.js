@@ -6,14 +6,8 @@ export default class SpoonacularHandler{
 	authenticate(){}
 	
 	searchRecipeById(recipeID){
-		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/information";
-		fetch(requestString, {
-			"method": "GET",
-			"headers": {
-				"x-api-key": this.API_Key,
-				"x-api-host": "spoonacular.com"
-			}
-		})
+		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/information?apiKey="+this.API_Key;
+		fetch(requestString)
 		.then(response => {
 			return response;
 		})
@@ -26,16 +20,10 @@ export default class SpoonacularHandler{
 	searchRecipeByIngredients(Ingredient_List){
 		//const ingredientsString = Ingredient_List.map(ingredient => ingredient+'%2C');
 		const ingredientsString = Ingredient_List.join(",+");
-		let requestString = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=";
+		let requestString = "https://api.spoonacular.com/recipes/findByIngredients?apiKey="+ this.API_Key+"&ingredients=";
 		requestString = requestString + ingredientsString + "&number=5";
 		
-		fetch(requestString, {
-			"method": "GET",
-			"headers": {
-				"x-api-key": this.API_Key,
-				"x-api-host": "spoonacular.com"
-			}
-		})
+		fetch(requestString)
 		.then(response => {
 			return response;
 		})
@@ -46,16 +34,10 @@ export default class SpoonacularHandler{
 	}
 	
 	searchIngredient(name){
-		let requestString = "https://api.spoonacular.com/food/ingredients/search?query=";
+		let requestString = "https://api.spoonacular.com/food/ingredients/search?apiKey="+this.API_Key+"&query=";
 		requestString = requestString + name + "&number=1";
 		
-		fetch(requestString, {
-			"method": "GET",
-			"headers": {
-				"x-api-key": this.API_Key,
-				"x-api-host": "spoonacular.com"
-			}
-		})
+		fetch(requestString)
 		.then(response => {
 			return response[0].id;
 		})
@@ -66,14 +48,8 @@ export default class SpoonacularHandler{
 	}
 	
 	searchSimilarRecipes(recipeID){
-		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/similar";
-		fetch(requestString, {
-			"method": "GET",
-			"headers": {
-				"x-api-key": this.API_Key,
-				"x-api-host": "spoonacular.com"
-			}
-		})
+		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/similar?apiKey="+this.API_Key+"&number=1";
+		fetch(requestString)
 		.then(response => {
 			return response[0];
 		})
