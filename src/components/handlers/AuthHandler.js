@@ -47,12 +47,15 @@ export function ProvideAuth({ children }) {
   };
 
   const isUserAuthenticated = () => {
-    if (firebase.auth().currentUser){
-      return true;
-    }
-    else{
-      return false;
-    }
+    return new Promise((resolve) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+        unsubscribe();
+        if (user) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+    })});
   };
 
   useEffect(() => {
@@ -64,7 +67,7 @@ export function ProvideAuth({ children }) {
       }
     });
 
-    return unsubscribe
+    unsubscribe();
   }, []);
 
   const value = {
