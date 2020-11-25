@@ -4,6 +4,8 @@ import firebase from 'firebase';
 import 'firebase/firestore';
 
 import { useAuth } from './AuthHandler';
+import { useFirestore } from './FirestoreHandler';
+import searchSimilarRecipes from './SpoonacularHandler';
 
 const AuthContext = createContext();
 
@@ -12,7 +14,23 @@ export function useRecommend() {
 };
 
 export function ProvideRecommend({ children }) {
+    const { getUserID } = useAuth();
+	const [userID, setUserID] = useState(getUserID());
+
+	useEffect(() => {
+		setUserID(getUserID);
+    }, [getUserID]);
     
+    const getRecipeHistory = useFirestore();
+
+    const getRecommends = () => {
+        getRecipeHistory().forEach(recipe => {
+            return searchSimilarRecipes(recipe.recipeID) 
+        });
+    }
+    const value = {
+		getRecommends,
+	}
     return (
         <AuthContext.Provider value={value}>
           {children}

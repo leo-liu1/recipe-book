@@ -150,7 +150,7 @@ export function ProvideFirestore({ children }) {
 			freq_list.set(recipe, doc.data().frequency);
 			recipes.push(recipe);
 		});
-		return recipes.sort((a,b) => (freq_list.get(b) - freq_list.get(a)).slice(0,3);
+		return recipes.sort((a,b) => (freq_list.get(b) - freq_list.get(a)).slice(0,3));
 	}
 
 	const value = {
@@ -161,6 +161,7 @@ export function ProvideFirestore({ children }) {
 		addUserBookmakedRecipes,
 		removeUserBookmakedRecipes,
 		addRecipeHistory,
+		getRecipeHistory,
 	}
 
 	return (
