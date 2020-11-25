@@ -114,7 +114,9 @@ export function ProvideFirestore({ children }) {
 			}
 			else{
 				return Promise.all(snapshot.docs.map((doc) => {
-					var docRef = firestore().collection("history").doc(doc.id);
+					var docRef = firestore()
+							.collection("history")
+							.doc(doc.id);
 					return firebase.firestore().runTransaction(function(transaction) {
 						return transaction.get(docRef).then(function(Doc) {
 							var newfreq = Doc.data().frequency + 1;
@@ -123,7 +125,6 @@ export function ProvideFirestore({ children }) {
 					});
 				}));
 			}
-			
 		} catch (err){
 			console.log('Error removing recipes', err);
 		}
