@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import Ingredient from '../classes/Ingredient.js';
+import Recipe from '../classes/Recipe.js'
 import firebase from 'firebase';
 import 'firebase/firestore';
 
@@ -128,6 +129,17 @@ export function ProvideFirestore({ children }) {
 		} catch (err){
 			console.log('Error removing recipes', err);
 		}
+	}
+	
+	const getRecipeHistory = async () => {
+		const snapshot = await firebase.firestore()
+		    .collection("history")
+			.where("userID", "==", userID)
+			.get();
+		
+		return snapshot.docs.map((doc) => {
+			return new Recipe(doc.data());
+		});
 	}
 
 	const value = {
