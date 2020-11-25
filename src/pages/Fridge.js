@@ -58,15 +58,17 @@ export default class Fridge extends React.Component {
         event.preventDefault();
         const ingredients = this.state.ingredients.slice();
         const newIngredient = new Ingredient(
-            this.state.formIngredientName,
-            null,
-            this.state.formIngredientType,
-            this.state.formIngredientExp.getTime(),
             {
-                amount: this.state.formIngredientAmount,
-                unit: this.state.formIngredientUnit,
-            },
-        );
+                name: this.state.formIngredientName,
+                spoonacularName: null,
+                type: this.state.formIngredientType,
+                expirationDate: this.state.formIngredientExp.getTime(),
+                quantity: {
+                    amount: this.state.formIngredientAmount,
+                    unit: this.state.formIngredientUnit,
+                },
+                imageURL: null,
+            });
 
         if (this.state.formIngredientIndex) {
             ingredients[this.state.formIngredientIndex] = newIngredient;

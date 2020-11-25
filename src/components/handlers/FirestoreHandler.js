@@ -100,7 +100,7 @@ export function ProvideFirestore({ children }) {
 		}
 	}
 
-	const addRecipeHistory = (recipe) => {
+	const addRecipeHistory = async (recipe) => {
 		try{
 			const snapshot = await firebase.firestore()
 						.collection('history')
@@ -114,7 +114,7 @@ export function ProvideFirestore({ children }) {
 			}
 			else{
 				return Promise.all(snapshot.docs.map((doc) => {
-					var docRef = firestore()
+					var docRef = firebase.firestore()
 							.collection("history")
 							.doc(doc.id);
 					return firebase.firestore().runTransaction(function(transaction) {
