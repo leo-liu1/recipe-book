@@ -58,10 +58,15 @@ function Routing() {
   const [isAuthenticated, setAuthenticated] = useState(localStorage.getItem("auth") === "true");
 
   useEffect(() => {
-    isUserAuthenticated().then(auth => {
-      localStorage.setItem("auth", auth);
-      setAuthenticated(auth);
-    });
+    function checkAuth() {
+      isUserAuthenticated().then(auth => {
+        localStorage.setItem("auth", auth);
+        setAuthenticated(auth);
+      });
+    }
+    checkAuth();
+
+    window.addEventListener('focus', checkAuth);
   }, [isUserAuthenticated]);
 
   return (
