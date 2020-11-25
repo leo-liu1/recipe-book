@@ -16,9 +16,12 @@ export default function Login() {
   async function submitHandler(e) {
     e.preventDefault();
 
-    if ( isUserAuthenticated() ) {
+    const auth = await isUserAuthenticated();
+
+    if (auth) {
       return setError("You are already logged in");
     }
+
     try {
       setError("");
       setLoading(true);

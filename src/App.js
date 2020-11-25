@@ -32,15 +32,15 @@ export const firebase = Firebase.initializeApp(firebaseConfig);
 
 // Just for testing fridge, will get rid of later
 const boxes = [
-  new Ingredient('beef', null, 'Meat', Date.now(), {amount: 1, unit: "cow"}, null),
-  new Ingredient('beef2', null, 'Meat', Date.now(), {amount: 2, unit: "lbs"}, null),
-  new Ingredient('beef3', null, 'Meat', Date.now(), {amount: 3, unit: "kg"}, null),
-  new Ingredient('beef4', null, 'Meat', Date.now(), {amount: 4, unit: "poo"}, null),
-  new Ingredient('beef5', null, 'Meat', Date.now(), {amount: 5, unit: "hmm"}, null),
-  new Ingredient('beef6', null, 'Meat', Date.now(), {amount: 6, unit: "moo"}, null),
-  new Ingredient('milk', null, 'Dairy', Date.now(), {amount: -1, unit: "oz"}, null),
-  new Ingredient('corn', null, 'Vegetable', Date.now(), {amount: 1, unit: "lbs"}, null),
-  new Ingredient('rice', null, 'Carbs', Date.now(), {amount: 1, unit: "?"}, null),
+  new Ingredient({  name: 'beef',   type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 1, unit: "cow" } }),
+  new Ingredient({  name: 'beef2',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 2, unit: "lbs" } }),
+  new Ingredient({  name: 'beef3',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 3, unit: "kg"  } }),
+  new Ingredient({  name: 'beef4',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 4, unit: "poo" } }),
+  new Ingredient({  name: 'beef5',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 5, unit: "hmm" } }),
+  new Ingredient({  name: 'beef6',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 6, unit: "moo" } }),
+  new Ingredient({  name: 'milk',   type: 'Dairy',      expirationDate: Date.now(), quantity: {amount: -1, unit: "oz" } }),
+  new Ingredient({  name: 'corn',   type: 'Vegetable',  expirationDate: Date.now(), quantity: {amount: 1, unit: "lbs" } }),
+  new Ingredient({  name: 'rice',   type: 'Carbs',      expirationDate: Date.now(), quantity: {amount: 1, unit: "?"   } }),
 ];
 
 export default function App() {
@@ -55,12 +55,18 @@ export default function App() {
 
 function Routing() {
   const { isUserAuthenticated } = useAuth();
-  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState(localStorage.getItem("auth") === "true");
 
   useEffect(() => {
-    const auth = isUserAuthenticated();
+    function checkAuth() {
+      isUserAuthenticated().then(auth => {
+        localStorage.setItem("auth", auth);
+        setAuthenticated(auth);
+      });
+    }
+    checkAuth();
 
-    setAuthenticated(auth);
+    window.addEventListener('focus', checkAuth);
   }, [isUserAuthenticated]);
 
   return (

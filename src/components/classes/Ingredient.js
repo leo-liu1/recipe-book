@@ -19,13 +19,23 @@
  */
 
 export default class Ingredient {
-    constructor(name, spoonacularName = null, type, expirationDate, quantity, imageURL = null) {
+    /**
+     * @constructor
+     * @param {Object} ingredient
+     * @param {string} ingredient.name
+     * @param {string|null} ingredient.spoonacularName 
+     * @param {string} ingredient.type
+     * @param {Date} ingredient.expirationDate
+     * @param {{amount: number, unit: string}} ingredient.quantity
+     * @param {string|null} ingredient.imageURL
+     */
+    constructor({ name, spoonacularName, type, expirationDate, quantity, imageURL }) {
         this.name = name;
-        this.spoonacularName = spoonacularName;
+        this.spoonacularName = spoonacularName ? spoonacularName : null;
         this.type = type;
         this.expirationDate = expirationDate;
         this.quantity = quantity;
-        this.imageURL = imageURL;
+        this.imageURL = imageURL ? imageURL : null;
     }
 
     getFirestoreData() {
