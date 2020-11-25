@@ -88,14 +88,16 @@
             display: flex;
             flex-direction: row;
             align-items: center;
+            width: calc(100% - 2 * 32.5%);
     
             .input {
-                width: 300px;
                 font-size: 1.125rem;
                 outline: none;
+                border-width: 1px;
                 border-radius: 3px;
                 border-color: transparent;
                 padding: 5px 10px;
+                width: 100%;
             }
     
             .button {

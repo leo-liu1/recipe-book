@@ -4,7 +4,7 @@ import { Redirect, useLocation } from 'react-router-dom';
 const SEARCH_PATH = '/search';
 
 export default function NavbarSearch() {
-    const [searched, setSearched] = useState(false);
+    const [currSearch, setCurrSearch] = useState('');
     const [prevSearch, setPrevSearch] = useState('');
     const inputRef = useRef();
     const location = useLocation();
@@ -17,23 +17,25 @@ export default function NavbarSearch() {
                 setPrevSearch(query);
                 inputRef.current.value = query;
             }
-        } else if (!searched) {
+        } else if (!currSearch) {
             setPrevSearch('');
             inputRef.current.value = '';
         }
         
-        if (searched) {
-            setSearched(false);
+        if (currSearch) {
+            setCurrSearch('');
         }
-    }, [location.pathname, location.search, searched, prevSearch]);
+    }, [location.pathname, location.search, currSearch, prevSearch]);
 
     function handleSearch(event) {
-        // set true if enter or click; enter for input and click for button
-        setSearched(event.key === "Enter" || event.type === "click");
+        // set currSearch to input value if enter or click; enter for input and click for button
+        if (event.key === "Enter" || event.type === "click") {
+            setCurrSearch(inputRef.current.value);
+        }
     }
 
     return (<>
-        {searched && <Redirect
+        {currSearch && <Redirect
             push
             to={{
                 pathname: SEARCH_PATH,
