@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Fab } from 'react-tiny-fab';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient'
@@ -12,30 +12,21 @@ import vegetableImage from '../assets/images/vegetable.jpg'
 import 'react-tiny-fab/dist/styles.css';
 import "react-datepicker/dist/react-datepicker.css";
 
-export default class Fridge extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            ingredients: this.props.ingredients ? this.props.ingredients : [],
-            showForm: false,
-            formIngredientName: "",
-            formIngredientType: "",
-            formIngredientExp: new Date(),
-            formIngredientAmount: "",
-            formIngredientUnit: "",
-            formIngredientIndex: null,
-        };
+export default function Fridge({ ingredients }) {
+    document.title = 'Fridge';
+    const [fridge, setFridge] = useState(ingredients ? ingredients : []);
+    const [formData, setFormData] = useState({
+        showForm: false,
+        formIngredientName: '',
+        formIngredientType: '',
+        formIngredientExp: new Date(),
+        formIngredientAmount: '',
+        formIngredientUnit: '',
+        formIngredientIndex: null,
+    });
 
-        document.title = "Fridge";
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleRemove = this.handleRemove.bind(this);
-        this.editIngredient = this.editIngredient.bind(this);
-    }
-
-    editIngredient(ingredient, index) {
-        this.setState({
+    function editIngredient(ingredient, index) {
+        setFormData({
             showForm: true,
             formIngredientName: ingredient.name,
             formIngredientType: ingredient.type,
@@ -46,38 +37,46 @@ export default class Fridge extends React.Component {
         });
     }
 
-    handleChange(event) {
+    function handleFormChange(event) {
         const value = event.target.value;
         const name = event.target.name;
 
-        this.setState({
-            [name]: value
+        setFormData({
+            ...formData,
+            [name]: value,
         });
     }
 
-    handleSubmit(event) {
+    function handleSubmit(event) {
         event.preventDefault();
-        const ingredients = this.state.ingredients.slice();
-        const newIngredient = new Ingredient(
-            {
-                name: this.state.formIngredientName,
-                spoonacularName: null,
-                type: this.state.formIngredientType,
-                expirationDate: this.state.formIngredientExp.getTime(),
-                quantity: {
-                    amount: this.state.formIngredientAmount,
-                    unit: this.state.formIngredientUnit,
-                },
-                imageURL: null,
-            });
+        clearFormData();
+    }
 
-        if (this.state.formIngredientIndex) {
-            ingredients[this.state.formIngredientIndex] = newIngredient;
+    function handleAdd() {
+        const newIngredient = new Ingredient({
+            name: formData.formIngredientName,
+            spoonacularName: null,
+            type: formData.formIngredientType,
+            expirationDate: formData.formIngredientExp.getTime(),
+            quantity: {
+                amount: formData.formIngredientAmount,
+                unit: formData.formIngredientUnit,
+            },
+            imageURL: null,
+        });
+
+        const tempIngredients = fridge.slice();
+        if (formData.formIngredientIndex) {
+            tempIngredients[formData.formIngredientIndex] = newIngredient;
         } else {
-            ingredients.push(newIngredient);
+            tempIngredients.push(newIngredient);
         }
-        this.setState({
-            ingredients: ingredients,
+
+        setFridge(tempIngredients);
+    }
+
+    function clearFormData() {
+        setFormData({
             showForm: false,
             formIngredientName: "",
             formIngredientType: "",
@@ -88,67 +87,33 @@ export default class Fridge extends React.Component {
         });
     }
 
-    resetState = () => {
-        this.setState({
-            showForm: false,
-            formIngredientName: "",
-            formIngredientType: "",
-            formIngredientExp: new Date(),
-            formIngredientAmount: "",
-            formIngredientUnit: "",
-            formIngredientIndex: null,
-        });
-    }
-
-    handleRemove() {
-        if (this.state.formIngredientIndex) {
-            const ingredients = this.state.ingredients.slice();
-            ingredients.splice(this.state.formIngredientIndex, 1);
-            this.setState({
-                ingredients: ingredients,
-            });
+    function handleRemove() {
+        const tempIngredients = fridge.slice();
+        if (formData.formIngredientIndex) {
+            tempIngredients.splice(formData.formIngredientIndex, 1);
         }
-        this.resetState();
+        setFridge(tempIngredients);
     }
 
-    render() {
-        return (
-            <div className="fridge">
-                {this.state.ingredients.map((ingredient, index) =>
-                    <Box
-                        ingredient={ingredient}
-                        index={index}
-                        fridgeClick={this.editIngredient}
-                    />)}
-                {this.state.showForm ? this.showForm() : null}
-                <Fab
-                    icon={"+"}
-                    alwaysShowTitle={true}
-                    onClick={() => this.setState({showForm: !this.state.showForm})}
-                />
-            </div>
-        );
-    }
-
-    showForm = () => {
+    function showForm() {
         return (
             <div className="form">
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={handleSubmit}>
                     <div>
                         <label className="input-text">Ingredient name</label>
                         <input className="input"
-                               name="formIngredientName"
-                               type="text"
-                               value={this.state.formIngredientName}
-                               onChange={this.handleChange}
-                               required/>
+                                name="formIngredientName"
+                                type="text"
+                                value={formData.formIngredientName}
+                                onChange={handleFormChange}
+                                required/>
                     </div>
                     <div>
                         <label className="input-text">Ingredient type</label>
                         <select className="input"
                                 name="formIngredientType"
-                                value={this.state.formIngredientType}
-                                onChange={this.handleChange}
+                                value={formData.formIngredientType}
+                                onChange={handleFormChange}
                                 required>
                             <option value="Meat">Meat</option>
                             <option value="Dairy">Dairy</option>
@@ -160,58 +125,63 @@ export default class Fridge extends React.Component {
                     <div>
                         <label className="input-text">Ingredient Amount</label>
                         <input className="input"
-                               name="formIngredientAmount"
-                               type="number"
-                               value={this.state.formIngredientAmount}
-                               onChange={this.handleChange}
-                               required/>
+                                name="formIngredientAmount"
+                                type="number"
+                                value={formData.formIngredientAmount}
+                                onChange={handleFormChange}
+                                required/>
                     </div>
                     <div>
                         <label className="input-text">Ingredient Unit</label>
                         <input className="input"
-                               name="formIngredientUnit"
-                               type="text"
-                               value={this.state.formIngredientUnit}
-                               onChange={this.handleChange}
-                               required/>
+                                name="formIngredientUnit"
+                                type="text"
+                                value={formData.formIngredientUnit}
+                                onChange={handleFormChange}
+                                required/>
                     </div>
                     <div>
                         <label className="input-text">Ingredient Expiration Date</label>
                         <DatePicker className="datepicker"
                                     placeholderText="Click to select date"
-                                    minDate={this.state.formIngredientExp}
-                                    selected={this.state.formIngredientExp}
-                                    onChange={date => this.setState({formIngredientExp: date})} />
+                                    minDate={formData.formIngredientExp}
+                                    selected={formData.formIngredientExp}
+                                    onChange={date => setFormData({...formData, formIngredientExp: date})} />
                     </div>
                     <div>
-                        <input type="submit" value="Submit"/>
-                        <button onClick={() => this.handleRemove()}>Remove</button>
-                        <button onClick={() => this.resetState()}>Cancel</button>
+                        <button onClick={() => handleAdd()}>Submit</button>
+                        <button onClick={() => handleRemove()}>Remove</button>
+                        <button onClick={() => clearFormData()}>Cancel</button>
                     </div>
                 </form>
             </div>
         );
     }
+
+    return (
+        <div className="fridge">
+            {fridge.map((ingredient, index) =>
+                <Box
+                    ingredient={ingredient}
+                    index={index}
+                    fridgeClick={editIngredient}
+                />)}
+            {formData.showForm ? showForm() : null}
+            <Fab
+                icon={"+"}
+                alwaysShowTitle={true}
+                onClick={() => setFormData({...formData, showForm: !formData.showForm})}
+            />
+        </div>
+    );
 }
 
-class Box extends React.Component {
-    render() {
-        const expDate = new Date(this.props.ingredient.expirationDate);
-        return (
-            <div className="box" onClick={() => this.props.fridgeClick(this.props.ingredient, this.props.index)}>
-                <img className="image"
-                     src={this.props.ingredient.imageURL
-                         ? this.props.ingredient.imageURL
-                         : this.getDefaultImage(this.props.ingredient.type)}
-                     alt="Ingredient"/>
-                <p className="title">{this.props.ingredient.name} </p>
-                <p className="subtitle">({this.props.ingredient.quantity.amount} {this.props.ingredient.quantity.unit})</p>
-                <p className="subtitle">Expires: {expDate.toLocaleDateString()}</p>
-            </div>
-        );
-    }
+function Box({ ingredient, index, fridgeClick }) {
+    const { expirationDate, imageURL, type, name, quantity } = ingredient;
+    const { amount, unit } = quantity;
+    const expDate = new Date(expirationDate).toLocaleDateString();
 
-    getDefaultImage(type) {
+    function getDefaultImage(type) {
         switch(type) {
             case "Meat":
                 return meatImage;
@@ -227,4 +197,15 @@ class Box extends React.Component {
                 return carbImage;
         }
     }
+
+    return (
+        <div className="box" onClick={() => fridgeClick(ingredient, index)}>
+            <img className="image"
+                src={imageURL ? imageURL : getDefaultImage(type)}
+                alt="Ingredient" />
+            <p className="title">{name} </p>
+            <p className="subtitle">({amount} {unit})</p>
+            <p className="subtitle">Expires: {expDate}</p>
+        </div>
+    );
 }
