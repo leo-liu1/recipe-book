@@ -30,6 +30,7 @@ export default class Fridge extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
         this.editIngredient = this.editIngredient.bind(this);
     }
 
@@ -85,6 +86,29 @@ export default class Fridge extends React.Component {
             formIngredientUnit: "",
             formIngredientIndex: null,
         });
+    }
+
+    resetState = () => {
+        this.setState({
+            showForm: false,
+            formIngredientName: "",
+            formIngredientType: "",
+            formIngredientExp: new Date(),
+            formIngredientAmount: "",
+            formIngredientUnit: "",
+            formIngredientIndex: null,
+        });
+    }
+
+    handleRemove() {
+        if (this.state.formIngredientIndex) {
+            const ingredients = this.state.ingredients.slice();
+            ingredients.splice(this.state.formIngredientIndex, 1);
+            this.setState({
+                ingredients: ingredients,
+            });
+        }
+        this.resetState();
     }
 
     render() {
@@ -161,15 +185,8 @@ export default class Fridge extends React.Component {
                     </div>
                     <div>
                         <input type="submit" value="Submit"/>
-                        <button onClick={() => this.setState({
-                            showForm: false,
-                            formIngredientName: "",
-                            formIngredientType: "",
-                            formIngredientExp: new Date(),
-                            formIngredientAmount: "",
-                            formIngredientUnit: "",
-                            formIngredientIndex: null,
-                        })}>Cancel</button>
+                        <button onClick={() => this.handleRemove()}>Remove</button>
+                        <button onClick={() => this.resetState()}>Cancel</button>
                     </div>
                 </form>
             </div>

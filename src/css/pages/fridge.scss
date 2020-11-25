@@ -61,6 +61,9 @@
         position: absolute;
         margin: 0 auto;
         padding: 10px;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
         border: 1px solid #bbb;
         background-color: #A8D6FE;
         border-radius: 5%;
