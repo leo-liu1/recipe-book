@@ -24,7 +24,7 @@ export function ProvideRecommend({ children }) {
     const getRecipeHistory = useFirestore();
 
     const getRecommends = () => {
-        getRecipeHistory().forEach(recipe => {
+        return getRecipeHistory().forEach(recipe => {
             return searchSimilarRecipes(recipe.recipeID) 
         });
     }
