@@ -15,8 +15,8 @@ import "react-datepicker/dist/react-datepicker.css";
 export default function Fridge({ ingredients }) {
     document.title = 'Fridge';
     const [fridge, setFridge] = useState(ingredients ? ingredients : []);
+    const [showForm, setShowForm] = useState(false);
     const [formData, setFormData] = useState({
-        showForm: false,
         formIngredientName: '',
         formIngredientType: '',
         formIngredientExp: new Date(),
@@ -26,8 +26,8 @@ export default function Fridge({ ingredients }) {
     });
 
     function editIngredient(ingredient, index) {
+        setShowForm(true);
         setFormData({
-            showForm: true,
             formIngredientName: ingredient.name,
             formIngredientType: ingredient.type,
             formIngredientExp: new Date(ingredient.expirationDate),
@@ -49,10 +49,15 @@ export default function Fridge({ ingredients }) {
 
     function handleSubmit(event) {
         event.preventDefault();
+        setShowForm(false);
         clearFormData();
     }
 
     function handleAdd() {
+        if (!formFilled()) {
+            return;
+        }
+
         const newIngredient = new Ingredient({
             name: formData.formIngredientName,
             spoonacularName: null,
@@ -75,9 +80,19 @@ export default function Fridge({ ingredients }) {
         setFridge(tempIngredients);
     }
 
+    function formFilled() {
+        let validate = true;
+        Object.values(formData).forEach(value => {
+            if (!value) {
+                validate = false;
+            }
+        });
+
+        return validate;
+    }
+
     function clearFormData() {
         setFormData({
-            showForm: false,
             formIngredientName: "",
             formIngredientType: "",
             formIngredientExp: new Date(),
@@ -95,7 +110,14 @@ export default function Fridge({ ingredients }) {
         setFridge(tempIngredients);
     }
 
-    function showForm() {
+    function handleCreateIngredient() {
+        if (!showForm || !formFilled()) {
+            setShowForm(!showForm);
+        }
+        clearFormData();
+    }
+
+    function renderForm() {
         return (
             <div className="form">
                 <form onSubmit={handleSubmit}>
@@ -166,11 +188,11 @@ export default function Fridge({ ingredients }) {
                     index={index}
                     fridgeClick={editIngredient}
                 />)}
-            {formData.showForm ? showForm() : null}
+            {showForm ? renderForm() : null}
             <Fab
                 icon={"+"}
                 alwaysShowTitle={true}
-                onClick={() => setFormData({...formData, showForm: !formData.showForm})}
+                onClick={() => handleCreateIngredient()}
             />
         </div>
     );
