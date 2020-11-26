@@ -68,7 +68,7 @@ export default class SpoonacularHandler{
 	}
 }
 
-/*const api="1026ca0dc757467e8c1c9e62bb994d48";
+/*const api=your api key;
 const spoon=new SpoonacularHandler(api);
 spoon.searchRecipeById("716429").then(data => {
 	console.log(data);
