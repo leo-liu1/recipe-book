@@ -13,7 +13,7 @@
     - Holds data from the user of the ingredients they are missing to create this recipe
  */
 export default class Recipe {
-   constructor(name, recipeID, ingredients, imageURL = null, recipeURL, missingIngredients = null) {
+   constructor({ name, recipeID, ingredients, imageURL = null, recipeURL, missingIngredients = null }) {
       this.name = name;
       this.recipeID = recipeID;
       this.ingredients = ingredients;
