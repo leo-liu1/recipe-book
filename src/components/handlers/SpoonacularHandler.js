@@ -6,10 +6,12 @@ export default class SpoonacularHandler{
 	authenticate(){}
 	
 	searchRecipeById(recipeID){
-		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/information?apiKey="+this.API_Key;
-		fetch(requestString)
+		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/information?apiKey="+this.API_Key+"&includeNutrition=false";
+		return fetch( requestString,{
+			method: 'GET'
+		})
 		.then(response => {
-			return response;
+			return response.json();
 		})
 		.catch(err => {
 			console.error(err);
@@ -23,9 +25,11 @@ export default class SpoonacularHandler{
 		let requestString = "https://api.spoonacular.com/recipes/findByIngredients?apiKey="+ this.API_Key+"&ingredients=";
 		requestString = requestString + ingredientsString + "&number=5";
 		
-		fetch(requestString)
+		return fetch(requestString,{
+			method: 'GET'
+		})
 		.then(response => {
-			return response;
+			return response.json();
 		})
 		.catch(err => {
 			console.error(err);
@@ -37,9 +41,11 @@ export default class SpoonacularHandler{
 		let requestString = "https://api.spoonacular.com/food/ingredients/search?apiKey="+this.API_Key+"&query=";
 		requestString = requestString + name + "&number=1";
 		
-		fetch(requestString)
+		return fetch(requestString,{
+			method: 'GET'
+		})
 		.then(response => {
-			return response[0].id;
+			return response.json();
 		})
 		.catch(err => {
 			console.error(err);
@@ -49,9 +55,11 @@ export default class SpoonacularHandler{
 	
 	searchSimilarRecipes(recipeID){
 		let requestString = "https://api.spoonacular.com/recipes/" + recipeID + "/similar?apiKey="+this.API_Key+"&number=1";
-		fetch(requestString)
+		return fetch(requestString,{
+			method: 'GET'
+		})
 		.then(response => {
-			return response[0];
+			return response.json();
 		})
 		.catch(err => {
 			console.error(err);
@@ -59,3 +67,17 @@ export default class SpoonacularHandler{
 		});
 	}
 }
+
+/*const api="1026ca0dc757467e8c1c9e62bb994d48";
+const spoon=new SpoonacularHandler(api);
+spoon.searchRecipeById("716429").then(data => {
+	console.log(data);
+})
+
+spoon.searchSimilarRecipes("716429").then(data => {
+	console.log(data);
+})
+
+spoon.searchIngredient("apple").then(data => {
+	console.log(data);
+})*/

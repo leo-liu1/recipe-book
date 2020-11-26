@@ -23,7 +23,7 @@ export function ProvideRecommend({ children }) {
 		setUserID(getUserID);
     }, [getUserID]);
     
-    const getRecipeHistory = useFirestore();
+    const {getRecipeHistory} = useFirestore();
 
     const getRecommends = () => {
         return getRecipeHistory().forEach(recipe => {
