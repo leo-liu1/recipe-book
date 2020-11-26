@@ -92,9 +92,16 @@ export default class SpoonacularHandler{
 		return fetch(requestString,{
 			method: 'GET'
 		})
-		.then(response => {
-			return response.json();
-		})
+		.then(response =>
+			response.json()).then(data => {
+				const ingredient_json_list = data;
+				var ingredient_object_list = [];
+				ingredient_json_list.forEach(ingredient_json => {	
+					ingredient_object = this.searchIngredientByIdHelper(ingredient_json.id, null, null);
+					ingredient_object_list.push(ingredient_object);
+				});
+				return ingredient_object_list;
+			})
 		.catch(err => {
 			console.error(err);
 			return {};
@@ -125,9 +132,16 @@ export default class SpoonacularHandler{
 		return fetch(requestString,{
 			method: 'GET'
 		})
-		.then(response => {
-			return response.json();
-		})
+		.then(response =>
+			response.json()).then(data => {
+				const recipe_json_list = data;
+				var recipe_object_list = [];
+				recipe_json_list.forEach(recipe_json => {	
+					recipe_object = this.searchRecipeById(recipe_json.id);
+					recipe_object_list.push(recipe_object);
+				});
+				return recipe_object_list;
+			})
 		.catch(err => {
 			console.error(err);
 			return {};
