@@ -135,9 +135,8 @@ export default class SpoonacularHandler{
 	}
 }
 
-
-//const api="27d1c739c67b4b03a30d2ebed016d7bd";
-const api="66c65bf37d6544ee899aabac605ff797";
+/*
+const api = api_key;
 const spoon=new SpoonacularHandler(api);
 spoon.searchRecipeById("716429").then(data => {
 	//console.log(data);
@@ -150,3 +149,4 @@ spoon.searchSimilarRecipes("716429").then(data => {
 spoon.searchIngredient("apple").then(data => {
 	//console.log(data);
 })
+*/
