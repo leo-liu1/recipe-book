@@ -8,10 +8,18 @@
  */
 
 export default class Nutrition {
-    constructor(nutritionScore, nutritionInfo, unhealthyIngredients = null, healthyIngredients = null) {
+    /**
+     * @constructor
+     * @param {Object} nutrition
+     * @param {Number} nutrition.nutritionScore
+     * @param {Object} nutrition.nutritionInfo
+     * @param {string[]} nutrition.unhealthyIngredients
+     * @param {string[]} nutrition.healthyIngredients
+     */
+    constructor(nutritionScore, nutritionInfo, unhealthyIngredients, healthyIngredients) {
         this.nutritionScore = nutritionScore;
         this.nutritionInfo = nutritionInfo;
-        this.unhealthyIngredients = unhealthyIngredients;
-        this.healthyIngredients = healthyIngredients;
+        this.unhealthyIngredients = unhealthyIngredients ? unhealthyIngredients : null;
+        this.healthyIngredients = healthyIngredients ? healthyIngredients : null;
     }
 }
