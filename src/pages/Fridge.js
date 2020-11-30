@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Fab } from 'react-tiny-fab';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient'
 
@@ -9,16 +8,26 @@ import carbImage from '../assets/images/carb.jpg'
 import fruitImage from '../assets/images/fruit.jpg'
 import vegetableImage from '../assets/images/vegetable.jpg'
 
-import 'react-tiny-fab/dist/styles.css';
 import "react-datepicker/dist/react-datepicker.css";
+
+const ITEM_ROW_LENGTH = 4;
 
 export default function Fridge({ ingredients }) {
     document.title = 'Fridge';
+    const ingredientTypes = [
+        'Meat',
+        'Dairy',
+        'Vegetable',
+        'Fruit',
+        'Carbs',
+    ];
+
     const [fridge, setFridge] = useState(ingredients ? ingredients : []);
     const [showForm, setShowForm] = useState(false);
+    const [newIngredient, setNewIngredient] = useState(false);
     const [formData, setFormData] = useState({
         formIngredientName: '',
-        formIngredientType: '',
+        formIngredientType: ingredientTypes[0],
         formIngredientExp: new Date(),
         formIngredientAmount: '',
         formIngredientUnit: '',
@@ -27,6 +36,7 @@ export default function Fridge({ ingredients }) {
 
     function editIngredient(ingredient, index) {
         setShowForm(true);
+        setNewIngredient(false);
         setFormData({
             formIngredientName: ingredient.name,
             formIngredientType: ingredient.type,
@@ -71,7 +81,7 @@ export default function Fridge({ ingredients }) {
         });
 
         const tempIngredients = fridge.slice();
-        if (formData.formIngredientIndex) {
+        if (typeof formData.formIngredientIndex === 'number') {
             tempIngredients[formData.formIngredientIndex] = newIngredient;
         } else {
             tempIngredients.push(newIngredient);
@@ -83,7 +93,7 @@ export default function Fridge({ ingredients }) {
     function formFilled() {
         let validate = true;
         Object.values(formData).forEach(value => {
-            if (!value) {
+            if (value === '') {
                 validate = false;
             }
         });
@@ -94,7 +104,7 @@ export default function Fridge({ ingredients }) {
     function clearFormData() {
         setFormData({
             formIngredientName: "",
-            formIngredientType: "",
+            formIngredientType: ingredientTypes[0],
             formIngredientExp: new Date(),
             formIngredientAmount: "",
             formIngredientUnit: "",
@@ -104,96 +114,114 @@ export default function Fridge({ ingredients }) {
 
     function handleRemove() {
         const tempIngredients = fridge.slice();
-        if (formData.formIngredientIndex) {
+        if (typeof formData.formIngredientIndex === 'number') {
             tempIngredients.splice(formData.formIngredientIndex, 1);
         }
         setFridge(tempIngredients);
+    }
+
+    function handleCancel() {
+        clearFormData();
+        setShowForm(false);
     }
 
     function handleCreateIngredient() {
         if (!showForm || !formFilled()) {
             setShowForm(!showForm);
         }
+        setNewIngredient(true);
         clearFormData();
     }
 
     function renderForm() {
         return (
-            <div className="form">
-                <form onSubmit={handleSubmit}>
-                    <div>
-                        <label className="input-text">Ingredient name</label>
-                        <input className="input"
-                                name="formIngredientName"
-                                type="text"
-                                value={formData.formIngredientName}
-                                onChange={handleFormChange}
-                                required/>
-                    </div>
-                    <div>
-                        <label className="input-text">Ingredient type</label>
-                        <select className="input"
+            <div className="form-dialog">
+                <div className="form-dialog-container">
+                    <div className="form-title">{newIngredient ? "Add an ingredient" : `Edit ${formData.formIngredientName}`}</div>
+                    <form className="form" onSubmit={handleSubmit}>
+                        <div className="input">
+                            <label>Name</label>
+                            <input
+                                    name="formIngredientName"
+                                    type="text"
+                                    value={formData.formIngredientName}
+                                    onChange={handleFormChange}
+                                    required/>
+                        </div>
+                        <div className="input">
+                            <label>Type</label>
+                            <select
                                 name="formIngredientType"
                                 value={formData.formIngredientType}
                                 onChange={handleFormChange}
                                 required>
-                            <option value="Meat">Meat</option>
-                            <option value="Dairy">Dairy</option>
-                            <option value="Vegetable">Vegetable</option>
-                            <option value="Fruit">Fruit</option>
-                            <option value="Carbs">Carbs</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="input-text">Ingredient Amount</label>
-                        <input className="input"
+                                {ingredientTypes.map(type => {
+                                    return (<option value={type}>{type}</option>);
+                                })}
+                            </select>
+                        </div>
+                        <div className="input">
+                            <label>Amount</label>
+                            <input
                                 name="formIngredientAmount"
                                 type="number"
                                 value={formData.formIngredientAmount}
                                 onChange={handleFormChange}
                                 required/>
-                    </div>
-                    <div>
-                        <label className="input-text">Ingredient Unit</label>
-                        <input className="input"
+                        </div>
+                        <div className="input">
+                            <label>Unit</label>
+                            <input
                                 name="formIngredientUnit"
                                 type="text"
                                 value={formData.formIngredientUnit}
                                 onChange={handleFormChange}
                                 required/>
-                    </div>
-                    <div>
-                        <label className="input-text">Ingredient Expiration Date</label>
-                        <DatePicker className="datepicker"
-                                    placeholderText="Click to select date"
-                                    minDate={formData.formIngredientExp}
-                                    selected={formData.formIngredientExp}
-                                    onChange={date => setFormData({...formData, formIngredientExp: date})} />
-                    </div>
-                    <div>
-                        <button onClick={() => handleAdd()}>Submit</button>
-                        <button onClick={() => handleRemove()}>Remove</button>
-                        <button onClick={() => clearFormData()}>Cancel</button>
-                    </div>
-                </form>
+                        </div>
+                        <div className="input">
+                            <label>Expiration Date</label>
+                            <DatePicker className="datepicker"
+                                        placeholderText="Click to select date"
+                                        minDate={formData.formIngredientExp}
+                                        selected={formData.formIngredientExp}
+                                        onChange={date => setFormData({...formData, formIngredientExp: date})} />
+                        </div>
+                        <div className="button-container">
+                            <button className="button add" onClick={() => handleAdd()}>{newIngredient ? "Add" : "Edit"}</button>
+                            {!newIngredient && <button className="button remove" onClick={() => handleRemove()}>Remove</button>}
+                            <button className="button cancel" onClick={() => handleCancel()}>Cancel</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         );
     }
 
+    // create empty elements so that the last ingredient added to the fridge is left aligned with the other ingredients in a grid
+    let emptyElements = [];
+    if (fridge.length % ITEM_ROW_LENGTH !== 0) {
+        for (let i = 0; i < ITEM_ROW_LENGTH - (fridge.length % ITEM_ROW_LENGTH); i++) {
+            emptyElements.push(<div className="empty"/>);
+        }
+    }
+
     return (
         <div className="fridge">
-            {fridge.map((ingredient, index) =>
-                <Box
-                    ingredient={ingredient}
-                    index={index}
-                    fridgeClick={editIngredient}
-                />)}
+            <div className="fridge-container">
+                {fridge.map((ingredient, index) =>
+                    <Box
+                        ingredient={ingredient}
+                        index={index}
+                        fridgeClick={editIngredient}
+                    />)}
+                {emptyElements}
+            </div>
+            <div className="edit-container">
+                <button className="button edit-fridge" onClick={() => handleCreateIngredient()}>Edit Fridge</button>
+                <button className="button add-ingredient" onClick={() => handleCreateIngredient()}>Add Ingredient</button>
+                <button className="button add-seasoning" onClick={() => handleCreateIngredient()}>Add Seasoning</button>
+            </div>
             {showForm ? renderForm() : null}
-            <Fab
-                icon={"+"}
-                alwaysShowTitle={true}
-                onClick={() => handleCreateIngredient()}
-            />
         </div>
     );
 }
@@ -225,9 +253,11 @@ function Box({ ingredient, index, fridgeClick }) {
             <img className="image"
                 src={imageURL ? imageURL : getDefaultImage(type)}
                 alt="Ingredient" />
-            <p className="title">{name} </p>
-            <p className="subtitle">({amount} {unit})</p>
-            <p className="subtitle">Expires: {expDate}</p>
+            <div className="ingredient">
+                <div className="name">{name} </div>
+                <div className="quantity">({amount} {unit})</div>
+            </div>
+            <div className="expiration-date">Expires: {expDate}</div>
         </div>
     );
 }

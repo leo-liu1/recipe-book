@@ -13,7 +13,7 @@ let sampleIngredient = new Ingredient({
 export default function Bookmarks() {
     document.title = "Bookmarks";
 
-    const { addUserIngredient, removeUserIngredient, getAllUserIngredients } = useFirestore();
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
 
     return (<div>
         <button onClick={() => {console.log(addUserIngredient(sampleIngredient))}}>
@@ -24,6 +24,9 @@ export default function Bookmarks() {
         </button>
         <button onClick={() => {console.log(getAllUserIngredients())}}>
             Get all Ingredients
+        </button>
+        <button onClick={() => {console.log(getRecipeHistory())}}>
+            Get Recipe History
         </button>
     </div>);
 }

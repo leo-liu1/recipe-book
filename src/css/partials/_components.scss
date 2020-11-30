@@ -43,25 +43,7 @@
             }
 
             .input {
-                display: flex;
-                flex-direction: column;
-                margin-bottom: 1rem;
-
-                label {
-                    opacity: 0.75;
-                    margin-bottom: 5px;
-                    font-size: 0.9rem;
-                }
-
-                input {
-                    height: 32px;
-                    padding-left: 8px;
-                    border-width: 2px;
-                    border-style: solid;
-                    border-radius: 3px;
-                    border-color: transparent;
-                    outline: none;
-                }
+                @extend %form-input;
             }
 
             .error {
@@ -102,6 +84,28 @@
                 }
             }
         }
+    }
+}
+
+%form-input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+
+    label {
+        opacity: 0.75;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+    }
+
+    input, select {
+        height: 32px;
+        padding-left: 8px;
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 3px;
+        border-color: transparent;
+        outline: none;
     }
 }
 
