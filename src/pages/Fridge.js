@@ -216,7 +216,11 @@ export default function Fridge({ ingredients }) {
                     />)}
                 {emptyElements}
             </div>
-            <button className="create-button" onClick={() => handleCreateIngredient()}>+</button>
+            <div className="edit-container">
+                <button className="button edit-fridge" onClick={() => handleCreateIngredient()}>Edit Fridge</button>
+                <button className="button add-ingredient" onClick={() => handleCreateIngredient()}>Add Ingredient</button>
+                <button className="button add-seasoning" onClick={() => handleCreateIngredient()}>Add Seasoning</button>
+            </div>
             {showForm ? renderForm() : null}
         </div>
     );
