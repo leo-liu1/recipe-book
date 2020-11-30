@@ -16,15 +16,16 @@ export default class SpoonacularHandler{
 		.then(response => 
 			response.json()).then(data => {
 				const recipe_json = data;
-				var ingredient_object_list = [];
+				/*var ingredient_object_list = [];
 				const ingredient_json_list = recipe_json.extendedIngredients;
 				ingredient_json_list.forEach(ingredient_json => {
 					const ingredient_object = this.searchIngredientByIdHelper(ingredient_json.id, ingredient_json.measures.us.amount, ingredient_json.measures.us.unitLong);
 					ingredient_object_list.push(ingredient_object);
 				});
 				const recipe_object = new Recipe({ name: recipe_json.title, recipeID: recipe_json.id, ingredients: ingredient_object_list, imageURL: recipe_json.image, recipeURL: recipe_json.sourceUrl, missingIngredients: null });
-				console.log("Recipe Object", recipe_object);
-				return recipe_object;
+				//console.log("Recipe Object", recipe_object);
+				return recipe_object;*/
+				return data.json();
 			})
 		.catch(err => {
 			console.error(err);
@@ -97,7 +98,7 @@ export default class SpoonacularHandler{
 				const ingredient_json_list = data;
 				var ingredient_object_list = [];
 				ingredient_json_list.forEach(ingredient_json => {	
-					ingredient_object = this.searchIngredientByIdHelper(ingredient_json.id, null, null);
+					var ingredient_object = this.searchIngredientByIdHelper(ingredient_json.id, null, null);
 					ingredient_object_list.push(ingredient_object);
 				});
 				return ingredient_object_list;
@@ -118,7 +119,7 @@ export default class SpoonacularHandler{
 			response.json()).then(data => {
 				const ingredient_json = data;
 				const ingredient_object = new Ingredient({ name: ingredient_json.originalName, spoonacularName: ingredient_json.name, type: ingredient_json.aisle, expirationDate: null, quantity: {amount: ingredientAmount, unit: units }, imageURL: ingredient_json.image});
-				console.log("Ingredient Object", ingredient_object);
+				//console.log("Ingredient Object", ingredient_object);
 				return ingredient_object;
 			})
 		.catch(err => {
@@ -137,7 +138,7 @@ export default class SpoonacularHandler{
 				const recipe_json_list = data;
 				var recipe_object_list = [];
 				recipe_json_list.forEach(recipe_json => {	
-					recipe_object = this.searchRecipeById(recipe_json.id);
+					var recipe_object = this.searchRecipeById(recipe_json.id);
 					recipe_object_list.push(recipe_object);
 				});
 				return recipe_object_list;
@@ -150,17 +151,13 @@ export default class SpoonacularHandler{
 }
 
 /*
-const api = api_key;
+const api = "1026ca0dc757467e8c1c9e62bb994d48";
 const spoon=new SpoonacularHandler(api);
-spoon.searchRecipeById("716429").then(data => {
-	//console.log(data);
-})
-
+console.log(spoon.searchRecipeById("716429"));
 spoon.searchSimilarRecipes("716429").then(data => {
-	//console.log(data);
+	console.log(data);
 })
-
 spoon.searchIngredient("apple").then(data => {
 	//console.log(data);
-})
-*/
+})*/
+
