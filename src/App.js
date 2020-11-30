@@ -37,7 +37,7 @@ const boxes = [
   new Ingredient({  name: 'beef3',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 3, unit: "kg"  } }),
   new Ingredient({  name: 'beef4',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 4, unit: "poo" } }),
   new Ingredient({  name: 'beef5',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 5, unit: "hmm" } }),
-  new Ingredient({  name: 'beef6',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 6, unit: "moo" } }),
+  new Ingredient({  name: 'salt',   type: 'Seasoning',   quantity: {amount: 1, unit: "container" } }),
   new Ingredient({  name: 'milk',   type: 'Dairy',      expirationDate: Date.now(), quantity: {amount: -1, unit: "oz" } }),
   new Ingredient({  name: 'corn',   type: 'Vegetable',  expirationDate: Date.now(), quantity: {amount: 1, unit: "lbs" } }),
   new Ingredient({  name: 'rice',   type: 'Carbs',      expirationDate: Date.now(), quantity: {amount: 1, unit: "?"   } }),

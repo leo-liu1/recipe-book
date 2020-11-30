@@ -7,6 +7,7 @@ import dairyImage from '../assets/images/dairy.jpg'
 import carbImage from '../assets/images/carb.jpg'
 import fruitImage from '../assets/images/fruit.jpg'
 import vegetableImage from '../assets/images/vegetable.jpg'
+import seasoningImage from '../assets/images/seasoning.jpg'
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -25,6 +26,7 @@ export default function Fridge({ ingredients }) {
     const [fridge, setFridge] = useState(ingredients ? ingredients : []);
     const [showForm, setShowForm] = useState(false);
     const [newIngredient, setNewIngredient] = useState(false);
+    const [isSeasoning, setIsSeasoning] = useState(false);
     const [formData, setFormData] = useState({
         formIngredientName: '',
         formIngredientType: ingredientTypes[0],
@@ -37,6 +39,7 @@ export default function Fridge({ ingredients }) {
     function editIngredient(ingredient, index) {
         setShowForm(true);
         setNewIngredient(false);
+        ingredient.expirationDate ? setIsSeasoning(false) : setIsSeasoning(true);
         setFormData({
             formIngredientName: ingredient.name,
             formIngredientType: ingredient.type,
@@ -71,8 +74,8 @@ export default function Fridge({ ingredients }) {
         const newIngredient = new Ingredient({
             name: formData.formIngredientName,
             spoonacularName: null,
-            type: formData.formIngredientType,
-            expirationDate: formData.formIngredientExp.getTime(),
+            type: isSeasoning ? "Seasoning" : formData.formIngredientType,
+            expirationDate: isSeasoning ? undefined : formData.formIngredientExp.getTime(),
             quantity: {
                 amount: formData.formIngredientAmount,
                 unit: formData.formIngredientUnit,
@@ -125,11 +128,12 @@ export default function Fridge({ ingredients }) {
         setShowForm(false);
     }
 
-    function handleCreateIngredient() {
+    function handleCreateIngredient(type) {
         if (!showForm || !formFilled()) {
             setShowForm(!showForm);
         }
         setNewIngredient(true);
+        type === "Ingredient" ? setIsSeasoning(false) : setIsSeasoning(true);
         clearFormData();
     }
 
@@ -142,13 +146,13 @@ export default function Fridge({ ingredients }) {
                         <div className="input">
                             <label>Name</label>
                             <input
-                                    name="formIngredientName"
-                                    type="text"
-                                    value={formData.formIngredientName}
-                                    onChange={handleFormChange}
-                                    required/>
+                                name="formIngredientName"
+                                type="text"
+                                value={formData.formIngredientName}
+                                onChange={handleFormChange}
+                                required/>
                         </div>
-                        <div className="input">
+                        {!isSeasoning && <div className="input">
                             <label>Type</label>
                             <select
                                 name="formIngredientType"
@@ -159,7 +163,7 @@ export default function Fridge({ ingredients }) {
                                     return (<option value={type}>{type}</option>);
                                 })}
                             </select>
-                        </div>
+                        </div>}
                         <div className="input">
                             <label>Amount</label>
                             <input
@@ -178,14 +182,14 @@ export default function Fridge({ ingredients }) {
                                 onChange={handleFormChange}
                                 required/>
                         </div>
-                        <div className="input">
+                        {!isSeasoning && <div className="input">
                             <label>Expiration Date</label>
                             <DatePicker className="datepicker"
                                         placeholderText="Click to select date"
                                         minDate={formData.formIngredientExp}
                                         selected={formData.formIngredientExp}
                                         onChange={date => setFormData({...formData, formIngredientExp: date})} />
-                        </div>
+                        </div>}
                         <div className="button-container">
                             <button className="button add" onClick={() => handleAdd()}>{newIngredient ? "Add" : "Edit"}</button>
                             {!newIngredient && <button className="button remove" onClick={() => handleRemove()}>Remove</button>}
@@ -217,9 +221,8 @@ export default function Fridge({ ingredients }) {
                 {emptyElements}
             </div>
             <div className="edit-container">
-                <button className="button edit-fridge" onClick={() => handleCreateIngredient()}>Edit Fridge</button>
-                <button className="button add-ingredient" onClick={() => handleCreateIngredient()}>Add Ingredient</button>
-                <button className="button add-seasoning" onClick={() => handleCreateIngredient()}>Add Seasoning</button>
+                <button className="button add-ingredient" onClick={() => handleCreateIngredient("Ingredient")}>Add Ingredient</button>
+                <button className="button add-seasoning" onClick={() => handleCreateIngredient("Seasoning")}>Add Seasoning</button>
             </div>
             {showForm ? renderForm() : null}
         </div>
@@ -243,6 +246,8 @@ function Box({ ingredient, index, fridgeClick }) {
                 return fruitImage;
             case "Vegetable":
                 return vegetableImage;
+            case "Seasoning":
+                return seasoningImage;
             default:
                 return carbImage;
         }
@@ -257,7 +262,10 @@ function Box({ ingredient, index, fridgeClick }) {
                 <div className="name">{name} </div>
                 <div className="quantity">({amount} {unit})</div>
             </div>
-            <div className="expiration-date">Expires: {expDate}</div>
+            {expirationDate
+                ? <div className="expiration-date">Expires: {expDate}</div>
+                : <div className="expiration-date">&nbsp;&nbsp;</div>
+            }
         </div>
     );
 }
