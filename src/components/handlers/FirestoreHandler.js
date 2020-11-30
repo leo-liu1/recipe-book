@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import Ingredient from '../classes/Ingredient.js';
-import Recipe from '../classes/Recipe.js'
+import Recipe from '../classes/Recipe.js';
 import firebase from 'firebase';
 import 'firebase/firestore';
 
@@ -102,32 +102,30 @@ export function ProvideFirestore({ children }) {
 	}
 
 	const addRecipeHistory = async (recipe) => {
-		try{
+		try {
 			const snapshot = await firebase.firestore()
-						.collection('history')
-						.where("userID", "==", userID)
-						.where("recipeID", "==", recipe.getRecipeID())
-						.get();
-			if(snapshot.empty){
+				.collection('history')
+				.where("userID", "==", userID)
+				.where("recipeID", "==", recipe.getRecipeID())
+				.get();
+			if (!snapshot.exists) {
 				return firebase.firestore()
-						.collection('history')
-						.add({ ...recipe.getFirestoreData(), userID: userID, frequency: 1});
-			}
-			else{
+					.collection('history')
+					.add({ ...recipe.getFirestoreData(), userID: userID, frequency: 1 });
+			} else {
 				return Promise.all(snapshot.docs.map((doc) => {
-					var docRef = firebase.firestore()
-							.collection("history")
-							.doc(doc.id);
-					return firebase.firestore().runTransaction(function(transaction) {
-						return transaction.get(docRef).then(function(Doc) {
-							var newfreq = Doc.data().frequency + 1;
-							transaction.update(docRef, { frequency: newfreq });
-						});
-					});
+					let docRef = firebase.firestore()
+						.collection("history")
+						.doc(doc.id);
+					return firebase.firestore().runTransaction((transaction) =>
+						transaction.get(docRef).then(function (Doc) {
+							let newFreq = Doc.data().frequency + 1;
+							transaction.update(docRef, { frequency: newFreq });
+					}));
 				}));
 			}
 		} catch (err){
-			console.log('Error removing recipes', err);
+			console.log('Error adding recipe history', err);
 		}
 	}
 	
@@ -135,22 +133,13 @@ export function ProvideFirestore({ children }) {
 		const snapshot = await firebase.firestore()
 		    .collection("history")
 			.where("userID", "==", userID)
+			.orderBy("frequency", "desc")
+			.limit(3)
 			.get();
 		
-		var freq_list = new Map();
-		var recipes = [];
-		snapshot.docs.map((doc) => {
-			var name = doc.data().name;
-            var recipeID = doc.data().recipeID;
-            var ingredients = doc.data().ingredients;
-            var imageURL = doc.data().imageURL;
-            var recipeURL = doc.data().recipeURL;
-            var missingIngredients = doc.data().missingIngredients;
-			var recipe = new Recipe(name, recipeID, ingredients, imageURL, recipeURL, missingIngredients);
-			freq_list.set(recipe, doc.data().frequency);
-			recipes.push(recipe);
+		return snapshot.docs.map((doc) => {
+			return new Recipe(doc.data());
 		});
-		return recipes.sort((a,b) => freq_list.get(b) - freq_list.get(a)).slice(0,3);
 	}
 
 	const value = {
