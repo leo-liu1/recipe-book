@@ -1,106 +1,142 @@
+@import '../partials/variables';
+@import '../partials/components';
+
 .fridge {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-
     justify-content: center;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    margin-top: 25px;
 
-    .box {
-        justify-content: center;
-        align-items: center;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    .fridge-container {
+        width: $container-width;
+        margin-top: 20px;
+
         display: flex;
-        flex-direction: column;
+        flex-flow: row wrap;
+        justify-content: space-between;
 
-        margin: 10px;
-        padding: 10px;
-        border: 1px solid #bbb;
-        background-color: #eee;
-        color: #333;
-        width: 140px;
-        height: 170px;
-        box-shadow: 0 1px 1px rgba(0,0,0,0.12),
-            0 2px 2px rgba(0,0,0,0.12),
-            0 4px 4px rgba(0,0,0,0.12),
-            0 8px 8px rgba(0,0,0,0.12),
-            0 16px 16px rgba(0,0,0,0.12);
-
-        .image {
-            height: 100px;
-            width: 100px;
-            border-radius: 5%;
-            border: 2px solid #bbb;
+        .empty {
+            height: 0px;
+            width: 250px;
         }
 
-        .title {
-            font-size: medium;
-            font-family: $font;
-            margin: 2px;
-            padding-top: 2px;
-            padding-bottom: 0;
-        }
-        
-        
-        .subtitle {
-            font-size: small;
-            font-family: $font;
-            margin: 2px;
-            padding-bottom: 0;
+        .box {
+            display: flex;
+            flex: 0 0 21%;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 20px;
+
+            .image {
+                height: 250px;
+                width: 250px;
+            }
+
+            .ingredient {
+                display: flex;
+                flex-direction: row;
+                font-family: $font;
+                align-items: baseline;
+                margin-top: 5px;
+
+                .name {
+                    font-size: 1rem;
+                    margin-right: 5px;
+                    display: block;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    max-width: 160px;
+                }
+
+                .quantity {
+                    font-size: 0.8rem;
+                    display: block;
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                    max-width: 80px;
+                }
+            }
+            
+            .expiration-date {
+                font-family: $font;
+                font-size: 0.8rem;
+                margin-top: 2px;
+            }
         }
     }
 
-    .form {
+    .form-dialog {
         display: flex;
         justify-content: center;
-        position: absolute;
-        margin: 0 auto;
-        padding: 10px;
+        position: fixed;
         top: 50%;
         -ms-transform: translateY(-50%);
         transform: translateY(-50%);
-        border: 1px solid #bbb;
-        background-color: #A8D6FE;
-        border-radius: 5%;
-        box-shadow: 0 1px 1px rgba(0,0,0,0.12),
-            0 2px 2px rgba(0,0,0,0.12),
-            0 4px 4px rgba(0,0,0,0.12),
-            0 8px 8px rgba(0,0,0,0.12),
-            0 16px 16px rgba(0,0,0,0.12);
-    
-        .input {
+        background-color: white;
+        border-radius: 10px;
+        width: 24rem;
+
+        .form-title {
             display: block;
-            margin: 2px;
-            padding-top: 2px;
-            padding-bottom: 2px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            max-width: 20rem;
+            align-self: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            
+            white-space: nowrap;
         }
-    
-        .input-text {
-            margin: 2px;
-            padding-top: 2px;
-            padding-bottom: 2px;
-        }
-    
-        .create-button {
-            margin: 2px;
-            padding-top: 2px;
-            padding-bottom: 2px;
+
+        .form-dialog-container {
+            width: 100%;
+            padding: 2rem 0;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            background-color: $off-white;
+            font-family: $font;
+
+            .form {
+                margin: 0 2rem;
+                .input {
+                    @extend %form-input;
+                }
+
+                .button-container {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .button {
+                        border-radius: 5px;
+                        min-width: 75px;
+                        height: 32px;
+                        @extend %button;
+                    }
+                }
+            }
         }
     }
-}
 
-.react-datepicker__input-container {
-    display: inherit;
-}
+    .create-button {
+        @extend %button;
+        border-radius: 9999px;
 
-.react-datepicker-wrapper {
-    display: block;
-    margin: 2px;
-    padding-top: 2px;
-    padding-bottom: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        font-size: 32px;
+        
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+
+        height: 60px;
+        width: 60px;
+    }
 }
