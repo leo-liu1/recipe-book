@@ -271,7 +271,7 @@ export default function Fridge({ ingredients }) {
     );
 }
 
-function Box({ ingredient, index, fridgeClick }) {
+export function Box({ ingredient, index, fridgeClick }) {
     const isSeasoning = ingredient.getClassType() === "Seasoning";
     const expDate = isSeasoning ? null : new Date(ingredient.expirationDate).toLocaleDateString();
 
