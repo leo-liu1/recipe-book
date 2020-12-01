@@ -13,7 +13,6 @@ import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import Ingredient from './components/classes/Ingredient'
 
 import './css/App.scss';
 

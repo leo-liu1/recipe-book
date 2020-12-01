@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFirestore } from '../components/handlers/FirestoreHandler';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient';
@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const ITEM_ROW_LENGTH = 4;
 
-export default function Fridge() {
+export default function Fridge({ ingredients }) {
     document.title = 'Fridge';
     const ingredientTypes = [
         'Meat',
@@ -25,8 +25,14 @@ export default function Fridge() {
         'Carbs',
     ];
 
-    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
-    const [fridge, setFridge] = useState([]);
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, updateUserIngredient } = useFirestore();
+    const [fridge, setFridge] = useState(ingredients ? ingredients : []);
+    useEffect(() => {
+        getAllUserIngredients()
+            .then((ingredients) => setFridge(ingredients))
+            .catch((err) => console.log(err));
+    }, []);
+
     const [showForm, setShowForm] = useState(false);
     const [newIngredient, setNewIngredient] = useState(false);
     const [isSeasoning, setIsSeasoning] = useState(false);
@@ -37,6 +43,7 @@ export default function Fridge() {
         formIngredientAmount: '',
         formIngredientUnit: '',
         formIngredientIndex: null,
+        formIngredientID: null,
     });
 
     function editIngredient(ingredient, index) {
@@ -50,6 +57,7 @@ export default function Fridge() {
             formIngredientAmount: ingredient.quantity.amount,
             formIngredientUnit: ingredient.quantity.unit,
             formIngredientIndex: index,
+            formIngredientID: ingredient.firestoreID,
         });
     }
 
@@ -75,6 +83,7 @@ export default function Fridge() {
                 name: formData.formIngredientName,
                 spoonacularName: null,
                 imageURL: null,
+                firestoreID: formData.formIngredientID,
             })
             : new Ingredient({
                 name: formData.formIngredientName,
@@ -86,16 +95,21 @@ export default function Fridge() {
                     unit: formData.formIngredientUnit,
                 },
                 imageURL: null,
+                firestoreID: formData.formIngredientID,
             });
 
-        const tempElements = fridge.slice();
         if (typeof formData.formIngredientIndex === 'number') {
-            tempElements[formData.formIngredientIndex] = newElement;
+            console.log("Updating element: " + newElement.firestoreID);
+            updateUserIngredient(newElement)
+                .then(() => getAllUserIngredients())
+                .then((userIngredients) => setFridge(userIngredients))
+                .catch(err => console.log(err));
         } else {
-            tempElements.push(newElement);
+            addUserIngredient(newElement)
+                .then(() => getAllUserIngredients())
+                .then((userIngredients) => setFridge(userIngredients))
+                .catch(err => console.log(err));
         }
-
-        setFridge(tempElements);
     }
 
     function formFilled() {
@@ -117,15 +131,18 @@ export default function Fridge() {
             formIngredientAmount: "",
             formIngredientUnit: "",
             formIngredientIndex: null,
+            formIngredientID: null,
         });
     }
 
     function handleRemove() {
-        const tempIngredients = fridge.slice();
         if (typeof formData.formIngredientIndex === 'number') {
-            tempIngredients.splice(formData.formIngredientIndex, 1);
+            let ingredientToRemove = fridge[formData.formIngredientIndex];
+            removeUserIngredient(ingredientToRemove)
+                .then(() => getAllUserIngredients())
+                .then((userIngredients) => setFridge(userIngredients))
+                .catch(err => console.log(err));
         }
-        setFridge(tempIngredients);
     }
 
     function handleCancel() {
@@ -224,11 +241,6 @@ export default function Fridge() {
             emptyElements.push(<div className="empty" key={i}/>);
         }
     }
-
-    // update fridge with user data
-    getAllUserIngredients()
-        .then((userIngredients) => setFridge(userIngredients))
-        .catch(err => console.log("Error getting user fridge data: " + err))
 
     return (
         <div className="fridge">

@@ -43,7 +43,7 @@ export function ProvideFirestore({ children }) {
 			return await firebase.firestore()
 				.collection('ingredients')
 				.doc(ingredient.firestoreID)
-				.update(ingredient.getFirestoreData());
+				.update({ ...ingredient.getFirestoreData(), userID: userID });
 		} catch (err) {
 			console.error('Error updating ingredient', err);
 		}
