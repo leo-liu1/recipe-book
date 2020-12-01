@@ -31,7 +31,7 @@ export default function Fridge({ ingredients }) {
         getAllUserIngredients()
             .then((ingredients) => setFridge(ingredients))
             .catch((err) => console.log(err));
-    }, []);
+    }, [getAllUserIngredients]);
 
     const [showForm, setShowForm] = useState(false);
     const [newIngredient, setNewIngredient] = useState(false);
@@ -49,16 +49,25 @@ export default function Fridge({ ingredients }) {
     function editIngredient(ingredient, index) {
         setShowForm(true);
         setNewIngredient(false);
-        ingredient.getClassType() === "Seasoning" ? setIsSeasoning(true) : setIsSeasoning(false);
-        setFormData({
-            formIngredientName: ingredient.name,
-            formIngredientType: ingredient.type,
-            formIngredientExp: new Date(ingredient.expirationDate),
-            formIngredientAmount: ingredient.quantity.amount,
-            formIngredientUnit: ingredient.quantity.unit,
-            formIngredientIndex: index,
-            formIngredientID: ingredient.firestoreID,
-        });
+        if (ingredient.getClassType() === "Seasoning") {
+            setIsSeasoning(true);
+            setFormData({
+                formIngredientName: ingredient.name,
+                formIngredientIndex: index,
+                formIngredientID: ingredient.firestoreID,
+            })
+        } else {
+            setIsSeasoning(false);
+            setFormData({
+                formIngredientName: ingredient.name,
+                formIngredientType: ingredient.type,
+                formIngredientExp: new Date(ingredient.expirationDate),
+                formIngredientAmount: ingredient.quantity.amount,
+                formIngredientUnit: ingredient.quantity.unit,
+                formIngredientIndex: index,
+                formIngredientID: ingredient.firestoreID,
+            });
+        }
     }
 
     function handleFormChange(event) {
@@ -99,7 +108,6 @@ export default function Fridge({ ingredients }) {
             });
 
         if (typeof formData.formIngredientIndex === 'number') {
-            console.log("Updating element: " + newElement.firestoreID);
             updateUserIngredient(newElement)
                 .then(() => getAllUserIngredients())
                 .then((userIngredients) => setFridge(userIngredients))

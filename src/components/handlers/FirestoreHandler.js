@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import Ingredient from '../classes/Ingredient.js';
+import Seasoning from '../classes/Seasoning';
 import Recipe from '../classes/Recipe.js';
 import firebase from 'firebase';
 import 'firebase/firestore';
@@ -10,7 +11,7 @@ const AuthContext = createContext();
 
 export function useFirestore() {
 	return useContext(AuthContext);
-};
+}
 
 export function ProvideFirestore({ children }) {
 	const { getUserID } = useAuth();
@@ -56,7 +57,9 @@ export function ProvideFirestore({ children }) {
 			.get();
 
 		return snapshot.docs.map((doc) => {
-			return new Ingredient({ ...doc.data(), firestoreID: doc.id });
+			return doc.data().quantity
+				? new Ingredient({ ...doc.data(), firestoreID: doc.id })
+				: new Seasoning({ ...doc.data(), firestoreID: doc.id });
 		});
 	}
 

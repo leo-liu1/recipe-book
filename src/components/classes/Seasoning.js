@@ -15,13 +15,13 @@ export default class Seasoning {
      * @constructor
      * @param {Object} seasoning
      * @param {string} seasoning.name
-     * @param {{amount: number, unit: string}} seasoning.quantity
+     * @param {string|null} seasoning.spoonacularName
      * @param {string} userID
      * @param {string} seasoning.firestoreID
      */
-    constructor({ name, quantity, userID, firestoreID }) {
+    constructor({ name, spoonacularName, userID, firestoreID }) {
         this.name = name;
-        this.quantity = quantity;
+        this.spoonacularName = spoonacularName ? spoonacularName : null;
         this.userID = userID;
         this.firestoreID = firestoreID;
     }
@@ -29,7 +29,7 @@ export default class Seasoning {
     getFirestoreData() {
         return {
             name: this.name,
-            quantity: this.quantity,
+            spoonacularName: this.spoonacularName,
             userID: this.userID,
         }
     }
