@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DatePicker from "react-datepicker";
-import Ingredient from '../components/classes/Ingredient'
+import Ingredient from '../components/classes/Ingredient';
+import Seasoning from '../components/classes/Seasoning';
 
 import meatImage from '../assets/images/meat.jpg'
 import dairyImage from '../assets/images/dairy.jpg'
@@ -71,11 +72,15 @@ export default function Fridge({ ingredients }) {
             return;
         }
 
-        const newIngredient = new Ingredient({
+        const newElement = isSeasoning ? new Seasoning({
             name: formData.formIngredientName,
             spoonacularName: null,
-            type: isSeasoning ? "Seasoning" : formData.formIngredientType,
-            expirationDate: isSeasoning ? undefined : formData.formIngredientExp.getTime(),
+            imageURL: null,
+        }) : new Ingredient({
+            name: formData.formIngredientName,
+            spoonacularName: null,
+            type: formData.formIngredientType,
+            expirationDate: formData.formIngredientExp.getTime(),
             quantity: {
                 amount: formData.formIngredientAmount,
                 unit: formData.formIngredientUnit,
@@ -83,14 +88,14 @@ export default function Fridge({ ingredients }) {
             imageURL: null,
         });
 
-        const tempIngredients = fridge.slice();
+        const tempElements = fridge.slice();
         if (typeof formData.formIngredientIndex === 'number') {
-            tempIngredients[formData.formIngredientIndex] = newIngredient;
+            tempElements[formData.formIngredientIndex] = newElement;
         } else {
-            tempIngredients.push(newIngredient);
+            tempElements.push(newElement);
         }
 
-        setFridge(tempIngredients);
+        setFridge(tempElements);
     }
 
     function formFilled() {
@@ -130,7 +135,12 @@ export default function Fridge({ ingredients }) {
 
     function handleCreateIngredient(type) {
         if (!showForm || !formFilled()) {
-            setShowForm(!showForm);
+            // if the dialog is already open, do not close the form if we're switching from ingredient to seasoning or vice versa
+            if (showForm && (((type === "Ingredient" && isSeasoning)) || (type === "Seasoning" && !isSeasoning))) {
+                // do nothing
+            } else {
+                setShowForm(!showForm);
+            }
         }
         setNewIngredient(true);
         type === "Ingredient" ? setIsSeasoning(false) : setIsSeasoning(true);
@@ -141,7 +151,13 @@ export default function Fridge({ ingredients }) {
         return (
             <div className="form-dialog">
                 <div className="form-dialog-container">
-                    <div className="form-title">{newIngredient ? "Add an ingredient" : `Edit ${formData.formIngredientName}`}</div>
+                    <div className="form-title">
+                        {newIngredient ?
+                            `Add a${isSeasoning ?
+                                ' seasoning' :
+                                'n ingredient'}` :
+                            `Edit ${formData.formIngredientName}`}
+                    </div>
                     <form className="form" onSubmit={handleSubmit}>
                         <div className="input">
                             <label>Name</label>
@@ -164,7 +180,7 @@ export default function Fridge({ ingredients }) {
                                 })}
                             </select>
                         </div>}
-                        <div className="input">
+                        {!isSeasoning && <div className="input">
                             <label>Amount</label>
                             <input
                                 name="formIngredientAmount"
@@ -172,8 +188,8 @@ export default function Fridge({ ingredients }) {
                                 value={formData.formIngredientAmount}
                                 onChange={handleFormChange}
                                 required/>
-                        </div>
-                        <div className="input">
+                        </div>}
+                        {!isSeasoning && <div className="input">
                             <label>Unit</label>
                             <input
                                 name="formIngredientUnit"
@@ -181,7 +197,7 @@ export default function Fridge({ ingredients }) {
                                 value={formData.formIngredientUnit}
                                 onChange={handleFormChange}
                                 required/>
-                        </div>
+                        </div>}
                         {!isSeasoning && <div className="input">
                             <label>Expiration Date</label>
                             <DatePicker className="datepicker"
