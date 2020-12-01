@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useFirestore } from '../components/handlers/FirestoreHandler';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient'
 
@@ -13,7 +14,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const ITEM_ROW_LENGTH = 4;
 
-export default function Fridge({ ingredients }) {
+export default function Fridge() {
     document.title = 'Fridge';
     const ingredientTypes = [
         'Meat',
@@ -23,7 +24,8 @@ export default function Fridge({ ingredients }) {
         'Carbs',
     ];
 
-    const [fridge, setFridge] = useState(ingredients ? ingredients : []);
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
+    const [fridge, setFridge] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [newIngredient, setNewIngredient] = useState(false);
     const [isSeasoning, setIsSeasoning] = useState(false);
@@ -159,8 +161,8 @@ export default function Fridge({ ingredients }) {
                                 value={formData.formIngredientType}
                                 onChange={handleFormChange}
                                 required>
-                                {ingredientTypes.map(type => {
-                                    return (<option value={type}>{type}</option>);
+                                {ingredientTypes.map((type, index) => {
+                                    return (<option value={type} key={index}>{type}</option>);
                                 })}
                             </select>
                         </div>}
@@ -205,15 +207,21 @@ export default function Fridge({ ingredients }) {
     let emptyElements = [];
     if (fridge.length % ITEM_ROW_LENGTH !== 0) {
         for (let i = 0; i < ITEM_ROW_LENGTH - (fridge.length % ITEM_ROW_LENGTH); i++) {
-            emptyElements.push(<div className="empty"/>);
+            emptyElements.push(<div className="empty" key={i}/>);
         }
     }
+
+    // update fridge with user data
+    getAllUserIngredients()
+        .then((userIngredients) => setFridge(userIngredients))
+        .catch(err => console.log("Error getting user fridge data: " + err))
 
     return (
         <div className="fridge">
             <div className="fridge-container">
                 {fridge.map((ingredient, index) =>
                     <Box
+                        key={index}
                         ingredient={ingredient}
                         index={index}
                         fridgeClick={editIngredient}

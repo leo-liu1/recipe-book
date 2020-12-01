@@ -32,7 +32,7 @@ export function ProvideFirestore({ children }) {
 			const snapshot = await firebase.firestore()
 				.collection('ingredients')
 				.where("userID", "==", userID)
-				.where("spoonacularName", "==", ingredient.getSpoonacularName())
+				.where("name", "==", ingredient.name)
 				.get();
 
 			return Promise.all(snapshot.docs.map((doc) => {
@@ -51,7 +51,7 @@ export function ProvideFirestore({ children }) {
 			const snapshot = await firebase.firestore()
 				.collection('ingredients')
 				.where("userID", "==", userID)
-				.where("spoonacularName", "==", ingredient.getSpoonacularName())
+				.where("name", "==", ingredient.name)
 				.get();
 
 			return Promise.all(snapshot.docs.map((doc) => {

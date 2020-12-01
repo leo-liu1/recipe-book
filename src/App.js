@@ -30,19 +30,6 @@ const firebaseConfig = {
 
 export const firebase = Firebase.initializeApp(firebaseConfig);
 
-// Just for testing fridge, will get rid of later
-const boxes = [
-  new Ingredient({  name: 'beef',   type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 1, unit: "cow" } }),
-  new Ingredient({  name: 'beef2',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 2, unit: "lbs" } }),
-  new Ingredient({  name: 'beef3',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 3, unit: "kg"  } }),
-  new Ingredient({  name: 'beef4',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 4, unit: "poo" } }),
-  new Ingredient({  name: 'beef5',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 5, unit: "hmm" } }),
-  new Ingredient({  name: 'salt',   type: 'Seasoning',   quantity: {amount: 1, unit: "container" } }),
-  new Ingredient({  name: 'milk',   type: 'Dairy',      expirationDate: Date.now(), quantity: {amount: -1, unit: "oz" } }),
-  new Ingredient({  name: 'corn',   type: 'Vegetable',  expirationDate: Date.now(), quantity: {amount: 1, unit: "lbs" } }),
-  new Ingredient({  name: 'rice',   type: 'Carbs',      expirationDate: Date.now(), quantity: {amount: 1, unit: "?"   } }),
-];
-
 export default function App() {
   return (
     <ProvideAuth>
@@ -74,7 +61,7 @@ function Routing() {
       <Switch>
         <Route exact path="/">
           <Navbar isAuthenticated={isAuthenticated} />
-          {isAuthenticated ? <Fridge ingredients={boxes}/> : <Landing />}
+          {isAuthenticated ? <Fridge /> : <Landing />}
         </Route>
         <Route path="/bookmarks">
           <Navbar isAuthenticated={isAuthenticated} />
