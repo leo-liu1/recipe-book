@@ -3,11 +3,18 @@ import { Redirect, useLocation } from 'react-router-dom';
 
 const SEARCH_PATH = '/search';
 
-export default function NavbarSearch() {
-    const [currSearch, setCurrSearch] = useState('');
+export default function NavbarSearch({ searchStr }) {
+    const [currSearch, setCurrSearch] = useState(searchStr);
     const [prevSearch, setPrevSearch] = useState('');
     const inputRef = useRef();
     const location = useLocation();
+    
+    // set the input value to whatever we get from the passed in search string
+    useEffect(() => {
+        if (typeof searchStr !== 'undefined') {
+            inputRef.current.value = searchStr;
+        }
+    }, [searchStr]);
     
     useEffect(() => {
         if (location.pathname === SEARCH_PATH) {

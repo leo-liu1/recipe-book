@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import ClassNames from 'classnames';
+
 import { useFirestore } from '../components/handlers/FirestoreHandler';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient';
@@ -15,7 +17,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const ITEM_ROW_LENGTH = 4;
 
-export default function Fridge({ ingredients }) {
+export default function Fridge({ populateSearch }) {
     document.title = 'Fridge';
     const ingredientTypes = [
         'Meat',
@@ -24,19 +26,13 @@ export default function Fridge({ ingredients }) {
         'Fruit',
         'Carbs',
     ];
-
-    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, updateUserIngredient } = useFirestore();
-    const [fridge, setFridge] = useState(ingredients ? ingredients : []);
-    useEffect(() => {
-        getAllUserIngredients()
-            .then((ingredients) => setFridge(ingredients))
-            .catch((err) => console.log(err));
-    }, [getAllUserIngredients]);
-
+    
+    const [fridge, setFridge] = useState([]); // state to keep track of all fridge ingredients
     const [showForm, setShowForm] = useState(false);
+    const [originalTitle, setOriginalTitle] = useState(''); // used for editing ingredients, display original ingredient name
     const [newIngredient, setNewIngredient] = useState(false);
     const [isSeasoning, setIsSeasoning] = useState(false);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState({ // data associated with the input form
         formIngredientName: '',
         formIngredientType: ingredientTypes[0],
         formIngredientExp: new Date(),
@@ -45,10 +41,20 @@ export default function Fridge({ ingredients }) {
         formIngredientIndex: null,
         formIngredientID: null,
     });
+    const [chooseActive, setChooseActive] = useState(false); // toggles between edit and choose ingredient
+    const [chosenIngredients, setChosenIngredients] = useState({});
+
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, updateUserIngredient } = useFirestore();
+    useEffect(() => {
+        getAllUserIngredients()
+        .then((ingredients) => setFridge(ingredients))
+        .catch((err) => console.error(err));
+    }, [getAllUserIngredients]);
 
     function editIngredient(ingredient, index) {
         setShowForm(true);
         setNewIngredient(false);
+        setOriginalTitle(ingredient.name);
         if (ingredient.getClassType() === "Seasoning") {
             setIsSeasoning(true);
             setFormData({
@@ -87,6 +93,10 @@ export default function Fridge({ ingredients }) {
     }
 
     function handleAdd() {
+        if (!formFilled()) {
+            return;
+        }        
+
         const newElement = isSeasoning
             ? new Seasoning({
                 name: formData.formIngredientName,
@@ -111,16 +121,20 @@ export default function Fridge({ ingredients }) {
             updateUserIngredient(newElement)
                 .then(() => getAllUserIngredients())
                 .then((userIngredients) => setFridge(userIngredients))
-                .catch(err => console.log(err));
+                .catch(err => console.error(err));
         } else {
             addUserIngredient(newElement)
                 .then(() => getAllUserIngredients())
                 .then((userIngredients) => setFridge(userIngredients))
-                .catch(err => console.log(err));
+                .catch(err => console.error(err));
         }
     }
 
     function formFilled() {
+        if (isSeasoning) {
+            return formData.formIngredientName !== '';
+        } // else is ingredient
+
         let validate = true;
         Object.values(formData).forEach(value => {
             if (value === '') {
@@ -149,7 +163,7 @@ export default function Fridge({ ingredients }) {
             removeUserIngredient(ingredientToRemove)
                 .then(() => getAllUserIngredients())
                 .then((userIngredients) => setFridge(userIngredients))
-                .catch(err => console.log(err));
+                .catch(err => console.error(err));
         }
     }
 
@@ -172,6 +186,32 @@ export default function Fridge({ ingredients }) {
         clearFormData();
     }
 
+    function chooseIngredients(toggleChoose) {
+        setChooseActive(toggleChoose);
+
+        if (!toggleChoose) {
+            setChosenIngredients({}); // remove all chosen ingredients from our state
+            populateSearch('');
+        } else {
+            setShowForm(false);
+        }
+    }
+
+    function chooseIngredient(ingredient, selected) {
+        const newChosen = selected ?
+            { ...chosenIngredients, [ingredient.firestoreID]: ingredient } :
+            { ...chosenIngredients, [ingredient.firestoreID]: null };
+        
+        setChosenIngredients(newChosen);
+        const fridgeSearchStr = Object.values(newChosen).filter((ingredient) => { // get only elements that are non-null
+            return ingredient !== null;
+        }).map((ingredient) => { // return only the name for each ingredient
+            return ingredient.name;
+        }).join(', '); // join them all together, separated by commas
+
+        populateSearch(fridgeSearchStr);
+    }
+
     function renderForm() {
         return (
             <div className="form-dialog">
@@ -181,7 +221,7 @@ export default function Fridge({ ingredients }) {
                             `Add a${isSeasoning ?
                                 ' seasoning' :
                                 'n ingredient'}` :
-                            `Edit ${formData.formIngredientName}`}
+                            `Edit ${originalTitle}`}
                     </div>
                     <form className="form" onSubmit={handleSubmit}>
                         <div className="input">
@@ -250,19 +290,41 @@ export default function Fridge({ ingredients }) {
         }
     }
 
+    const editIngredientClass = ClassNames('button', 'edit-ingredient', {
+        active: !chooseActive,
+        inactive: chooseActive,
+    });
+    const chooseIngredientClass = ClassNames('button', 'choose-ingredient', {
+        active: chooseActive,
+        inactive: !chooseActive,
+    });
+
     return (
         <div className="fridge">
+            <div className="page-title">
+                <div className="page-title-text">
+                    Your Fridge
+                </div>
+                <div className="edit-container">
+                    <button className={editIngredientClass} disabled={!chooseActive} onClick={() => chooseIngredients(false)}>Edit Ingredients</button>
+                    <button className={chooseIngredientClass} disabled={chooseActive} onClick={() => chooseIngredients(true)}>Choose Ingredients</button>
+                </div>
+            </div>
             <div className="fridge-container">
-                {fridge.map((ingredient, index) =>
-                    <Box
-                        key={index}
-                        ingredient={ingredient}
-                        index={index}
-                        fridgeClick={editIngredient}
-                    />)}
+                {fridge.length === 0 ?
+                    <div className="empty-fridge">Your fridge is currently empty. Add an ingredient to begin!</div> :
+                    fridge.map((ingredient, index) =>
+                        <Box
+                            key={index}
+                            ingredient={ingredient}
+                            index={index}
+                            editIngredient={editIngredient}
+                            chooseActive={chooseActive}
+                            chooseIngredient={chooseIngredient}
+                        />)}
                 {emptyElements}
             </div>
-            <div className="edit-container">
+            <div className="add-container">
                 <button className="button add-ingredient" onClick={() => handleCreateIngredient("Ingredient")}>Add Ingredient</button>
                 <button className="button add-seasoning" onClick={() => handleCreateIngredient("Seasoning")}>Add Seasoning</button>
             </div>
@@ -271,7 +333,16 @@ export default function Fridge({ ingredients }) {
     );
 }
 
-function Box({ ingredient, index, fridgeClick }) {
+function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient }) {
+    const [selected, setSelected] = useState(false);
+
+    // if the user switches to edit ingredient, unselect all options
+    useEffect(() => {
+        if (!chooseActive) {
+            setSelected(false);
+        }
+    }, [chooseActive]);
+
     const isSeasoning = ingredient.getClassType() === "Seasoning";
     const expDate = isSeasoning ? null : new Date(ingredient.expirationDate).toLocaleDateString();
 
@@ -295,19 +366,33 @@ function Box({ ingredient, index, fridgeClick }) {
         }
     }
 
+    function handleClick(ingredient, index) {
+        if (!chooseActive) {
+            editIngredient(ingredient, index);
+        } else {
+            chooseIngredient(ingredient, !selected);
+            setSelected(!selected);
+        }
+    }
+
+    const selectedClass = {
+        selected: selected && chooseActive,
+        'not-selected': !selected && chooseActive,
+    };
+    const imageClass = ClassNames('image', selectedClass);
+    const ingredientClass = ClassNames('ingredient', selectedClass);
+    const expirationDateClass = ClassNames('expiration-date', selectedClass);
+
     return (
-        <div className="box" onClick={() => fridgeClick(ingredient, index)}>
-            <img className="image"
+        <div className="box" onClick={() => handleClick(ingredient, index)}>
+            <img className={imageClass}
                 src={ingredient.imageURL ? ingredient.imageURL : getDefaultImage(ingredient)}
                 alt="Ingredient" />
-            <div className="ingredient">
+            <div className={ingredientClass}>
                 <div className="name">{ingredient.name} </div>
                 {!isSeasoning && <div className="quantity">({ingredient.quantity.amount} {ingredient.quantity.unit})</div>}
             </div>
-            {!isSeasoning
-                ? <div className="expiration-date">Expires: {expDate}</div>
-                : <div className="expiration-date">&nbsp;&nbsp;</div>
-            }
+            <div className={expirationDateClass}>{isSeasoning ? <>&nbsp;</> : `Expires: ${expDate}`}</div>
         </div>
     );
 }

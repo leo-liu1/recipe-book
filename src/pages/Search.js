@@ -8,5 +8,10 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     const query = urlParams.get('q');
 
-    return (<>{query}</>);
+    return (<div className="search">
+        <div className="page-title">
+            <div className="page-title-text">You Searched for {query}</div>
+        </div>
+        <div className="search-container"></div>
+    </div>);
 }

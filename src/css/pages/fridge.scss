@@ -3,15 +3,72 @@
 
 .fridge {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .page-title {
+        display: flex;
+        justify-content: space-between;
+
+        .edit-container {
+            display: flex;
+            flex-direction: row;
+            
+            .button {
+                display: flex;
+                align-items: center;
+
+                font-size: 0.9rem;
+                font-weight: 500;
+                padding: 5px 15px;
+                width: 200px;
+
+                &.edit-ingredient {
+                    text-align: center;
+                    display: block;
+                    border-top-left-radius: 9999px;
+                    border-bottom-left-radius: 9999px;
+                }
+
+                &.choose-ingredient {
+                    text-align: center;
+                    display: block;
+                    border-top-right-radius: 9999px;
+                    border-bottom-right-radius: 9999px;
+                }
+
+                &.active {
+                    @extend %basic-button;
+
+                    color: white;
+                    background-color: $button-color;
+                    border: 1px solid $button-color;
+                }
+
+                &.inactive {
+                    @extend %basic-button;
+                    
+                    background-color: $off-white;
+                    border: 1px solid $off-white;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+            }
+        }
+    }
 
     .fridge-container {
         width: $container-width;
-        margin-top: 20px;
 
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
+
+        .empty-fridge {
+            font-family: $font;
+        }
 
         .empty {
             height: 0px;
@@ -28,6 +85,13 @@
             overflow: hidden;
             text-overflow: ellipsis;
             margin-bottom: 20px;
+
+            .selected {
+            }
+
+            .not-selected {
+                opacity: 0.5;
+            }
 
             .image {
                 height: 250px;
@@ -111,6 +175,8 @@
                     display: flex;
                     justify-content: space-between;
 
+                    margin-top: 20px;
+
                     .button {
                         border-radius: 5px;
                         min-width: 75px;
@@ -122,7 +188,7 @@
         }
     }
 
-    .edit-container {
+    .add-container {
         display: flex;
         flex-direction: row;
 
@@ -140,7 +206,7 @@
 
             font-size: 20px;
             font-weight: 500;
-            padding: 5px 10px;
+            padding: 5px 20px;
             margin: 0 10px;
         }
     }

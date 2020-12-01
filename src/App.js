@@ -42,6 +42,7 @@ export default function App() {
 function Routing() {
   const { isUserAuthenticated } = useAuth();
   const [isAuthenticated, setAuthenticated] = useState(localStorage.getItem("auth") === "true");
+  const [searchStr, setSearchStr] = useState('');
 
   useEffect(() => {
     function checkAuth() {
@@ -59,8 +60,8 @@ function Routing() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
-          <Navbar isAuthenticated={isAuthenticated} />
-          {isAuthenticated ? <Fridge /> : <Landing />}
+          <Navbar isAuthenticated={isAuthenticated} searchStr={searchStr} />
+          {isAuthenticated ? <Fridge populateSearch={(fridgeSearchStr) => setSearchStr(fridgeSearchStr)} /> : <Landing />}
         </Route>
         <Route path="/bookmarks">
           <Navbar isAuthenticated={isAuthenticated} />
