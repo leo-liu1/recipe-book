@@ -31,4 +31,8 @@ export default class Seasoning {
             userID: this.userID,
         }
     }
+
+    getClassType() {
+        return "Seasoning"
+    }
 }

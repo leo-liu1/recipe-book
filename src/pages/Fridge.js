@@ -42,7 +42,7 @@ export default function Fridge() {
     function editIngredient(ingredient, index) {
         setShowForm(true);
         setNewIngredient(false);
-        ingredient.expirationDate ? setIsSeasoning(false) : setIsSeasoning(true);
+        ingredient.getClassType() === "Seasoning" ? setIsSeasoning(true) : setIsSeasoning(false);
         setFormData({
             formIngredientName: ingredient.name,
             formIngredientType: ingredient.type,
@@ -70,25 +70,23 @@ export default function Fridge() {
     }
 
     function handleAdd() {
-        if (!formFilled()) {
-            return;
-        }
-
-        const newElement = isSeasoning ? new Seasoning({
-            name: formData.formIngredientName,
-            spoonacularName: null,
-            imageURL: null,
-        }) : new Ingredient({
-            name: formData.formIngredientName,
-            spoonacularName: null,
-            type: formData.formIngredientType,
-            expirationDate: formData.formIngredientExp.getTime(),
-            quantity: {
-                amount: formData.formIngredientAmount,
-                unit: formData.formIngredientUnit,
-            },
-            imageURL: null,
-        });
+        const newElement = isSeasoning
+            ? new Seasoning({
+                name: formData.formIngredientName,
+                spoonacularName: null,
+                imageURL: null,
+            })
+            : new Ingredient({
+                name: formData.formIngredientName,
+                spoonacularName: null,
+                type: formData.formIngredientType,
+                expirationDate: formData.formIngredientExp.getTime(),
+                quantity: {
+                    amount: formData.formIngredientAmount,
+                    unit: formData.formIngredientUnit,
+                },
+                imageURL: null,
+            });
 
         const tempElements = fridge.slice();
         if (typeof formData.formIngredientIndex === 'number') {
@@ -254,11 +252,11 @@ export default function Fridge() {
 }
 
 function Box({ ingredient, index, fridgeClick }) {
-    const { expirationDate, imageURL, type, name, quantity } = ingredient;
-    const { amount, unit } = quantity;
-    const expDate = new Date(expirationDate).toLocaleDateString();
+    const isSeasoning = ingredient.getClassType() === "Seasoning";
+    const expDate = isSeasoning ? null : new Date(ingredient.expirationDate).toLocaleDateString();
 
-    function getDefaultImage(type) {
+    function getDefaultImage(ingredient) {
+        let type = ingredient.getClassType() === "Seasoning" ? "Seasoning" : ingredient.type;
         switch(type) {
             case "Meat":
                 return meatImage;
@@ -280,13 +278,13 @@ function Box({ ingredient, index, fridgeClick }) {
     return (
         <div className="box" onClick={() => fridgeClick(ingredient, index)}>
             <img className="image"
-                src={imageURL ? imageURL : getDefaultImage(type)}
+                src={ingredient.imageURL ? ingredient.imageURL : getDefaultImage(ingredient)}
                 alt="Ingredient" />
             <div className="ingredient">
-                <div className="name">{name} </div>
-                <div className="quantity">({amount} {unit})</div>
+                <div className="name">{ingredient.name} </div>
+                {!isSeasoning && <div className="quantity">({ingredient.quantity.amount} {ingredient.quantity.unit})</div>}
             </div>
-            {expirationDate
+            {!isSeasoning
                 ? <div className="expiration-date">Expires: {expDate}</div>
                 : <div className="expiration-date">&nbsp;&nbsp;</div>
             }
