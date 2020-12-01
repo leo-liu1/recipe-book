@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import FirestoreHandler from '../components/handlers/FirestoreHandler';
 import Ingredient from '../components/classes/Ingredient';
 

@@ -15,18 +15,21 @@ export default function Bookmarks() {
 
     const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
 
-    return (<div>
-        <button onClick={() => {console.log(addUserIngredient(sampleIngredient))}}>
-            Add to Firestore
-        </button>
-        <button onClick={() => {console.log(removeUserIngredient(sampleIngredient))}}>
-            Remove from Firestore
-        </button>
-        <button onClick={() => {console.log(getAllUserIngredients())}}>
-            Get all Ingredients
-        </button>
-        <button onClick={() => {console.log(getRecipeHistory())}}>
-            Get Recipe History
-        </button>
+    return (<div className="bookmarks">
+        <div className="page-title">Your Bookmarks</div>
+        <div className="bookmarks-container">
+            <button onClick={() => {console.log(addUserIngredient(sampleIngredient))}}>
+                Add to Firestore
+            </button>
+            <button onClick={() => {console.log(removeUserIngredient(sampleIngredient))}}>
+                Remove from Firestore
+            </button>
+            <button onClick={() => {console.log(getAllUserIngredients())}}>
+                Get all Ingredients
+            </button>
+            <button onClick={() => {console.log(getRecipeHistory())}}>
+                Get Recipe History
+            </button>
+        </div>
     </div>);
 }
