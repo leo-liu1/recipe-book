@@ -42,7 +42,7 @@ export default function NavbarSearch({ searchStr }) {
     }
 
     return (<>
-        {currSearch && <Redirect
+        {currSearch && inputRef.current && <Redirect
             push
             to={{
                 pathname: SEARCH_PATH,

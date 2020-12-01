@@ -28,7 +28,7 @@ export default function Navbar({ isAuthenticated, searchStr }) {
                         </div>
                     </Link>
                 </div>
-                <NavbarSearch searchStr={searchStr} />
+                {isAuthenticated && <NavbarSearch searchStr={searchStr} />}
                 <div className="right">
                     {isAuthenticated ?
                         (<>

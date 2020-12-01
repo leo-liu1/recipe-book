@@ -112,13 +112,13 @@
 %basic-button {
     box-sizing: border-box;
     outline: none;
-    cursor: pointer;
 }
 
 %button {
     background: $button-color;
     border: 1px solid $button-color;
     color: white;
+    cursor: pointer;
     @extend %basic-button;
 
     &:hover {

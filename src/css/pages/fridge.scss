@@ -40,6 +40,8 @@
                 &.active {
                     @extend %basic-button;
 
+                    cursor: auto;
+
                     color: white;
                     background-color: $button-color;
                     border: 1px solid $button-color;
@@ -50,6 +52,8 @@
                     
                     background-color: $off-white;
                     border: 1px solid $off-white;
+
+                    cursor: pointer;
 
                     &:hover {
                         opacity: 0.8;
@@ -85,9 +89,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
             margin-bottom: 20px;
+            cursor: pointer;
 
-            .selected {
-            }
+            // .selected {
+                
+            // }
 
             .not-selected {
                 opacity: 0.5;
@@ -196,18 +202,40 @@
         bottom: 24px;
         right: 24px;
 
-        .button {
-            @extend %button;
+        .button-background {
+            background-color: white;
             border-radius: 9999px;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            font-size: 20px;
-            font-weight: 500;
-            padding: 5px 20px;
             margin: 0 10px;
+
+            .button {
+                @extend %basic-button;
+                background: $button-color;
+                border: 1px solid $button-color;
+                color: white;
+                border-radius: 9999px;
+                width: 200px;
+
+                display: flex;
+                justify-content: center;
+                align-items: center;
+
+                font-size: 20px;
+                font-weight: 500;
+                padding: 5px 20px;
+
+                &.active {
+                    cursor: pointer;
+
+                    &:hover {
+                        opacity: 0.8;
+                    }
+                }
+
+                &.inactive {
+                    cursor: auto;
+                    opacity: 0.5;
+                }
+            }
         }
     }
 }

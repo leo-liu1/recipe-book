@@ -121,12 +121,15 @@ export default function Fridge({ populateSearch }) {
             updateUserIngredient(newElement)
                 .then(() => getAllUserIngredients())
                 .then((userIngredients) => setFridge(userIngredients))
-                .catch(err => console.error(err));
+                .catch((err) => console.error(err));
         } else {
             addUserIngredient(newElement)
-                .then(() => getAllUserIngredients())
+                .then((docRef) => {
+                    newElement.firestoreID = docRef.id;
+                    getAllUserIngredients();
+                })
                 .then((userIngredients) => setFridge(userIngredients))
-                .catch(err => console.error(err));
+                .catch((err) => console.error(err));
         }
     }
 
@@ -298,6 +301,11 @@ export default function Fridge({ populateSearch }) {
         active: chooseActive,
         inactive: !chooseActive,
     });
+    
+    const addButtonClass = ClassNames('button', {
+        active: !chooseActive,
+        inactive: chooseActive,
+    });
 
     return (
         <div className="fridge">
@@ -325,8 +333,22 @@ export default function Fridge({ populateSearch }) {
                 {emptyElements}
             </div>
             <div className="add-container">
-                <button className="button add-ingredient" onClick={() => handleCreateIngredient("Ingredient")}>Add Ingredient</button>
-                <button className="button add-seasoning" onClick={() => handleCreateIngredient("Seasoning")}>Add Seasoning</button>
+                <div className="button-background">
+                    <button
+                        className={addButtonClass}
+                        onClick={() => handleCreateIngredient("Ingredient")}
+                        disabled={chooseActive}>
+                        Add Ingredient
+                    </button>
+                </div>
+                <div className="button-background">
+                    <button
+                        className={addButtonClass}
+                        onClick={() => handleCreateIngredient("Seasoning")}
+                        disabled={chooseActive}>
+                        Add Seasoning
+                    </button>
+                </div>
             </div>
             {showForm ? renderForm() : null}
         </div>
@@ -376,7 +398,7 @@ function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient
     }
 
     const selectedClass = {
-        selected: selected && chooseActive,
+        // selected: selected && chooseActive,
         'not-selected': !selected && chooseActive,
     };
     const imageClass = ClassNames('image', selectedClass);
