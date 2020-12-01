@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useFirestore } from '../components/handlers/FirestoreHandler';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient';
 import Seasoning from '../components/classes/Seasoning';
@@ -14,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const ITEM_ROW_LENGTH = 4;
 
-export default function Fridge({ ingredients }) {
+export default function Fridge() {
     document.title = 'Fridge';
     const ingredientTypes = [
         'Meat',
@@ -24,7 +25,8 @@ export default function Fridge({ ingredients }) {
         'Carbs',
     ];
 
-    const [fridge, setFridge] = useState(ingredients ? ingredients : []);
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
+    const [fridge, setFridge] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [newIngredient, setNewIngredient] = useState(false);
     const [isSeasoning, setIsSeasoning] = useState(false);
@@ -40,7 +42,7 @@ export default function Fridge({ ingredients }) {
     function editIngredient(ingredient, index) {
         setShowForm(true);
         setNewIngredient(false);
-        ingredient.expirationDate ? setIsSeasoning(false) : setIsSeasoning(true);
+        ingredient.getClassType() === "Seasoning" ? setIsSeasoning(true) : setIsSeasoning(false);
         setFormData({
             formIngredientName: ingredient.name,
             formIngredientType: ingredient.type,
@@ -68,25 +70,23 @@ export default function Fridge({ ingredients }) {
     }
 
     function handleAdd() {
-        if (!formFilled()) {
-            return;
-        }
-
-        const newElement = isSeasoning ? new Seasoning({
-            name: formData.formIngredientName,
-            spoonacularName: null,
-            imageURL: null,
-        }) : new Ingredient({
-            name: formData.formIngredientName,
-            spoonacularName: null,
-            type: formData.formIngredientType,
-            expirationDate: formData.formIngredientExp.getTime(),
-            quantity: {
-                amount: formData.formIngredientAmount,
-                unit: formData.formIngredientUnit,
-            },
-            imageURL: null,
-        });
+        const newElement = isSeasoning
+            ? new Seasoning({
+                name: formData.formIngredientName,
+                spoonacularName: null,
+                imageURL: null,
+            })
+            : new Ingredient({
+                name: formData.formIngredientName,
+                spoonacularName: null,
+                type: formData.formIngredientType,
+                expirationDate: formData.formIngredientExp.getTime(),
+                quantity: {
+                    amount: formData.formIngredientAmount,
+                    unit: formData.formIngredientUnit,
+                },
+                imageURL: null,
+            });
 
         const tempElements = fridge.slice();
         if (typeof formData.formIngredientIndex === 'number') {
@@ -175,8 +175,8 @@ export default function Fridge({ ingredients }) {
                                 value={formData.formIngredientType}
                                 onChange={handleFormChange}
                                 required>
-                                {ingredientTypes.map(type => {
-                                    return (<option value={type}>{type}</option>);
+                                {ingredientTypes.map((type, index) => {
+                                    return (<option value={type} key={index}>{type}</option>);
                                 })}
                             </select>
                         </div>}
@@ -221,15 +221,21 @@ export default function Fridge({ ingredients }) {
     let emptyElements = [];
     if (fridge.length % ITEM_ROW_LENGTH !== 0) {
         for (let i = 0; i < ITEM_ROW_LENGTH - (fridge.length % ITEM_ROW_LENGTH); i++) {
-            emptyElements.push(<div className="empty"/>);
+            emptyElements.push(<div className="empty" key={i}/>);
         }
     }
+
+    // update fridge with user data
+    getAllUserIngredients()
+        .then((userIngredients) => setFridge(userIngredients))
+        .catch(err => console.log("Error getting user fridge data: " + err))
 
     return (
         <div className="fridge">
             <div className="fridge-container">
                 {fridge.map((ingredient, index) =>
                     <Box
+                        key={index}
                         ingredient={ingredient}
                         index={index}
                         fridgeClick={editIngredient}
@@ -246,11 +252,11 @@ export default function Fridge({ ingredients }) {
 }
 
 function Box({ ingredient, index, fridgeClick }) {
-    const { expirationDate, imageURL, type, name, quantity } = ingredient;
-    const { amount, unit } = quantity;
-    const expDate = new Date(expirationDate).toLocaleDateString();
+    const isSeasoning = ingredient.getClassType() === "Seasoning";
+    const expDate = isSeasoning ? null : new Date(ingredient.expirationDate).toLocaleDateString();
 
-    function getDefaultImage(type) {
+    function getDefaultImage(ingredient) {
+        let type = ingredient.getClassType() === "Seasoning" ? "Seasoning" : ingredient.type;
         switch(type) {
             case "Meat":
                 return meatImage;
@@ -272,13 +278,13 @@ function Box({ ingredient, index, fridgeClick }) {
     return (
         <div className="box" onClick={() => fridgeClick(ingredient, index)}>
             <img className="image"
-                src={imageURL ? imageURL : getDefaultImage(type)}
+                src={ingredient.imageURL ? ingredient.imageURL : getDefaultImage(ingredient)}
                 alt="Ingredient" />
             <div className="ingredient">
-                <div className="name">{name} </div>
-                <div className="quantity">({amount} {unit})</div>
+                <div className="name">{ingredient.name} </div>
+                {!isSeasoning && <div className="quantity">({ingredient.quantity.amount} {ingredient.quantity.unit})</div>}
             </div>
-            {expirationDate
+            {!isSeasoning
                 ? <div className="expiration-date">Expires: {expDate}</div>
                 : <div className="expiration-date">&nbsp;&nbsp;</div>
             }

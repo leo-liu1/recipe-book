@@ -57,4 +57,8 @@ export default class Ingredient {
 	getSpoonacularName(){
 		return this.spoonacularName;
 	}
+
+	getClassType() {
+        return "Ingredient"
+    }
 }
