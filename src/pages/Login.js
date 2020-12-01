@@ -44,11 +44,11 @@ export default function Login() {
           <form onSubmit={submitHandler}>
             <div className="input">
               <label>Email</label>
-              <input type="email" ref={emailRef} placeholder="chef@recipetocook.com" value="leoleo@leo.com" required />
+              <input type="email" ref={emailRef} placeholder="chef@recipetocook.com" required />
             </div>
             <div className="input">
               <label>Password</label>
-              <input type="password" ref={pswdRef} placeholder="********" value="thispassword" required />
+              <input type="password" ref={pswdRef} placeholder="********" required />
             </div>
             <div className="error">{error}</div>
             <button disabled={loading} type="submit" className="action">
