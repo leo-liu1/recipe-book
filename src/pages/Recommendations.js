@@ -7,5 +7,8 @@ export default function Recommendations() {
     document.title = "Recommendations";
     const getRecommends = useRecommend();
 
-    return (<></>);
+    return (<div className="recommendations">
+        <div className="page-title">Your Recommendations</div>
+        <div className="recommendations-container"></div>
+    </div>);
 }

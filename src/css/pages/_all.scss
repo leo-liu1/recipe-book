@@ -1,4 +1,17 @@
+@import 'bookmarks';
 @import 'fridge';
 @import 'landing';
 @import 'login';
+@import 'recommendations';
+@import 'search';
 @import 'signup';
+
+@import '../partials/variables';
+
+.page-title {
+    width: $container-width;
+    font-family: $font;
+    margin: 40px 0;
+    font-size: 2rem;
+    font-weight: 500;
+}

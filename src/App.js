@@ -13,7 +13,6 @@ import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
 import Signup from './pages/Signup';
 import Login from './pages/Login';
-import Ingredient from './components/classes/Ingredient'
 
 import './css/App.scss';
 
@@ -30,19 +29,6 @@ const firebaseConfig = {
 
 export const firebase = Firebase.initializeApp(firebaseConfig);
 
-// Just for testing fridge, will get rid of later
-const boxes = [
-  new Ingredient({  name: 'beef',   type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 1, unit: "cow" } }),
-  new Ingredient({  name: 'beef2',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 2, unit: "lbs" } }),
-  new Ingredient({  name: 'beef3',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 3, unit: "kg"  } }),
-  new Ingredient({  name: 'beef4',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 4, unit: "poo" } }),
-  new Ingredient({  name: 'beef5',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 5, unit: "hmm" } }),
-  new Ingredient({  name: 'beef6',  type: 'Meat',       expirationDate: Date.now(), quantity: {amount: 6, unit: "moo" } }),
-  new Ingredient({  name: 'milk',   type: 'Dairy',      expirationDate: Date.now(), quantity: {amount: -1, unit: "oz" } }),
-  new Ingredient({  name: 'corn',   type: 'Vegetable',  expirationDate: Date.now(), quantity: {amount: 1, unit: "lbs" } }),
-  new Ingredient({  name: 'rice',   type: 'Carbs',      expirationDate: Date.now(), quantity: {amount: 1, unit: "?"   } }),
-];
-
 export default function App() {
   return (
     <ProvideAuth>
@@ -56,6 +42,7 @@ export default function App() {
 function Routing() {
   const { isUserAuthenticated } = useAuth();
   const [isAuthenticated, setAuthenticated] = useState(localStorage.getItem("auth") === "true");
+  const [searchStr, setSearchStr] = useState('');
 
   useEffect(() => {
     function checkAuth() {
@@ -73,8 +60,8 @@ function Routing() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
-          <Navbar isAuthenticated={isAuthenticated} />
-          {isAuthenticated ? <Fridge ingredients={boxes}/> : <Landing />}
+          <Navbar isAuthenticated={isAuthenticated} searchStr={searchStr} />
+          {isAuthenticated ? <Fridge populateSearch={(fridgeSearchStr) => setSearchStr(fridgeSearchStr)} /> : <Landing />}
         </Route>
         <Route path="/bookmarks">
           <Navbar isAuthenticated={isAuthenticated} />

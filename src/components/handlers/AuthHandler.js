@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 import React, { useState, useEffect, useContext, createContext } from "react";
 
@@ -9,33 +9,35 @@ export function useAuth() {
 };
 
 export function ProvideAuth({ children }) {
-  const [user, setuser] = useState(null);
+  const [user, setUser] = useState(null);
 
-  const signup = (email, password) => {
-    return firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(response => {
-        //debugger
-        setuser(response.user);
-        return response.user;
-      });
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onIdTokenChanged(user => {
+      if (user) {
+        setUser(user);
+      }else{
+        setUser(false);
+      }
+    });
+
+    unsubscribe();
+  }, []);
+
+  const signup = async (email, password) => {
+    const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    setUser(response.user);
+    return response.user;
   };
 
-  const login = (email, password) => {
-  return firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(response => {
-      setuser(response.user);
-      return response.user;
-    }, error => {
-        console.log(error);
-        throw(error);
-    });
+  const login = async (email, password) => {
+    const response = await firebase.auth().signInWithEmailAndPassword(email, password);
+    setUser(response.user);
+    return response.user;
   };
 
-  const logout = () => {
-    return firebase.auth().signOut()
-    .then(() => {
-        setuser(false);
-    });
+  const logout = async () => {
+    await firebase.auth().signOut();
+    setUser(false);
   };
 
   const getUserID = () => {
@@ -48,7 +50,7 @@ export function ProvideAuth({ children }) {
 
   const isUserAuthenticated = () => {
     return new Promise((resolve) => {
-      const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      const unsubscribe = firebase.auth().onIdTokenChanged(user => {
         unsubscribe();
         if (user) {
           resolve(true);
@@ -57,18 +59,6 @@ export function ProvideAuth({ children }) {
         }
     })});
   };
-
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        setuser(user);
-      }else{
-        setuser(false);
-      }
-    });
-
-    unsubscribe();
-  }, []);
 
   const value = {
     user,

@@ -8,7 +8,7 @@ import { ReactComponent as FridgeIcon } from '../../assets/icons/fridge.svg';
 import { ReactComponent as BookmarksIcon } from '../../assets/icons/bookmarks.svg';
 import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recommendations.svg';
 
-export default function Navbar({ isAuthenticated }) {
+export default function Navbar({ isAuthenticated, searchStr }) {
     const [loggedOut, setLoggedOut] = useState(false);
     const { logout } = useAuth();
 
@@ -28,7 +28,7 @@ export default function Navbar({ isAuthenticated }) {
                         </div>
                     </Link>
                 </div>
-                <NavbarSearch />
+                {isAuthenticated && <NavbarSearch searchStr={searchStr} />}
                 <div className="right">
                     {isAuthenticated ?
                         (<>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import Ingredient from '../classes/Ingredient.js';
 import Recipe from '../classes/Recipe.js';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/firestore';
 
 import { useAuth } from './AuthHandler';
