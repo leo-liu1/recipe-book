@@ -29,18 +29,10 @@ export function ProvideFirestore({ children }) {
 	
 	const removeUserIngredient = async (ingredient) => {
 		try {
-			const snapshot = await firebase.firestore()
+			return await firebase.firestore()
 				.collection('ingredients')
-				.where("userID", "==", userID)
-				.where("spoonacularName", "==", ingredient.getSpoonacularName())
-				.get();
-
-			return Promise.all(snapshot.docs.map((doc) => {
-				return firebase.firestore()
-					.collection('ingredients')
-					.doc(doc.id)
-					.delete();
-			}));
+				.doc(ingredient.firestoreID)
+				.delete();
 		} catch (err) {
 			console.error('Error removing ingredient', err);
 		}
@@ -48,18 +40,10 @@ export function ProvideFirestore({ children }) {
 
 	const updateUserIngredient = async (ingredient) => {
 		try {
-			const snapshot = await firebase.firestore()
+			return await firebase.firestore()
 				.collection('ingredients')
-				.where("userID", "==", userID)
-				.where("spoonacularName", "==", ingredient.getSpoonacularName())
-				.get();
-
-			return Promise.all(snapshot.docs.map((doc) => {
-				return firebase.firestore()
-					.collection('ingredients')
-					.doc(doc.id)
-					.update(ingredient.getFirestoreData());
-			}));
+				.doc(ingredient.firestoreID)
+				.update(ingredient.getFirestoreData());
 		} catch (err) {
 			console.error('Error updating ingredient', err);
 		}
@@ -72,7 +56,7 @@ export function ProvideFirestore({ children }) {
 			.get();
 
 		return snapshot.docs.map((doc) => {
-			return new Ingredient(doc.data());
+			return new Ingredient({ ...doc.data(), firestoreID: doc.id });
 		});
 	}
 

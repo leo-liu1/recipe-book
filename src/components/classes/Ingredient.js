@@ -29,8 +29,9 @@ export default class Ingredient {
      * @param {{amount: number, unit: string}} ingredient.quantity
      * @param {string|null} ingredient.imageURL
      * @param {string} ingredient.userID
+     * @param {string} ingredient.firestoreID
      */
-    constructor({ name, spoonacularName, type, expirationDate, quantity, imageURL, userID }) {
+    constructor({ name, spoonacularName, type, expirationDate, quantity, imageURL, userID, firestoreID }) {
         this.name = name;
         this.spoonacularName = spoonacularName ? spoonacularName : null;
         this.type = type;
@@ -38,6 +39,7 @@ export default class Ingredient {
         this.quantity = quantity;
         this.imageURL = imageURL ? imageURL : null;
         this.userID = userID;
+        this.firestoreID = firestoreID;
     }
 
     getFirestoreData() {
