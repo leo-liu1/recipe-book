@@ -126,7 +126,7 @@ export default function Fridge({ populateSearch }) {
             addUserIngredient(newElement)
                 .then((docRef) => {
                     newElement.firestoreID = docRef.id;
-                    getAllUserIngredients();
+                    return getAllUserIngredients();
                 })
                 .then((userIngredients) => setFridge(userIngredients))
                 .catch((err) => console.error(err));
