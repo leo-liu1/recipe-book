@@ -155,7 +155,7 @@ export function ProvideSpoonacular({ children }) {
 	
 	const searchSimilarRecipes = (recipeID) => {
 		const requestString = `https://api.spoonacular.com/recipes/${recipeID}/similar?apiKey=${API_Key}&number=1`;
-		return fetch(requestString,{
+		return fetch(requestString, {
 			method: 'GET',
 		})
 		.then((response) => response.json())
