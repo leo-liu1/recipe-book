@@ -7,21 +7,26 @@ import Ingredient from '../components/classes/Ingredient';
 
 export default function Recommendations() {
     document.title = "Recommendations";
-    const [data, setData] = useState([]);
-    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory,getRecommends } = useFirestore();
-    
+    const [posts, setPosts] = useState([]);
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
+
     useEffect(() => {
-          fetch("http://www.google.com/").then(res => res.json()).then(data => setData(data))
+        
+          getRecipeHistory().then((res) => res).then(data => setPosts(data))
           
-    });
+    }); 
+    
     return (<div className="recommendations">
         <div className="page-title">Your Recommendations</div>
         <div className="recommendations-container">
         <ul>
-        {data.map(el => (
-          <li key={el.id}>{el.name}</li>
-        ))}
-      </ul>
+        {posts.map((item) => (
+				<li key={item.id}>
+					<h2>{item.name}</h2>
+					<p>{item.frequency}</p>
+				</li>
+			))}
+        </ul>
         </div>
     </div>);
 }

@@ -19,7 +19,18 @@ export function ProvideRecommend({ children }) {
 
     const {getRecipeHistory} = useFirestore();
 
-    
+    const getRecommends = () => {
+        return getRecipeHistory().forEach(recipe => {
+            var similarRecipe = searchSimilarRecipes(recipe.recipeID);
+			var recipeInfo = searchRecipeById(similarRecipe["id"]);
+			var ingredients = recipeInfo.extendedIngredients.forEach(ingredient => {
+				return Ingredient(ingredient.name, ingredient.name, ingredient.aisle, null, ingredient.amount, ingredient.image);
+			});
+				
+			return Recipe(similarRecipe.title, similarRecipe.id, ingredients, similarRecipe.imageURLs[0], recipeInfo.sourceUrl);
+        });
+    }
+
     const value = {
 		getRecommends,
 	}

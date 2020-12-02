@@ -1,14 +1,9 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useContext, createContext } from 'react';
 import { Firestore } from './FirebaseHandler';
 
 import Ingredient from '../classes/Ingredient.js';
 import Seasoning from '../classes/Seasoning';
 import Recipe from '../classes/Recipe.js';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
-import searchSimilarRecipes from './SpoonacularHandler';
-import searchRecipeById from './SpoonacularHandler';
-
 
 import { useAuth } from './AuthHandler';
 
@@ -21,47 +16,55 @@ export function useFirestore() {
 export function ProvideFirestore({ children }) {
 	const { getUserID } = useAuth();
 
-	const [userID, setUserID] = useState(getUserID());
-
-	useEffect(() => {
-		setUserID(getUserID());
-	}, [getUserID]);
+	const checkAuth = async () => {
+		return getUserID().then(userID => {
+			if (userID) {
+				return userID;
+			}
+		});
+	};
 	
-	const addUserIngredient = (ingredient) => {
+	const addUserIngredient = async (ingredient) => {
+		const userID = await checkAuth();
 		return Firestore.collection('ingredients')
 			.add({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 	
 	const removeUserIngredient = async (ingredient) => {
+		const userID = await checkAuth();
 		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.delete();
 	}
 
 	const updateUserIngredient = async (ingredient) => {
+		const userID = await checkAuth();
 		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.update({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 
 	const getAllUserIngredients = async () => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('ingredients')
 			.where("userID", "==", userID)
 			.get();
 
-		return snapshot.docs.map((doc) => {
-			return doc.data().quantity
-				? new Ingredient({ ...doc.data(), firestoreID: doc.id })
-				: new Seasoning({ ...doc.data(), firestoreID: doc.id });
-		});
+			return snapshot.docs.map((doc) => {
+				return doc.data().quantity
+					? new Ingredient({ ...doc.data(), firestoreID: doc.id })
+					: new Seasoning({ ...doc.data(), firestoreID: doc.id });
+			});
 	}
 
-	const addUserBookmakedRecipes = (recipe) => {
+	const addUserBookmakedRecipes = async (recipe) => {
+		const userID = await checkAuth();
 		return Firestore.collection('bookmarks')
 			.add({ ...recipe.getFirestoreData(), userID: userID });
 	}
 
 	const removeUserBookmakedRecipes = async (recipe) => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('bookmarks')
 			.where("userID", "==", userID)
 			.where("recipeID", "==", recipe.getRecipeID())
@@ -75,6 +78,7 @@ export function ProvideFirestore({ children }) {
 	}
 
 	const addRecipeHistory = async (recipe) => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('history')
 			.where("userID", "==", userID)
 			.where("recipeID", "==", recipe.getRecipeID())
@@ -96,28 +100,21 @@ export function ProvideFirestore({ children }) {
 	}
 	
 	const getRecipeHistory = async () => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection("history")
 			.where("userID", "==", userID)
 			.orderBy("frequency", "desc")
 			.limit(3)
 			.get();
-		
+		/*return snapshot.docs.map((doc) => {
+			return new Recipe(doc.data());
+		});*/
+		//console.log(userID);
 		return Promise.all(snapshot.docs.map((doc) => {
 			return Object.assign(doc.data(), {id: doc.id});
 		}));
-
 	}
-    const getRecommends = () => {
-        return getRecipeHistory().forEach(recipe => {
-            var similarRecipe = searchSimilarRecipes(recipe.recipeID);
-			var recipeInfo = searchRecipeById(similarRecipe["id"]);
-			var ingredients = recipeInfo.extendedIngredients.forEach(ingredient => {
-				return Ingredient(ingredient.name, ingredient.name, ingredient.aisle, null, ingredient.amount, ingredient.image);
-			});
-				
-			return Recipe(similarRecipe.title, similarRecipe.id, ingredients, similarRecipe.imageURLs[0], recipeInfo.sourceUrl);
-        });
-    }
+
 	const value = {
 		addUserIngredient,
 		removeUserIngredient,
@@ -127,7 +124,6 @@ export function ProvideFirestore({ children }) {
 		removeUserBookmakedRecipes,
 		addRecipeHistory,
 		getRecipeHistory,
-		getRecommends,
 	}
 
 	return (
@@ -136,7 +132,3 @@ export function ProvideFirestore({ children }) {
 		</FirestoreContext.Provider>
 	)
 }
-
-
-
-

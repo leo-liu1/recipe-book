@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useContext, createContext } from "react";
 import { Auth } from './FirebaseHandler';
 
 const AuthContext = createContext();
@@ -8,48 +8,39 @@ export function useAuth() {
 };
 
 export function ProvideAuth({ children }) {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = Auth.onIdTokenChanged(user => {
-      if (user) {
-        setUser(user);
-      }else{
-        setUser(false);
-      }
-    });
-
-    unsubscribe();
-  }, []);
-
   const signup = async (email, password) => {
     const response = await Auth.createUserWithEmailAndPassword(email, password);
-    setUser(response.user);
     return response.user;
   };
 
   const login = async (email, password) => {
     const response = await Auth.signInWithEmailAndPassword(email, password);
-    setUser(response.user);
     return response.user;
   };
 
   const logout = async () => {
     await Auth.signOut();
-    setUser(false);
   };
 
   const getUserID = () => {
-    if (Auth.currentUser !== null){
-      return Auth.currentUser.uid;
-    } else {
-      return null;
-    }
+    return new Promise((resolve) => {
+      if (Auth.currentUser) {
+        resolve(Auth.currentUser.uid);
+      }
+
+      const unsubscribe = Auth.onAuthStateChanged(user => {
+        unsubscribe();
+        if (user) {
+          resolve(user.uid);
+        } else {
+          resolve(null);
+        }
+    })});
   };
 
   const isUserAuthenticated = () => {
     return new Promise((resolve) => {
-      const unsubscribe = Auth.onIdTokenChanged(user => {
+      const unsubscribe = Auth.onAuthStateChanged(user => {
         unsubscribe();
         if (user) {
           resolve(true);
@@ -60,7 +51,6 @@ export function ProvideAuth({ children }) {
   };
 
   const value = {
-    user,
     signup,
     login,
     logout,
