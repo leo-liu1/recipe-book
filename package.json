@@ -43,5 +43,8 @@
     "@testing-library/react": "^11.2.2",
     "@testing-library/react-hooks": "^3.4.2",
     "@testing-library/user-event": "^12.3.0"
+  },
+  "jest": {
+    "watchPathIgnorePatterns": ["testutil"]
   }
 }

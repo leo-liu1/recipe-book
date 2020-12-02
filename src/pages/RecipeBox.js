@@ -14,7 +14,6 @@ export default function RecipeBox({ recipe }) {
         // Send query to firestore handler to store this recipe
         addRecipeHistory(recipe)
             .catch(err => console.log(err));
-        console.log(recipe.getFirestoreData());
     }
 
     const ingredientString = recipe.ingredients
