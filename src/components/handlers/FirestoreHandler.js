@@ -89,9 +89,15 @@ export function ProvideFirestore({ children }) {
 			.where("userID", "==", userID)
 			.where("recipeID", "==", recipe.getRecipeID())
 			.get();
+		let timestamp = new Date();
+
+		console.log(timestamp);
 		if (!snapshot.exists) {
 			return Firestore.collection('history')
-				.add({ ...recipe.getFirestoreData(), userID: userID, frequency: 1 });
+				.add({ ...recipe.getFirestoreData(), userID: userID, frequency: 1})
+				.then(function(docRef) {
+					docRef.update({time: timestamp})
+					});
 		} else {
 			return Promise.all(snapshot.docs.map((doc) => {
 				let docRef = Firestore.collection("history")
@@ -99,7 +105,7 @@ export function ProvideFirestore({ children }) {
 				return Firestore.runTransaction((transaction) =>
 					transaction.get(docRef).then(function (Doc) {
 						let newFreq = Doc.data().frequency + 1;
-						transaction.update(docRef, { frequency: newFreq });
+						transaction.update(docRef, { frequency: newFreq, time: timestamp});
 				}));
 			}));
 		}
@@ -121,16 +127,31 @@ export function ProvideFirestore({ children }) {
 		}));
 	}
 
+	const removeRecipesHistory = async (recipe) => {
+		const userID = await checkAuth();
+		const snapshot = await Firestore.collection('history')
+			.where("userID", "==", userID)
+			.where("recipeID", "==", recipe.getRecipeID())
+			.get();
+
+		return Promise.all(snapshot.docs.map((doc) => {
+			return Firestore.collection('history')
+				.doc(doc.id)
+				.delete();
+		}));
+	}
+
 	const getBookmarkHistory = async () => {
 		const userID = await checkAuth();
 		const snapshot = await Firestore.collection("history")
 			.where("userID", "==", userID)
 			.orderBy("time", "desc")
+			.limit(5)
 			.get();
 		
-		return snapshot.docs.map((doc) => {
-			return new Recipe(doc.data());
-		});
+		return Promise.all(snapshot.docs.map((doc) => {
+			return Object.assign(doc.data(), {id: doc.id});
+		}));
 	}
 	
 	const value = {
@@ -143,6 +164,7 @@ export function ProvideFirestore({ children }) {
 		getAllUserBookmarkedRecipes,
 		addRecipeHistory,
 		getRecipeHistory,
+		removeRecipesHistory,
 		getBookmarkHistory,
 	}
 
