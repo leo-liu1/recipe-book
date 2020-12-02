@@ -38,7 +38,7 @@ export default class Ingredient {
         this.expirationDate = expirationDate;
         this.quantity = quantity;
         this.imageURL = imageURL ? imageURL : null;
-        this.userID = userID;
+        this.userID = userID ? userID : null;
         this.firestoreID = firestoreID;
     }
 
@@ -50,7 +50,7 @@ export default class Ingredient {
             expirationDate: this.expirationDate,
             quantity: this.quantity,
             imageURL: this.imageURL,
-            userID: this.userID,
+            userID: this.userID ? this.userID : "",
         }
     }
 	
