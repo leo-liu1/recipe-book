@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { FirestoreContext } from '../components/handlers/FirestoreHandler';
-import Ingredient from '../components/classes/Ingredient';
+//import Ingredient from '../components/classes/Ingredient';
 import Recipe from '../components/classes/Recipe';
 
 /*
@@ -30,11 +30,6 @@ export default function Bookmarks() {
         getBookmarkHistory()
     }, []);
 
-    function showUserBooked(){
-    //  console.log(allBooked[0]);
-      return allBooked;
-    }
-
     async function getBookmarkedRecipes(){
       getBookmarkHistory()
         .then((allBks) => setAllBooked(allBks))
@@ -43,19 +38,20 @@ export default function Bookmarks() {
 
     async function addBookmarkedRecipe(likeRecipe){
       await addRecipeHistory(likeRecipe);
-      getBookmarkedRecipes();
+      //getBookmarkedRecipes();
     }
 
     async function removeBookmarkedRecipe(toRemove){
       await removeRecipesHistory(toRemove);
-      getBookmarkHistory();
+      //getBookmarkHistory();
     }
 
     return (<div className="bookmarks">
         <div className="page-title">Your Bookmarks</div>
         <div className="bookmarks-container">
-            <button onClick={() => {console.log(showUserBooked())}}>
-                Bookmarked Recipes
+            <button onClick={() => {getBookmarkedRecipes()}}>
+              {console.log(allBooked)}
+              Bookmarked Recipes
             </button>
             <button onClick={() => {addBookmarkedRecipe(sampleRecipe)}}>
                 Add Recipe to Bookmark
