@@ -87,7 +87,6 @@ export function ProvideSpoonacular({ children }) {
 	
 	const searchRecipeByIngredients = (ingredientList) => {
 		const ingredientsString = ingredientList.join(",+");
-		console.log("Ping");
 		let requestString = `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${API_Key}&ingredients=`;
 		requestString = `${requestString}${ingredientsString}&number=5`;
 

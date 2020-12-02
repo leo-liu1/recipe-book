@@ -13,17 +13,20 @@ export default function Search() {
     const { searchRecipeByIngredients } = useSpoonacular();
 
     useEffect(()=>{
-      searchRecipeByIngredients(ingredientList)
-        .then(data => {
-          setList(data);
-          console.log(data);
-        })
-        .catch(err => {
-          console.error(err);
-          return {};
-        });
+      fetchData();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[searchRecipeByIngredients, ingredientList]);
+    },[]);
+
+    const fetchData = () => {
+      searchRecipeByIngredients(ingredientList)
+      .then(data => {
+        setList(data);
+      })
+      .catch(err => {
+        console.error(err);
+        return {};
+      });
+    };
 
     return (<div className="search">
         <div className="page-title">
