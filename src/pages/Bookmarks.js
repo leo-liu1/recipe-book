@@ -13,28 +13,42 @@ let sampleIngredient = new Ingredient({
 });
 */
 let sampleRecipe = new Recipe({
- name: "Bookmark Pancake",
- recipeID: "",
+ name: "Bookmark Pie",
+ recipeID: "6259",
  ingredients: [],
- imageURL:"",
+ imageURL:"url",
  recipeURL:"",
 });
 
 export default function Bookmarks() {
     document.title = "Bookmarks";
-    const { addUserBookmakedRecipes, removeUserBookmakedRecipes, getAllUserBookmarkedRecipes } = useContext(FirestoreContext);
+    const { addRecipeHistory, removeRecipesHistory, getBookmarkHistory } = useContext(FirestoreContext);
 
-    const [allBooked, setAllBooked] = useState(getAllUserBookmarkedRecipes());
+    const [allBooked, setAllBooked] = useState([]);
 
     useEffect(() => {
-        getAllUserBookmarkedRecipes()
-        .then((allBks) => setAllBooked(allBks))
-        .catch((err) => console.error(err));
-    }, [getAllUserBookmarkedRecipes]);
+        getBookmarkHistory()
+    }, []);
 
     function showUserBooked(){
     //  console.log(allBooked[0]);
       return allBooked;
+    }
+
+    async function getBookmarkedRecipes(){
+      getBookmarkHistory()
+        .then((allBks) => setAllBooked(allBks))
+        .catch((err)=> console.error(err));
+    }
+
+    async function addBookmarkedRecipe(likeRecipe){
+      await addRecipeHistory(likeRecipe);
+      getBookmarkedRecipes();
+    }
+
+    async function removeBookmarkedRecipe(toRemove){
+      await removeRecipesHistory(toRemove);
+      getBookmarkHistory();
     }
 
     return (<div className="bookmarks">
@@ -42,6 +56,12 @@ export default function Bookmarks() {
         <div className="bookmarks-container">
             <button onClick={() => {console.log(showUserBooked())}}>
                 Bookmarked Recipes
+            </button>
+            <button onClick={() => {addBookmarkedRecipe(sampleRecipe)}}>
+                Add Recipe to Bookmark
+            </button>
+            <button onClick={() => {removeBookmarkedRecipe(sampleRecipe)}}>
+                Remove from Firestore
             </button>
 
         </div>
