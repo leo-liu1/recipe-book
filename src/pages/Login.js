@@ -7,20 +7,14 @@ import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 export default function Login() {
   document.title = "Login";
 
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const emailRef = useRef()
-  const pswdRef = useRef()
-  const { login, isUserAuthenticated } = useAuth()
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const emailRef = useRef();
+  const pswdRef = useRef();
+  const { login } = useAuth();
 
   async function submitHandler(e) {
     e.preventDefault();
-
-    const auth = await isUserAuthenticated();
-
-    if (auth) {
-      return setError("You are already logged in");
-    }
 
     try {
       setError("");

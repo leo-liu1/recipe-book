@@ -1,6 +1,5 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useContext, createContext } from "react";
+import { Auth } from './FirebaseHandler';
 
 const AuthContext = createContext();
 
@@ -9,48 +8,39 @@ export function useAuth() {
 };
 
 export function ProvideAuth({ children }) {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onIdTokenChanged(user => {
-      if (user) {
-        setUser(user);
-      }else{
-        setUser(false);
-      }
-    });
-
-    unsubscribe();
-  }, []);
-
   const signup = async (email, password) => {
-    const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
-    setUser(response.user);
+    const response = await Auth.createUserWithEmailAndPassword(email, password);
     return response.user;
   };
 
   const login = async (email, password) => {
-    const response = await firebase.auth().signInWithEmailAndPassword(email, password);
-    setUser(response.user);
+    const response = await Auth.signInWithEmailAndPassword(email, password);
     return response.user;
   };
 
   const logout = async () => {
-    await firebase.auth().signOut();
-    setUser(false);
+    await Auth.signOut();
   };
 
   const getUserID = () => {
-    if (firebase.auth().currentUser !== null){
-      return firebase.auth().currentUser.uid;
-    } else {
-      return null;
-    }
+    return new Promise((resolve) => {
+      if (Auth.currentUser) {
+        resolve(Auth.currentUser.uid);
+      }
+
+      const unsubscribe = Auth.onAuthStateChanged(user => {
+        unsubscribe();
+        if (user) {
+          resolve(user.uid);
+        } else {
+          resolve(null);
+        }
+    })});
   };
 
   const isUserAuthenticated = () => {
     return new Promise((resolve) => {
-      const unsubscribe = firebase.auth().onIdTokenChanged(user => {
+      const unsubscribe = Auth.onAuthStateChanged(user => {
         unsubscribe();
         if (user) {
           resolve(true);
@@ -61,7 +51,6 @@ export function ProvideAuth({ children }) {
   };
 
   const value = {
-    user,
     signup,
     login,
     logout,
