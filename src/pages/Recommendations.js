@@ -9,7 +9,7 @@ import Ingredient from '../components/classes/Ingredient';
 export default function Recommendations() {
     document.title = "Recommendations";
     const [posts, setPosts] = useState([]);
-    const [ids, setIDs] = useState([]);
+    const [recipe, setRecipes] = useState([]);
     const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
     const { searchSimilarRecipes } = useSpoonacular();
     
@@ -20,9 +20,9 @@ export default function Recommendations() {
           getRecipeHistory().then(data => {
               for(var i = 0; i < data.length; i++) {
                 var obj = data[i];
-                
+                searchSimilarRecipes(obj.recipeID).then(data => data[0])
                 console.log(obj.recipeID);
-}
+                }
           })
           //searchSimilarRecipes("")
           
