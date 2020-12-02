@@ -87,9 +87,9 @@ export function ProvideSpoonacular({ children }) {
 	
 	const searchRecipeByIngredients = (ingredientList) => {
 		const ingredientsString = ingredientList.join(",+");
+		console.log("Ping");
 		let requestString = `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${API_Key}&ingredients=`;
 		requestString = `${requestString}${ingredientsString}&number=5`;
-		console.log("Request String", requestString);
 
 		return fetch(requestString, {
 			method: 'GET',
@@ -98,7 +98,6 @@ export function ProvideSpoonacular({ children }) {
 		.then((data) => {
 			let recipe_object_list = [];
 			const recipe_json_list = data;
-			console.log("Data", data);
 			recipe_json_list.forEach((recipe_json) => {
 				const missingIngredient_object_list = recipe_json.missedIngredients.map((ingredient_json) => {
 					return new Ingredient({
@@ -114,13 +113,10 @@ export function ProvideSpoonacular({ children }) {
 					});
 				});
 
-				const recipe_object = searchRecipeByIdWithMissing(recipe_json.id, missingIngredient_object_list)
-					.then((data) => {
-						recipe_object_list.push(data);
-					});
+				recipe_object_list.push(searchRecipeByIdWithMissing(recipe_json.id, missingIngredient_object_list));
+
 			});
-			console.log("Return Value", recipe_object_list);
-			return recipe_object_list;
+			return Promise.all(recipe_object_list);
 		})
 		.catch(err => {
 			console.error(err);
