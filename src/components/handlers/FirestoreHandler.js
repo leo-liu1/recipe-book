@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, createContext } from 'react';
+import React, { useContext, createContext } from 'react';
 import { Firestore } from './FirebaseHandler';
 
 import Ingredient from '../classes/Ingredient.js';
@@ -16,13 +16,16 @@ export function useFirestore() {
 export function ProvideFirestore({ children }) {
 	const { getUserID } = useAuth();
 
-	const [userID, setUserID] = useState(getUserID());
-
-	useEffect(() => {
-		setUserID(getUserID());
-	}, [getUserID]);
+	const checkAuth = async () => {
+		return getUserID().then(userID => {
+			if (userID) {
+				return userID;
+			}
+		});
+	};
 	
-	const addUserIngredient = (ingredient) => {
+	const addUserIngredient = async (ingredient) => {
+		const userID = await checkAuth();
 		return Firestore.collection('ingredients')
 			.add({ ...ingredient.getFirestoreData(), userID: userID });
 	}
@@ -34,29 +37,33 @@ export function ProvideFirestore({ children }) {
 	}
 
 	const updateUserIngredient = async (ingredient) => {
+		const userID = await checkAuth();
 		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.update({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 
 	const getAllUserIngredients = async () => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('ingredients')
 			.where("userID", "==", userID)
 			.get();
 
-		return snapshot.docs.map((doc) => {
-			return doc.data().quantity
-				? new Ingredient({ ...doc.data(), firestoreID: doc.id })
-				: new Seasoning({ ...doc.data(), firestoreID: doc.id });
-		});
+			return snapshot.docs.map((doc) => {
+				return doc.data().quantity
+					? new Ingredient({ ...doc.data(), firestoreID: doc.id })
+					: new Seasoning({ ...doc.data(), firestoreID: doc.id });
+			});
 	}
 
-	const addUserBookmakedRecipes = (recipe) => {
+	const addUserBookmakedRecipes = async (recipe) => {
+		const userID = await checkAuth();
 		return Firestore.collection('bookmarks')
 			.add({ ...recipe.getFirestoreData(), userID: userID });
 	}
 
 	const removeUserBookmakedRecipes = async (recipe) => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('bookmarks')
 			.where("userID", "==", userID)
 			.where("recipeID", "==", recipe.getRecipeID())
@@ -70,6 +77,7 @@ export function ProvideFirestore({ children }) {
 	}
 
 	const addRecipeHistory = async (recipe) => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('history')
 			.where("userID", "==", userID)
 			.where("recipeID", "==", recipe.getRecipeID())
@@ -91,6 +99,7 @@ export function ProvideFirestore({ children }) {
 	}
 	
 	const getRecipeHistory = async () => {
+		const userID = await checkAuth();
 		const snapshot = await Firestore.collection("history")
 			.where("userID", "==", userID)
 			.orderBy("frequency", "desc")
