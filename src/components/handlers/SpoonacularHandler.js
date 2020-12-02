@@ -16,16 +16,16 @@ export default class SpoonacularHandler{
 		.then(response => 
 			response.json()).then(data => {
 				const recipe_json = data;
-				/*var ingredient_object_list = [];
+				var ingredient_object_list = [];
 				const ingredient_json_list = recipe_json.extendedIngredients;
 				ingredient_json_list.forEach(ingredient_json => {
 					const ingredient_object = this.searchIngredientByIdHelper(ingredient_json.id, ingredient_json.measures.us.amount, ingredient_json.measures.us.unitLong);
 					ingredient_object_list.push(ingredient_object);
 				});
 				const recipe_object = new Recipe({ name: recipe_json.title, recipeID: recipe_json.id, ingredients: ingredient_object_list, imageURL: recipe_json.image, recipeURL: recipe_json.sourceUrl, missingIngredients: null });
-				//console.log("Recipe Object", recipe_object);
-				return recipe_object;*/
-				return data.json();
+				console.log("Recipe Object", recipe_object);
+				return recipe_object;
+				//return data.json();
 			})
 		.catch(err => {
 			console.error(err);

@@ -4,6 +4,8 @@ import Seasoning from '../classes/Seasoning';
 import Recipe from '../classes/Recipe.js';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import searchSimilarRecipes from './SpoonacularHandler';
+import searchRecipeById from './SpoonacularHandler';
 
 import { useAuth } from './AuthHandler';
 
@@ -107,12 +109,22 @@ export function ProvideFirestore({ children }) {
 			.orderBy("frequency", "desc")
 			.limit(3)
 			.get();
-		
 		return snapshot.docs.map((doc) => {
 			return new Recipe(doc.data());
 		});
-	}
 
+	}
+    const getRecommends = () => {
+        return getRecipeHistory().forEach(recipe => {
+            var similarRecipe = searchSimilarRecipes(recipe.recipeID);
+			var recipeInfo = searchRecipeById(similarRecipe["id"]);
+			var ingredients = recipeInfo.extendedIngredients.forEach(ingredient => {
+				return Ingredient(ingredient.name, ingredient.name, ingredient.aisle, null, ingredient.amount, ingredient.image);
+			});
+				
+			return Recipe(similarRecipe.title, similarRecipe.id, ingredients, similarRecipe.imageURLs[0], recipeInfo.sourceUrl);
+        });
+    }
 	const value = {
 		addUserIngredient,
 		removeUserIngredient,
@@ -122,6 +134,7 @@ export function ProvideFirestore({ children }) {
 		removeUserBookmakedRecipes,
 		addRecipeHistory,
 		getRecipeHistory,
+		getRecommends,
 	}
 
 	return (
