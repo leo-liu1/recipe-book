@@ -82,8 +82,8 @@ export function ProvideFirestore({ children }) {
 			.where("userID", "==", userID)
 			.get();
 
-			return snapshot.docs.map((doc) => {
-				return new Recipe(doc.data());
+		return snapshot.docs.map((doc) => {
+			return new Recipe(doc.data());
 		});
 	}
 

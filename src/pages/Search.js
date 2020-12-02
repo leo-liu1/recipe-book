@@ -9,7 +9,7 @@ export default function Search() {
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const query = urlParams.get('q');
-    const ingredientList = query.split(', ');
+    const ingredientList = query.split(',').map(ingredientName => ingredientName.trim());
     const { searchRecipeByIngredients } = useSpoonacular();
 
     useEffect(()=>{

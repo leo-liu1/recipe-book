@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ClassNames from 'classnames';
 
 import { useFirestore } from '../components/handlers/FirestoreHandler';
+import { useSpoonacular } from '../components/handlers/SpoonacularHandler';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient';
 import Seasoning from '../components/classes/Seasoning';
@@ -50,6 +51,8 @@ export default function Fridge({ populateSearch }) {
         .then((ingredients) => setFridge(ingredients))
         .catch((err) => console.error(err));
     }, [getAllUserIngredients]);
+
+    const { searchIngredient } = useSpoonacular();
 
     function editIngredient(ingredient, index) {
         setShowForm(true);
@@ -116,20 +119,33 @@ export default function Fridge({ populateSearch }) {
                 imageURL: null,
                 firestoreID: formData.formIngredientID,
             });
+        
+        const name = formData.formIngredientName;
 
         if (typeof formData.formIngredientIndex === 'number') {
-            updateUserIngredient(newElement)
-                .then(() => getAllUserIngredients())
-                .then((userIngredients) => setFridge(userIngredients))
-                .catch((err) => console.error(err));
+            searchIngredient(name).then(({ spoonacularName, imageURL }) => {
+                if (typeof spoonacularName !== 'undefined') {
+                    newElement.spoonacularName = spoonacularName;
+                    newElement.imageURL = imageURL;
+                }
+                return updateUserIngredient(newElement);
+            })
+            .then(() => getAllUserIngredients())
+            .then((userIngredients) => setFridge(userIngredients))
+            .catch((err) => console.error(err));
         } else {
-            addUserIngredient(newElement)
-                .then((docRef) => {
-                    newElement.firestoreID = docRef.id;
-                    return getAllUserIngredients();
-                })
-                .then((userIngredients) => setFridge(userIngredients))
-                .catch((err) => console.error(err));
+            searchIngredient(name).then(({ spoonacularName, imageURL }) => {
+                if (typeof spoonacularName !== 'undefined') {
+                    newElement.spoonacularName = spoonacularName;
+                    newElement.imageURL = imageURL;
+                }
+                return addUserIngredient(newElement);
+            }).then((docRef) => {
+                newElement.firestoreID = docRef.id;
+                return getAllUserIngredients();
+            })
+            .then((userIngredients) => setFridge(userIngredients))
+            .catch((err) => console.error(err));
         }
     }
 
@@ -209,7 +225,7 @@ export default function Fridge({ populateSearch }) {
         const fridgeSearchStr = Object.values(newChosen).filter((ingredient) => { // get only elements that are non-null
             return ingredient !== null;
         }).map((ingredient) => { // return only the name for each ingredient
-            return ingredient.name;
+            return ingredient.spoonacularName ? ingredient.spoonacularName : ingredient.name;
         }).join(', '); // join them all together, separated by commas
 
         populateSearch(fridgeSearchStr);
