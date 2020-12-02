@@ -1,6 +1,5 @@
 import React, { useState, useEffect} from "react";
 import { useLocation } from 'react-router-dom';
-import SpoonacularHandler from '../components/handlers/SpoonacularHandler.js';
 
 export default function Search() {
     document.title = "Search";
@@ -15,9 +14,9 @@ export default function Search() {
     //const ingredientsString = ingredientList.join(",+");
     //console.log(ingredientsString);
     async function getData(){
-      const API_Key=""; //fill in your API key
-      const spoonacularObj = new SpoonacularHandler(API_Key);
-      setList(await spoonacularObj.searchRecipeByIngredients(ingredientList));
+      // const API_Key=""; //fill in your API key
+      // const spoonacularObj = new SpoonacularHandler(API_Key);
+      // setList(await spoonacularObj.searchRecipeByIngredients(ingredientList));
     }
     useEffect(()=>{
       getData();
