@@ -15,7 +15,7 @@ export default function Search() {
     //const ingredientsString = ingredientList.join(",+");
     //console.log(ingredientsString);
     async function getData(){
-      const API_Key="1717d4742a794307904ef77c8515e2ad";
+      const API_Key=" ";
       const spoonacularObj = new SpoonacularHandler(API_Key);
       setList(await spoonacularObj.searchRecipeByIngredients(ingredientList));
     }
