@@ -183,17 +183,13 @@ export function ProvideSpoonacular({ children }) {
 }
 
 /*
-const api = api_key;
+const api = "1026ca0dc757467e8c1c9e62bb994d48";
 const spoon=new SpoonacularHandler(api);
-spoon.searchRecipeById("716429").then(data => {
-	//console.log(data);
-})
-
+console.log(spoon.searchRecipeById("716429"));
 spoon.searchSimilarRecipes("716429").then(data => {
-	//console.log(data);
+	console.log(data);
 })
-
 spoon.searchIngredient("apple").then(data => {
 	//console.log(data);
-})
-*/
+})*/
+

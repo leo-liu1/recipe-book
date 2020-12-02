@@ -31,6 +31,7 @@ export function ProvideFirestore({ children }) {
 	}
 	
 	const removeUserIngredient = async (ingredient) => {
+		const userID = await checkAuth();
 		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.delete();
@@ -116,12 +117,27 @@ export function ProvideFirestore({ children }) {
 			.orderBy("frequency", "desc")
 			.limit(3)
 			.get();
+		/*return snapshot.docs.map((doc) => {
+			return new Recipe(doc.data());
+		});*/
+		//console.log(userID);
+		return Promise.all(snapshot.docs.map((doc) => {
+			return Object.assign(doc.data(), {id: doc.id});
+		}));
+	}
+
+	const getBookmarkHistory = async () => {
+		const userID = await checkAuth();
+		const snapshot = await Firestore.collection("history")
+			.where("userID", "==", userID)
+			.orderBy("time", "desc")
+			.get();
 		
 		return snapshot.docs.map((doc) => {
 			return new Recipe(doc.data());
 		});
 	}
-
+	
 	const value = {
 		addUserIngredient,
 		removeUserIngredient,
@@ -132,6 +148,7 @@ export function ProvideFirestore({ children }) {
 		getAllUserBookmarkedRecipes,
 		addRecipeHistory,
 		getRecipeHistory,
+		getBookmarkHistory,
 	}
 
 	return (

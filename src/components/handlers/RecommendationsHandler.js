@@ -17,10 +17,6 @@ export function ProvideRecommend({ children }) {
   const { searchSimilarRecipes, searchRecipeById } = useSpoonacular();
 	const [userID, setUserID] = useState(getUserID());
 
-	useEffect(() => {
-		setUserID(getUserID);
-    }, [getUserID]);
-    
     const {getRecipeHistory} = useFirestore();
 
     const getRecommends = () => {
@@ -34,6 +30,7 @@ export function ProvideRecommend({ children }) {
 			return Recipe(similarRecipe.title, similarRecipe.id, ingredients, similarRecipe.imageURLs[0], recipeInfo.sourceUrl);
         });
     }
+
     const value = {
 		getRecommends,
 	}
@@ -43,3 +40,4 @@ export function ProvideRecommend({ children }) {
         </AuthContext.Provider>
       )
 }
+
