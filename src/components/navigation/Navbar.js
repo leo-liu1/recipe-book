@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
 import { useAuth } from '../handlers/AuthHandler';
@@ -12,9 +12,11 @@ export default function Navbar({ isAuthenticated, searchStr }) {
     const [loggedOut, setLoggedOut] = useState(false);
     const { logout } = useAuth();
 
-    if (loggedOut) {
-        logout();
-    }
+    useEffect(() => {
+        if (loggedOut) {
+            logout();
+        }
+    }, [loggedOut, logout]);
 
     return (<>
         {loggedOut && <Redirect push to="/" />}

@@ -76,6 +76,17 @@ export function ProvideFirestore({ children }) {
 				.delete();
 		}));
 	}
+	
+	const getAllUserBookmarkedRecipes = async () => {
+		const userID = await checkAuth();
+		const snapshot = await Firestore.collection('bookmarks')
+			.where("userID", "==", userID)
+			.get();
+
+			return snapshot.docs.map((doc) => {
+				return new Recipe(doc.data());
+		});
+	}
 
 	const addRecipeHistory = async (recipe) => {
 		const userID = await checkAuth();
@@ -122,6 +133,7 @@ export function ProvideFirestore({ children }) {
 		getAllUserIngredients,
 		addUserBookmakedRecipes,
 		removeUserBookmakedRecipes,
+		getAllUserBookmarkedRecipes,
 		addRecipeHistory,
 		getRecipeHistory,
 	}
