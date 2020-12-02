@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { useAuth } from '../components/handlers/AuthHandler';
+import React, { useRef, useState, useContext } from 'react';
+import { AuthContext } from '../components/handlers/AuthHandler';
 import { Link } from 'react-router-dom';
 
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
@@ -12,7 +12,7 @@ export default function Signup() {
   const emailRef = useRef();
   const pswdRef = useRef();
   const pswdConfirmRef = useRef();
-  const { signup } = useAuth();
+  const { signup } = useContext(AuthContext);
 
   async function submitHandler(e){
     e.preventDefault();
@@ -49,16 +49,16 @@ export default function Signup() {
           <div className="form-title">Create an account</div>
           <form onSubmit={submitHandler}>
           <div className="input">
-              <label>Email</label>
-              <input type="email" ref={emailRef} placeholder="chef@recipetocook.com" required />
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" ref={emailRef} placeholder="chef@recipetocook.com" required />
           </div>
           <div className="input">
-              <label>Create a password</label>
-              <input type="password" ref={pswdRef} placeholder="********" required />
+              <label htmlFor="password">Create a password</label>
+              <input type="password" id="password" ref={pswdRef} placeholder="********" required />
           </div>
           <div className="input">
-              <label>Confirm password</label>
-              <input type="password" ref={pswdConfirmRef} placeholder="********" required />
+              <label htmlFor="confirmPassword">Confirm password</label>
+              <input type="password" id="confirmPassword" ref={pswdConfirmRef} placeholder="********" required />
           </div>
           <div className="error">{error}</div>
           <button disabled={loading} type="submit" className="action">

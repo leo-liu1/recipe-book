@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { useAuth } from "../components/handlers/AuthHandler";
+import React, { useRef, useState, useContext } from 'react';
+import { AuthContext } from "../components/handlers/AuthHandler";
 import { Link } from "react-router-dom";
 
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
@@ -11,7 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const emailRef = useRef();
   const pswdRef = useRef();
-  const { login } = useAuth();
+  const { login } = useContext(AuthContext);
 
   async function submitHandler(e) {
     e.preventDefault();
@@ -37,12 +37,12 @@ export default function Login() {
           <div className="form-title">Log in</div>
           <form onSubmit={submitHandler}>
             <div className="input">
-              <label>Email</label>
-              <input type="email" ref={emailRef} placeholder="chef@recipetocook.com" required />
+              <label htmlFor="email">Email</label>
+              <input type="email" id="email" ref={emailRef} placeholder="chef@recipetocook.com" required />
             </div>
             <div className="input">
-              <label>Password</label>
-              <input type="password" ref={pswdRef} placeholder="********" required />
+              <label htmlFor="password">Password</label>
+              <input type="password" id="password" ref={pswdRef} placeholder="********" required />
             </div>
             <div className="error">{error}</div>
             <button disabled={loading} type="submit" className="action">

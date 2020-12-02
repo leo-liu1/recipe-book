@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
-import { ProvideAuth, useAuth } from './components/handlers/AuthHandler';
+import { ProvideAuth, AuthContext } from './components/handlers/AuthHandler';
 import { ProvideFirestore } from './components/handlers/FirestoreHandler';
 import { ProvideSpoonacular } from './components/handlers/SpoonacularHandler';
 import Navbar from './components/navigation/Navbar';
@@ -29,7 +29,7 @@ export default function App() {
 }
 
 function Routing() {
-  const { isUserAuthenticated } = useAuth();
+  const { isUserAuthenticated } = useContext(AuthContext);
   const [isAuthenticated, setAuthenticated] = useState(localStorage.getItem("auth") === "true");
   const [searchStr, setSearchStr] = useState('');
 

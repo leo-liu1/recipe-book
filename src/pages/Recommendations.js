@@ -1,18 +1,18 @@
 //import React from 'react';
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import Recipe from '../components/classes/Recipe';
-import { useRecommend } from '../components/handlers/RecommendationsHandler';
-import { useFirestore } from '../components/handlers/FirestoreHandler';
-import { useSpoonacular } from '../components/handlers/SpoonacularHandler';
+import { RecommendationsContext } from '../components/handlers/RecommendationsHandler';
+import { FirestoreContext } from '../components/handlers/FirestoreHandler';
+import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
 import Ingredient from '../components/classes/Ingredient';
 
 export default function Recommendations() {
     document.title = "Recommendations";
     const [posts, setPosts] = useState([]);
-    const [recipe, setRecipes] = useState([]);
-    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useFirestore();
-    const { searchSimilarRecipes } = useSpoonacular();
-    
+    const [ids, setIDs] = useState([]);
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useContext(FirestoreContext);
+    const { searchSimilarRecipes } = useContext(SpoonacularContext);
+
 
     useEffect(() => {
         

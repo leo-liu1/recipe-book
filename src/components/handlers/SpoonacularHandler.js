@@ -1,12 +1,8 @@
-import React, { useContext, createContext } from "react";
+import React, { createContext } from "react";
 import Ingredient from '../classes/Ingredient';
 import Recipe from '../classes/Recipe';
 
-const SpoonacularContext = createContext();
-
-export function useSpoonacular() {
-	return useContext(SpoonacularContext);
-}
+export const SpoonacularContext = createContext();
 
 export function ProvideSpoonacular({ children }) {
 	const API_Key = process.env.REACT_APP_SPOONACULAR_API_KEY;
@@ -125,27 +121,23 @@ export function ProvideSpoonacular({ children }) {
 	
 	const searchIngredient = (name) => {
 		let requestString = `https://api.spoonacular.com/food/ingredients/search?apiKey=${API_Key}&query=`;
-		requestString = `${requestString}${name}&number=1`;
+		requestString = `${requestString}${name}&number=1`; // limited to only the first response
 		
 		return fetch(requestString, {
 			method: 'GET',
 		})
 		.then((response) => response.json())
-		.then((ingredient_json_list) => {
-			const ingredient_object_list = ingredient_json_list.map((ingredient_json) => {
-				return new Ingredient({
-					name: ingredient_json.originalName,
+		.then((data) => {
+			const ingredient_json = (data && data.results.length > 0) ? data.results[0] : {}; // either grab first result or set to empty object
+
+			if (typeof ingredient_json.name !== 'undefined' && typeof ingredient_json.image !== 'undefined') {
+				return {
 					spoonacularName: ingredient_json.name,
-					type: ingredient_json.aisle,
-					expirationDate: null,
-					quantity: {
-						amount: ingredient_json.measures.us.amount,
-						unit: ingredient_json.measures.us.unitLong,
-					},
-					imageURL: ingredient_json.image,
-				});
-			});
-			return ingredient_object_list;
+					imageURL: `https://spoonacular.com/cdn/ingredients_250x250/${ingredient_json.image}`,
+				};
+			} else {
+				return {};
+			}
 		})
 		.catch((err) => {
 			console.error(err);

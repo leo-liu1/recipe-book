@@ -5,16 +5,12 @@ import Ingredient from '../classes/Ingredient.js';
 import Seasoning from '../classes/Seasoning';
 import Recipe from '../classes/Recipe.js';
 
-import { useAuth } from './AuthHandler';
+import { AuthContext } from './AuthHandler';
 
-const FirestoreContext = createContext();
-
-export function useFirestore() {
-	return useContext(FirestoreContext);
-}
+export const FirestoreContext = createContext();
 
 export function ProvideFirestore({ children }) {
-	const { getUserID } = useAuth();
+	const { getUserID } = useContext(AuthContext);
 
 	const checkAuth = async () => {
 		return getUserID().then(userID => {
@@ -31,7 +27,6 @@ export function ProvideFirestore({ children }) {
 	}
 	
 	const removeUserIngredient = async (ingredient) => {
-		const userID = await checkAuth();
 		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.delete();
@@ -83,8 +78,8 @@ export function ProvideFirestore({ children }) {
 			.where("userID", "==", userID)
 			.get();
 
-			return snapshot.docs.map((doc) => {
-				return new Recipe(doc.data());
+		return snapshot.docs.map((doc) => {
+			return new Recipe(doc.data());
 		});
 	}
 

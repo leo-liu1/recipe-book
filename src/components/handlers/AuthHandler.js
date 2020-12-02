@@ -1,11 +1,7 @@
-import React, { useContext, createContext } from "react";
+import React, { createContext } from "react";
 import { Auth } from './FirebaseHandler';
 
-const AuthContext = createContext();
-
-export function useAuth() {
-  return useContext(AuthContext);
-};
+export const AuthContext = createContext();
 
 export function ProvideAuth({ children }) {
   const signup = async (email, password) => {
@@ -55,8 +51,10 @@ export function ProvideAuth({ children }) {
     login,
     logout,
     getUserID,
-    isUserAuthenticated
+    isUserAuthenticated,
   }
+
+  console.log(value);
 
   return (
     <AuthContext.Provider value={value}>
