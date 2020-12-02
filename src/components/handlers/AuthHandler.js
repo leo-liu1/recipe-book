@@ -1,6 +1,5 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
 import React, { useState, useEffect, useContext, createContext } from "react";
+import { Auth } from './FirebaseHandler';
 
 const AuthContext = createContext();
 
@@ -12,7 +11,7 @@ export function ProvideAuth({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onIdTokenChanged(user => {
+    const unsubscribe = Auth.onIdTokenChanged(user => {
       if (user) {
         setUser(user);
       }else{
@@ -24,25 +23,25 @@ export function ProvideAuth({ children }) {
   }, []);
 
   const signup = async (email, password) => {
-    const response = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    const response = await Auth.createUserWithEmailAndPassword(email, password);
     setUser(response.user);
     return response.user;
   };
 
   const login = async (email, password) => {
-    const response = await firebase.auth().signInWithEmailAndPassword(email, password);
+    const response = await Auth.signInWithEmailAndPassword(email, password);
     setUser(response.user);
     return response.user;
   };
 
   const logout = async () => {
-    await firebase.auth().signOut();
+    await Auth.signOut();
     setUser(false);
   };
 
   const getUserID = () => {
-    if (firebase.auth().currentUser !== null){
-      return firebase.auth().currentUser.uid;
+    if (Auth.currentUser !== null){
+      return Auth.currentUser.uid;
     } else {
       return null;
     }
@@ -50,7 +49,7 @@ export function ProvideAuth({ children }) {
 
   const isUserAuthenticated = () => {
     return new Promise((resolve) => {
-      const unsubscribe = firebase.auth().onIdTokenChanged(user => {
+      const unsubscribe = Auth.onIdTokenChanged(user => {
         unsubscribe();
         if (user) {
           resolve(true);

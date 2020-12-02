@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
+import { Firestore } from './FirebaseHandler';
+
 import Ingredient from '../classes/Ingredient.js';
 import Seasoning from '../classes/Seasoning';
 import Recipe from '../classes/Recipe.js';
@@ -7,12 +9,13 @@ import 'firebase/firestore';
 import searchSimilarRecipes from './SpoonacularHandler';
 import searchRecipeById from './SpoonacularHandler';
 
+
 import { useAuth } from './AuthHandler';
 
-const AuthContext = createContext();
+const FirestoreContext = createContext();
 
 export function useFirestore() {
-	return useContext(AuthContext);
+	return useContext(FirestoreContext);
 }
 
 export function ProvideFirestore({ children }) {
@@ -21,32 +24,28 @@ export function ProvideFirestore({ children }) {
 	const [userID, setUserID] = useState(getUserID());
 
 	useEffect(() => {
-		setUserID(getUserID);
+		setUserID(getUserID());
 	}, [getUserID]);
 	
 	const addUserIngredient = (ingredient) => {
-		return firebase.firestore()
-			.collection('ingredients')
+		return Firestore.collection('ingredients')
 			.add({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 	
 	const removeUserIngredient = async (ingredient) => {
-		return await firebase.firestore()
-			.collection('ingredients')
+		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.delete();
 	}
 
 	const updateUserIngredient = async (ingredient) => {
-		return await firebase.firestore()
-			.collection('ingredients')
+		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.update({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 
 	const getAllUserIngredients = async () => {
-		const snapshot = await firebase.firestore()
-			.collection('ingredients')
+		const snapshot = await Firestore.collection('ingredients')
 			.where("userID", "==", userID)
 			.get();
 
@@ -58,42 +57,36 @@ export function ProvideFirestore({ children }) {
 	}
 
 	const addUserBookmakedRecipes = (recipe) => {
-		return firebase.firestore()
-			.collection('bookmarks')
+		return Firestore.collection('bookmarks')
 			.add({ ...recipe.getFirestoreData(), userID: userID });
 	}
 
 	const removeUserBookmakedRecipes = async (recipe) => {
-		const snapshot = await firebase.firestore()
-			.collection('bookmarks')
+		const snapshot = await Firestore.collection('bookmarks')
 			.where("userID", "==", userID)
 			.where("recipeID", "==", recipe.getRecipeID())
 			.get();
 
 		return Promise.all(snapshot.docs.map((doc) => {
-			return firebase.firestore()
-				.collection('bookmarks')
+			return Firestore.collection('bookmarks')
 				.doc(doc.id)
 				.delete();
 		}));
 	}
 
 	const addRecipeHistory = async (recipe) => {
-		const snapshot = await firebase.firestore()
-			.collection('history')
+		const snapshot = await Firestore.collection('history')
 			.where("userID", "==", userID)
 			.where("recipeID", "==", recipe.getRecipeID())
 			.get();
 		if (!snapshot.exists) {
-			return firebase.firestore()
-				.collection('history')
+			return Firestore.collection('history')
 				.add({ ...recipe.getFirestoreData(), userID: userID, frequency: 1 });
 		} else {
 			return Promise.all(snapshot.docs.map((doc) => {
-				let docRef = firebase.firestore()
-					.collection("history")
+				let docRef = Firestore.collection("history")
 					.doc(doc.id);
-				return firebase.firestore().runTransaction((transaction) =>
+				return Firestore.runTransaction((transaction) =>
 					transaction.get(docRef).then(function (Doc) {
 						let newFreq = Doc.data().frequency + 1;
 						transaction.update(docRef, { frequency: newFreq });
@@ -103,8 +96,7 @@ export function ProvideFirestore({ children }) {
 	}
 	
 	const getRecipeHistory = async () => {
-		const snapshot = await firebase.firestore()
-		    .collection("history")
+		const snapshot = await Firestore.collection("history")
 			.where("userID", "==", userID)
 			.orderBy("frequency", "desc")
 			.limit(3)
@@ -139,9 +131,9 @@ export function ProvideFirestore({ children }) {
 	}
 
 	return (
-		<AuthContext.Provider value={value}>
+		<FirestoreContext.Provider value={value}>
 			{children}
-		</AuthContext.Provider>
+		</FirestoreContext.Provider>
 	)
 }
 
