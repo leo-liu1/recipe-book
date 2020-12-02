@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useFirestore } from '../components/handlers/FirestoreHandler';
+import React, { useEffect, useState, useContext } from 'react';
+import { FirestoreContext } from '../components/handlers/FirestoreHandler';
 import Ingredient from '../components/classes/Ingredient';
 import Recipe from '../components/classes/Recipe';
 
@@ -22,7 +22,7 @@ let sampleRecipe = new Recipe({
 
 export default function Bookmarks() {
     document.title = "Bookmarks";
-    const { addUserBookmakedRecipes, removeUserBookmakedRecipes, getAllUserBookmarkedRecipes } = useFirestore();
+    const { addUserBookmakedRecipes, removeUserBookmakedRecipes, getAllUserBookmarkedRecipes } = useContext(FirestoreContext);
 
     const [allBooked, setAllBooked] = useState(getAllUserBookmarkedRecipes());
 

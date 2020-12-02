@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 
-import { useAuth } from '../handlers/AuthHandler';
+import { AuthContext } from '../handlers/AuthHandler';
 import NavbarSearch from './NavbarSearch';
 
 import { ReactComponent as FridgeIcon } from '../../assets/icons/fridge.svg';
@@ -10,7 +10,7 @@ import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recomm
 
 export default function Navbar({ isAuthenticated, searchStr }) {
     const [loggedOut, setLoggedOut] = useState(false);
-    const { logout } = useAuth();
+    const { logout } = useContext(AuthContext);
 
     useEffect(() => {
         if (loggedOut) {

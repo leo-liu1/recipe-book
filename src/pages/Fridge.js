@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ClassNames from 'classnames';
 
-import { useFirestore } from '../components/handlers/FirestoreHandler';
-import { useSpoonacular } from '../components/handlers/SpoonacularHandler';
+import { FirestoreContext } from '../components/handlers/FirestoreHandler';
+import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
 import DatePicker from "react-datepicker";
 import Ingredient from '../components/classes/Ingredient';
 import Seasoning from '../components/classes/Seasoning';
 
-import meatImage from '../assets/images/meat.jpg'
-import dairyImage from '../assets/images/dairy.jpg'
-import carbImage from '../assets/images/carb.jpg'
-import fruitImage from '../assets/images/fruit.jpg'
-import vegetableImage from '../assets/images/vegetable.jpg'
-import seasoningImage from '../assets/images/seasoning.jpg'
+import meatImage from '../assets/images/meat.jpg';
+import dairyImage from '../assets/images/dairy.jpg';
+import carbImage from '../assets/images/carb.jpg';
+import fruitImage from '../assets/images/fruit.jpg';
+import vegetableImage from '../assets/images/vegetable.jpg';
+import seasoningImage from '../assets/images/seasoning.jpg';
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -45,14 +45,14 @@ export default function Fridge({ populateSearch }) {
     const [chooseActive, setChooseActive] = useState(false); // toggles between edit and choose ingredient
     const [chosenIngredients, setChosenIngredients] = useState({});
 
-    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, updateUserIngredient } = useFirestore();
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, updateUserIngredient } = useContext(FirestoreContext);
     useEffect(() => {
         getAllUserIngredients()
         .then((ingredients) => setFridge(ingredients))
         .catch((err) => console.error(err));
     }, [getAllUserIngredients]);
 
-    const { searchIngredient } = useSpoonacular();
+    const { searchIngredient } = useContext(SpoonacularContext);
 
     function editIngredient(ingredient, index) {
         setShowForm(true);
@@ -244,18 +244,20 @@ export default function Fridge({ populateSearch }) {
                     </div>
                     <form className="form" onSubmit={handleSubmit}>
                         <div className="input">
-                            <label>Name</label>
+                            <label htmlFor="formIngredientName">Name</label>
                             <input
                                 name="formIngredientName"
+                                id="formIngredientName"
                                 type="text"
                                 value={formData.formIngredientName}
                                 onChange={handleFormChange}
                                 required/>
                         </div>
                         {!isSeasoning && <div className="input">
-                            <label>Type</label>
+                            <label htmlFor="formIngredientType">Type</label>
                             <select
                                 name="formIngredientType"
+                                id="formIngredientType"
                                 value={formData.formIngredientType}
                                 onChange={handleFormChange}
                                 required>
@@ -265,26 +267,29 @@ export default function Fridge({ populateSearch }) {
                             </select>
                         </div>}
                         {!isSeasoning && <div className="input">
-                            <label>Amount</label>
+                            <label htmlFor="formIngredientAmount">Amount</label>
                             <input
                                 name="formIngredientAmount"
+                                id="formIngredientAmount"
                                 type="number"
                                 value={formData.formIngredientAmount}
                                 onChange={handleFormChange}
                                 required/>
                         </div>}
                         {!isSeasoning && <div className="input">
-                            <label>Unit</label>
+                            <label htmlFor="formIngredientUnit">Unit</label>
                             <input
                                 name="formIngredientUnit"
+                                id="formIngredientUnit"
                                 type="text"
                                 value={formData.formIngredientUnit}
                                 onChange={handleFormChange}
                                 required/>
                         </div>}
                         {!isSeasoning && <div className="input">
-                            <label>Expiration Date</label>
+                            <label htmlFor="datePicker">Expiration Date</label>
                             <DatePicker className="datepicker"
+                                        id="datepicker"
                                         placeholderText="Click to select date"
                                         minDate={formData.formIngredientExp}
                                         selected={formData.formIngredientExp}

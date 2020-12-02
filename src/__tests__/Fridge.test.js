@@ -1,54 +1,92 @@
-import React from "react";
-import * as firestoreHandler from '../components/handlers/FirestoreHandler'
-import Fridge from "../pages/Fridge";
-import Ingredient from "../components/classes/Ingredient";
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
-import { shallow, mount, render } from 'enzyme';
-import { useFirestore } from "../components/handlers/FirestoreHandler";
+import React from 'react';
+import user from '@testing-library/user-event';
+import { render, screen, act, waitForElementToBeRemoved } from '@testing-library/react';
+import '@testing-library/jest-dom/extend-expect';
 
-Enzyme.configure({ adapter: new Adapter() });
+import { AuthContext } from '../components/handlers/AuthHandler';
+import { FirestoreContext } from '../components/handlers/FirestoreHandler';
+import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
 
-const addUserIngredient = jest.fn().mockImplementation(ingredient => Promise.resolve());
-const removeUserIngredient = jest.fn().mockImplementation(ingredient => Promise.resolve());
-const updateUserIngredient = jest.fn().mockImplementation(ingredient => Promise.resolve());
-const getAllUserIngredient = jest.fn().mockImplementation(ingredient => Promise.resolve([
-    new Ingredient({
-        name: "Mock1",
-        spoonacularName: "spoon",
-        type: "Meat",
-        expirationDate: "12345",
-        quantity: { amount: 2, unit: 'kg' },
-        firestoreID: 100,
-        userID: 101,
+import Ingredient from '../components/classes/Ingredient';
+import Fridge from '../pages/Fridge';
+
+const authValue = {
+    signup:                         () => Promise.resolve(),
+    login:                          () => Promise.resolve(),
+    logout:                         () => Promise.resolve(),
+    getUserID:                      () => Promise.resolve(),
+    isUserAuthenticated:            () => Promise.resolve(),
+}
+
+const firestoreValue = {
+    addUserIngredient:              (Ingredient) => Promise.resolve({
+        id: 'addedIngredient',
     }),
-]));
+    removeUserIngredient:           () => Promise.resolve(),
+    updateUserIngredient:           () => Promise.resolve(),
+    getAllUserIngredients:          () => Promise.resolve([
+        new Ingredient({
+            name: 'Mock1',
+            spoonacularName: 'spoon',
+            type: 'Meat',
+            expirationDate: '12345',
+            quantity: { amount: 2, unit: 'kg' },
+            firestoreID: 100,
+            userID: 101,
+        }),
+    ]),
+    addUserBookmakedRecipes:        () => Promise.resolve(),
+    removeUserBookmakedRecipes:     () => Promise.resolve(),
+    getAllUserBookmarkedRecipes:    () => Promise.resolve(),
+    addRecipeHistory:               () => Promise.resolve(),
+    getRecipeHistory:               () => Promise.resolve(),
+    getBookmarkHistory:             () => Promise.resolve(),
+}
 
-describe("Tests for the Fridge", () => {
+const spoonacularValue = {
+    searchRecipeById:               () => Promise.resolve(),
+    searchRecipeByIdWithMissing:    () => Promise.resolve(),
+    searchRecipeByIngredients:      () => Promise.resolve(),
+    searchIngredient:               (name) => Promise.resolve({
+        spoonacularName: name,
+        imageURL: 'testImage',
+    }),
+    searchSimilarRecipes:           () => Promise.resolve(),
+}
+
+function renderFridge() {
     const mockCallback = jest.fn(x => x);
-    const mockUseFirestore = {
-        addUserIngredient: addUserIngredient,
-        removeUserIngredient: removeUserIngredient,
-        updateUserIngredient: updateUserIngredient,
-        getAllUserIngredients: getAllUserIngredient,
-    };
 
-    it("Renders the fridge correctly", () => {
-        // These two lines have to be within the test or the tests don't compile - some dependency with mocks
-        const mock = jest.spyOn(firestoreHandler, 'useFirestore');  // spy on otherFn
-        mock.mockReturnValue(mockUseFirestore);
+    return render(<AuthContext.Provider value={authValue}>
+        <FirestoreContext.Provider value={firestoreValue}>
+            <SpoonacularContext.Provider value={spoonacularValue}>
+                <Fridge populateSearch={mockCallback}/>
+            </SpoonacularContext.Provider>
+        </FirestoreContext.Provider>
+    </AuthContext.Provider>);
+}
 
-        const fridge = shallow(<Fridge populateSearch={mockCallback}/>);
-        expect(fridge.find('div.page-title-text').text()).toEqual("Your Fridge");
-        expect(useFirestore()).toEqual(mockUseFirestore);
+describe('Tests for the Fridge', () => {
+    it('Renders the fridge correctly', async () => {
+        renderFridge();
+
+        expect(screen.getByText('Your Fridge')).toBeInTheDocument();
+        expect(screen.getByText('Add Ingredient')).toBeInTheDocument();
+        await act(() => Promise.resolve());
     });
 
-    it("Can open up the 'add ingredients' form", () => {
-        // These two lines have to be within the test or the tests don't compile - some dependency with mocks
-        const mock = jest.spyOn(firestoreHandler, 'useFirestore');  // spy on otherFn
-        mock.mockReturnValue(mockUseFirestore);
+    it('Can open up and add ingredients from the form', async () => {
+        renderFridge();
 
-        const fridge = mount(<Fridge populateSearch={mockCallback}/>);
-        expect(fridge.find('div.page-title-text').text()).toEqual("Your Fridge");
+        user.click(screen.getByText('Add Ingredient'));
+        const form = screen.getByText('Add an ingredient');
+        expect(form).toBeInTheDocument();
+        user.type(screen.getByLabelText('Name'), 'beef');
+        user.type(screen.getByLabelText('Amount'), '3');
+        user.type(screen.getByLabelText('Unit'), 'lbs');
+        user.click(screen.getByText('Add'));
+        expect(form).not.toBeInTheDocument();
+        await waitForElementToBeRemoved(() => screen.getByText('Your fridge is currently empty. Add an ingredient to begin!'));
+        expect(screen.getByText('Mock1')).toBeInTheDocument();
     });
 });

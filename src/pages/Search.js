@@ -1,6 +1,6 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from 'react-router-dom';
-import { useSpoonacular } from '../components/handlers/SpoonacularHandler';
+import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
 import "./Recipe.css";
 
 export default function Search() {
@@ -10,7 +10,7 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     const query = urlParams.get('q');
     const ingredientList = query.split(',').map(ingredientName => ingredientName.trim());
-    const { searchRecipeByIngredients } = useSpoonacular();
+    const { searchRecipeByIngredients } = useContext(SpoonacularContext);
 
     useEffect(()=>{
       fetchData();

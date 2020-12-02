@@ -1,12 +1,8 @@
-import React, { useContext, createContext } from "react";
+import React, { createContext } from "react";
 import Ingredient from '../classes/Ingredient';
 import Recipe from '../classes/Recipe';
 
-const SpoonacularContext = createContext();
-
-export function useSpoonacular() {
-	return useContext(SpoonacularContext);
-}
+export const SpoonacularContext = createContext();
 
 export function ProvideSpoonacular({ children }) {
 	const API_Key = process.env.REACT_APP_SPOONACULAR_API_KEY;
