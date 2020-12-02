@@ -36,7 +36,6 @@ export function ProvideSpoonacular({ children }) {
 				recipeURL: recipe_json.sourceUrl,
 				missingIngredients: null
 			});
-			console.log("Recipe Object", recipe_object);
 			return recipe_object;
 		})
 		.catch((err) => {
@@ -153,7 +152,6 @@ export function ProvideSpoonacular({ children }) {
 				},
 				imageURL: ingredient_json.image
 			});
-			console.log("Ingredient Object", ingredient_object);
 			return ingredient_object;
 		})
 		.catch(err => {
