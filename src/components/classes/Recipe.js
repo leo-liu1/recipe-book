@@ -1,3 +1,5 @@
+import Ingredient from './Ingredient'
+
 /*
  Class used to hold recipe information
 
@@ -40,7 +42,7 @@ export default class Recipe {
       return {
          name: this.name,
          recipeID: this.recipeID,
-         ingredients: this.ingredients,
+         ingredients: this.ingredients.map((ingredient) => ingredient.getFirestoreData()),
          imageURL: this.imageURL,
          recipeURL: this.recipeURL,
          missingIngredients: this.missingIngredients,

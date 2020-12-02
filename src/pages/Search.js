@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from 'react-router-dom';
 import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
+import RecipeBox from './RecipeBox'
 import "./Recipe.css";
 
 export default function Search() {
@@ -14,7 +15,6 @@ export default function Search() {
 
     useEffect(()=>{
       fetchData();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
     const fetchData = () => {
@@ -33,12 +33,10 @@ export default function Search() {
             <div className="page-title-text">You Searched for {query}</div>
         </div>
         <div className="search-container">
-          {list.length > 0 && list.map(recipe => (
-            <div key={recipe.recipeID}>
-              <h2 className="recipe">{recipe.name}</h2>
-              <img className="recipe" src={recipe.imageURL} alt="Recipe"/>
-              <a className="recipe" style={{display: "table-cell"}} href = {recipe.recipeURL} target = "_blank" rel = "noopener noreferrer">{recipe.recipeURL}</a>
-            </div>
+          {list.length > 0 && list.map((recipe, index) => (
+            <RecipeBox key={index}
+                       recipe={recipe}
+            />
           ))}
         </div>
     </div>);
