@@ -23,9 +23,10 @@ export default class Recipe {
      * @param {string} recipe.recipeURL
      * @param {Ingredient[]|null} recipe.missingIngredients
      * @param {string} recipe.userID
+     * @param {string} recipe.firestoreID
      * @param {Number} recipe.frequency
      */
-   constructor({ name, recipeID, ingredients, imageURL, recipeURL, missingIngredients, userID, frequency }) {
+   constructor({ name, recipeID, ingredients, imageURL, recipeURL, missingIngredients, userID, firestoreID, frequency }) {
       this.name = name;
       this.recipeID = recipeID;
       this.ingredients = ingredients;
@@ -33,6 +34,7 @@ export default class Recipe {
       this.recipeURL = recipeURL;
       this.missingIngredients = missingIngredients ? missingIngredients : null;
       this.userID = userID ? userID : null;
+      this.firestoreID = firestoreID ? firestoreID : null;
       this.frequency = frequency ? frequency : 0;
    }
 
@@ -43,8 +45,9 @@ export default class Recipe {
          ingredients: this.ingredients.map((ingredient) => ingredient.getFirestoreData()),
          imageURL: this.imageURL,
          recipeURL: this.recipeURL,
-         missingIngredients: this.missingIngredients,
+         missingIngredients: this.missingIngredients.map((ingredient) => ingredient.getFirestoreData()),
          userID: this.userID,
+         firestoreID: this.firestoreID,
          frequency: this.frequency,
       }
    }

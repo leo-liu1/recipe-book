@@ -7,5 +7,9 @@
 
     .history-container {
         width: $container-width;
+
+        .empty-history {
+            font-family: $font;
+        }
     }
 }

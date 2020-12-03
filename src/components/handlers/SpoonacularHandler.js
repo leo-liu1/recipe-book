@@ -43,81 +43,81 @@ export function ProvideSpoonacular({ children }) {
 		});
 	};
 
-	const searchRecipeById = (recipeID) => {
-		let requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
-		return fetch(requestString, {
-			method: 'GET',
-		})
-		.then((response) => response.json())
-		.then((data) => {
-			const recipe_json = data;
-			const ingredient_object_list = getUniqueIngredients(recipe_json.extendedIngredients);
-
-			const recipe_object = new Recipe({
-				name: recipe_json.title,
-				recipeID: recipe_json.id,
-				ingredients: ingredient_object_list,
-				imageURL: recipe_json.image,
-				recipeURL: recipe_json.sourceUrl,
-				missingIngredients: null
+	const getIngredientsNotInFirestore = (recipeIngredients, firestoreIngredients) => {
+		return recipeIngredients.filter((ingredientObject) => { // filter our recipe ingredients
+			// if recipe ingredient includes the firestore ingredient as a substring, remove it from the array
+			return !firestoreIngredients.find((firestoreIngredientObject) => {
+				return ingredientObject.spoonacularName.includes(firestoreIngredientObject.spoonacularName) ||
+					ingredientObject.spoonacularName.includes(firestoreIngredientObject.name);
 			});
-			return recipe_object;
-		})
-		.catch((err) => {
-			console.error(err);
-			return {};
 		});
 	};
 
-	const searchRecipeByIdWithMissing = (recipeID, missingRecipeIngredients) => {
-		let requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
-		return fetch(requestString, {
-			method: 'GET',
-		})
-		.then((response) => response.json())
-		.then((data) => {
-			const recipe_json = data;
-			const ingredient_object_list = getUniqueIngredients(recipe_json.extendedIngredients).filter((ingredientObject) => {
-				return !missingRecipeIngredients.find((missingIngredientObject) =>
-					missingIngredientObject.spoonacularName === ingredientObject.spoonacularName);
-			});
+	const searchRecipeById = async (recipeID) => {
+		const requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
+		try {
+			const [spoonacularResponse, firestoreIngredients] = await Promise.all([ // we can make both requests simultaneously
+				fetch(requestString, { method: 'GET' }).then(response => response.json()),
+				getAllUserIngredients(),
+			]);
 
-			const recipe_object = new Recipe({
-				name: recipe_json.title,
-				recipeID: recipe_json.id,
-				ingredients: ingredient_object_list,
-				imageURL: recipe_json.image,
-				recipeURL: recipe_json.sourceUrl,
-				missingIngredients: missingRecipeIngredients
+			const recipeIngredients = getUniqueIngredients(spoonacularResponse.extendedIngredients);
+
+			const fridgeMissingIngredients = getIngredientsNotInFirestore(recipeIngredients, firestoreIngredients);
+
+			const recipeObject = new Recipe({
+				name: spoonacularResponse.title,
+				recipeID: spoonacularResponse.id,
+				ingredients: recipeIngredients,
+				imageURL: spoonacularResponse.image,
+				recipeURL: spoonacularResponse.sourceUrl,
+				missingIngredients: fridgeMissingIngredients,
 			});
-			return recipe_object;
-		})
-		.catch(err => {
+			return recipeObject;
+		} catch (err) {
 			console.error(err);
 			return {};
-		});
+		}
+	};
+
+	const getRecipeURL = async (recipeID) => {
+		let requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
+		try {
+			const recipeJSON = await (await fetch(requestString, { method: 'GET' })).json();
+
+			return recipeJSON.sourceUrl;
+		} catch (err) {
+			console.error(err);
+			return {};
+		}
 	};
 	
 	const searchRecipeByIngredients = async (ingredientList) => {
 		const ingredientsString = ingredientList.join(",+");
-		let requestString = `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${API_Key}&ingredients=`;
-		requestString = `${requestString}${ingredientsString}&number=3`;
+		const requestString = `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${API_Key}&ingredients=${ingredientsString}&number=5`;
 
 		try {
-			const [spoonacularResponse, firestoreIngredients] = await Promise.all([
-				fetch(requestString, { method: 'GET' }),
+			const [spoonacularResponse, firestoreIngredients] = await Promise.all([ // we can make both requests simultaneously
+				fetch(requestString, { method: 'GET' }).then(response => response.json()),
 				getAllUserIngredients(),
 			]);
-			const data = await spoonacularResponse.json();
-			let recipe_object_list = [];
-			const recipe_json_list = data;
-			recipe_json_list.forEach((recipe_json) => {
-				const missingIngredient_object_list = getUniqueIngredients(recipe_json.missedIngredients);
-				recipe_object_list.push(searchRecipeByIdWithMissing(recipe_json.id, missingIngredient_object_list));
+
+			const recipeArray = spoonacularResponse.map(async (recipeJSON) => {
+				const missingIngredients = getUniqueIngredients(recipeJSON.missedIngredients);
+				const fridgeMissingIngredients = getIngredientsNotInFirestore(missingIngredients, firestoreIngredients);
+				const recipeURL = await getRecipeURL(recipeJSON.id);
+
+				return new Recipe({
+					name: recipeJSON.title,
+					recipeID: recipeJSON.id,
+					ingredients: getUniqueIngredients(recipeJSON.usedIngredients).concat(missingIngredients),
+					imageURL: recipeJSON.image,
+					recipeURL: recipeURL,
+					missingIngredients: fridgeMissingIngredients,
+				});
 			});
 
-			console.log(recipe_object_list);
-			return Promise.all(recipe_object_list);
+			return Promise.all(recipeArray);
 		} catch (err) {
 			console.error(err);
 			return {};
@@ -161,7 +161,7 @@ export function ProvideSpoonacular({ children }) {
 			const recipe_object_list = recipe_json_list.map((recipe_json) => {
 				return recipe_json.id;
 			});
-			return recipe_object_list;
+			return recipe_object_list ? recipe_object_list[0] : null; // either return the recipeID or null
 		})
 		.catch((err) => {
 			console.error(err);
@@ -171,7 +171,6 @@ export function ProvideSpoonacular({ children }) {
 
 	const value = {
 		searchRecipeById,
-		searchRecipeByIdWithMissing,
 		searchRecipeByIngredients,
 		searchIngredient,
 		searchSimilarRecipes,

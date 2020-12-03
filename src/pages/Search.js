@@ -17,7 +17,7 @@ export default function Search() {
     useEffect(()=>{
       fetchData();
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [location.search]);
 
     const fetchData = () => {
@@ -37,9 +37,7 @@ export default function Search() {
         </div>
         <div className="search-container">
           {list.length > 0 && list.map((recipe, index) => (
-            <RecipeBox key={index}
-                       recipe={recipe}
-            />
+            <RecipeBox key={index} recipe={recipe} />
           ))}
         </div>
     </div>);

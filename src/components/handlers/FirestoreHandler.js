@@ -111,7 +111,7 @@ export function ProvideFirestore({ children }) {
 		const snapshot = await Firestore.collection("history")
 			.where("userID", "==", userID)
 			.orderBy("timeUpdated", "desc")
-			.limit(5)
+			.limit(10)
 			.get();
 		
 		return snapshot.docs.map((doc) => {

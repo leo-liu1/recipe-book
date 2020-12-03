@@ -1,63 +1,44 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+
 import { FirestoreContext } from '../components/handlers/FirestoreHandler';
-import Recipe from '../components/classes/Recipe';
+import RecipeBox from '../components/common/RecipeBox';
 
 export default function History() {
     document.title = "History";
-    const { addRecipeHistory, removeRecipeHistory, getLastUpdatedRecipeHistory } = useContext(FirestoreContext);
 
-    const [allBooked, setAllBooked] = useState([]);
+    const { getLastUpdatedRecipeHistory } = useContext(FirestoreContext);
+    const [recipesDict, setRecipesDict] = useState({});
 
     useEffect(() => {
-        getBookmarkedRecipes()
-    }, []);
+      getLastUpdatedRecipeHistory().then((recipes) => {
+        const recipesObj = {};
+        recipes.forEach((recipe) => {
+          recipesObj[recipe.firestoreID] = recipe;
+        });
 
-    async function getBookmarkedRecipes(){
-      getLastUpdatedRecipeHistory()
-        .then((allBks) => setAllBooked(allBks))
-        .catch((err)=> console.error(err));
+        console.log(recipes);
+
+        setRecipesDict(recipesObj);
+      }).catch((err)=> console.error(err));
+    }, [getLastUpdatedRecipeHistory]);
+
+    function removeFromHistoryPage(recipe) {
+      setRecipesDict({
+        ...recipesDict,
+        [recipe.firestoreID]: null,
+      });
     }
 
-    async function addBookmarkedRecipe(likeRecipe){
-      await addRecipeHistory(likeRecipe);
-      getBookmarkedRecipes();
-    }
-
-    async function removeBookmarkedRecipe(toRemove){
-      await removeRecipeHistory(toRemove);
-      getBookmarkedRecipes();
-    }
-
-    function convertObj(item){
-      let convertRecipe = new Recipe({
-        name:item.name,
-        recipeID:item.recipeID,
-        ingredients:item.ingredients,
-        imageURL:item.imageURL,
-        recipeURL:item.recipeURL,
-        missingIngredients:item.missingIngredients,
-        userID:item.userID,
-        frequency:item.frequency });
-        return convertRecipe;
-    }
+    const recipesArray = Object.values(recipesDict).filter(recipe => recipe !== null);
 
     return (<div className="history">
         <div className="page-title">Your History</div>
         <div className="history-container">
-        {allBooked.length>0 && allBooked.map((item) => (
-				      <div key={item.recipeID}>
-					         <h2>{item.name}</h2>
-                   <p>{item.frequency}</p>
-                   <img className="recipe" src={item.imageURL} alt="Recipe"/>
-                   <a className="recipe" style={{display: "table-cell"}} href = {item.recipeURL} target = "_blank" rel = "noopener noreferrer">{item.recipeURL}</a>
-                   <button onClick={() => {removeBookmarkedRecipe(convertObj(item))}}>
-                      Remove from Bookmark
-                   </button>
-				      </div>
-			   ))}
-        <button onClick={() => {addBookmarkedRecipe()}}>
-                Add Recipe to Bookmark
-        </button>
+          {recipesArray.length === 0 ?
+            <div className="empty-history">Your search history is empty. Search for a recipe to add to your history!</div> :
+            recipesArray.map((recipe, index) => (
+              <RecipeBox key={index} recipe={recipe} removeFromHistoryPage={removeFromHistoryPage} />
+            ))}
         </div>
     </div>);
 }
