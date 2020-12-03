@@ -52,15 +52,15 @@ function Routing() {
           {isAuthenticated ? <Fridge populateSearch={(fridgeSearchStr) => setSearchStr(fridgeSearchStr)} /> : <Landing />}
         </Route>
         <Route path="/history">
-          <Navbar isAuthenticated={isAuthenticated} />
+          <Navbar isAuthenticated={isAuthenticated} checkAuth={checkAuth} searchStr={searchStr} />
           {isAuthenticated ? <History /> : <Redirect to="/login" />}
         </Route>
         <Route path="/recommendations">
-          <Navbar isAuthenticated={isAuthenticated} />
+          <Navbar isAuthenticated={isAuthenticated} checkAuth={checkAuth} searchStr={searchStr} />
           {isAuthenticated ? <Recommendations /> : <Redirect to="/login" />}
         </Route>
         <Route path="/search">
-          <Navbar isAuthenticated={isAuthenticated} />
+          <Navbar isAuthenticated={isAuthenticated} checkAuth={checkAuth} searchStr={searchStr} />
           <Search />
         </Route>
         <Route path="/signup">
