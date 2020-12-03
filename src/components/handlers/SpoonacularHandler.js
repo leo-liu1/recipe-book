@@ -1,4 +1,6 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from "react";
+import { FirestoreContext } from './FirestoreHandler';
+
 import Ingredient from '../classes/Ingredient';
 import Recipe from '../classes/Recipe';
 
@@ -6,6 +8,41 @@ export const SpoonacularContext = createContext();
 
 export function ProvideSpoonacular({ children }) {
 	const API_Key = process.env.REACT_APP_SPOONACULAR_API_KEY;
+
+	const { getAllUserIngredients } = useContext(FirestoreContext);
+
+	const getUniqueIngredients = (ingredientJSONArray) => {
+		const ingredientSet = new Set();
+
+		return ingredientJSONArray.filter((ingredientJSON) => {
+			if (!ingredientSet.has(ingredientJSON.name)) {
+				ingredientSet.add(ingredientJSON.name);
+				return true;
+			} else {
+				return false;
+			}
+		}).map((ingredientJSON) => {
+			let imageURL = ingredientJSON.image;
+			if (RegExp('^https://', 'g').test(imageURL)) { // if it is already a URL, make the image 250 x 250
+				imageURL = imageURL.replace(/100/g, '250');
+			} else {
+				imageURL = `https://spoonacular.com/cdn/ingredients_250x250/${imageURL}`;
+			}
+
+			return new Ingredient({
+				name: ingredientJSON.originalName,
+				spoonacularName: ingredientJSON.name,
+				type: ingredientJSON.aisle,
+				expirationDate: null,
+				quantity: {
+					amount: ingredientJSON.measures ? ingredientJSON.measures.us.amount : ingredientJSON.amount,
+					unit: ingredientJSON.measures ? ingredientJSON.measures.us.unitLong : ingredientJSON.unitLong,
+				},
+				imageURL: imageURL,
+			});
+		});
+	};
+
 	const searchRecipeById = (recipeID) => {
 		let requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
 		return fetch(requestString, {
@@ -14,19 +51,8 @@ export function ProvideSpoonacular({ children }) {
 		.then((response) => response.json())
 		.then((data) => {
 			const recipe_json = data;
-			const ingredient_object_list = recipe_json.extendedIngredients.map((ingredient_json) => {
-				return new Ingredient({
-					name: ingredient_json.originalName,
-					spoonacularName: ingredient_json.name,
-					type: ingredient_json.aisle,
-					expirationDate: null,
-					quantity: {
-						amount: ingredient_json.measures.us.amount,
-						unit: ingredient_json.measures.us.unitLong,
-					},
-					imageURL: ingredient_json.image,
-				});
-			});
+			const ingredient_object_list = getUniqueIngredients(recipe_json.extendedIngredients);
+
 			const recipe_object = new Recipe({
 				name: recipe_json.title,
 				recipeID: recipe_json.id,
@@ -51,19 +77,11 @@ export function ProvideSpoonacular({ children }) {
 		.then((response) => response.json())
 		.then((data) => {
 			const recipe_json = data;
-			const ingredient_object_list = recipe_json.extendedIngredients.map((ingredient_json) => {
-				return new Ingredient({
-					name: ingredient_json.originalName,
-					spoonacularName: ingredient_json.name,
-					type: ingredient_json.aisle,
-					expirationDate: null,
-					quantity: {
-						amount: ingredient_json.measures.us.amount,
-						unit: ingredient_json.measures.us.unitLong,
-					},
-					imageURL: ingredient_json.image,
-				});
+			const ingredient_object_list = getUniqueIngredients(recipe_json.extendedIngredients).filter((ingredientObject) => {
+				return !missingRecipeIngredients.find((missingIngredientObject) =>
+					missingIngredientObject.spoonacularName === ingredientObject.spoonacularName);
 			});
+
 			const recipe_object = new Recipe({
 				name: recipe_json.title,
 				recipeID: recipe_json.id,
@@ -80,43 +98,30 @@ export function ProvideSpoonacular({ children }) {
 		});
 	};
 	
-	const searchRecipeByIngredients = (ingredientList) => {
+	const searchRecipeByIngredients = async (ingredientList) => {
 		const ingredientsString = ingredientList.join(",+");
 		let requestString = `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${API_Key}&ingredients=`;
-		requestString = `${requestString}${ingredientsString}&number=5`;
+		requestString = `${requestString}${ingredientsString}&number=3`;
 
-		return fetch(requestString, {
-			method: 'GET',
-		})
-		.then((response) => response.json())
-		.then((data) => {
+		try {
+			const [spoonacularResponse, firestoreIngredients] = await Promise.all([
+				fetch(requestString, { method: 'GET' }),
+				getAllUserIngredients(),
+			]);
+			const data = await spoonacularResponse.json();
 			let recipe_object_list = [];
 			const recipe_json_list = data;
 			recipe_json_list.forEach((recipe_json) => {
-				const missingIngredient_object_list = recipe_json.missedIngredients.map((ingredient_json) => {
-					return new Ingredient({
-						name: ingredient_json.originalName,
-						spoonacularName: ingredient_json.name,
-						type: ingredient_json.aisle,
-						expirationDate: null,
-						quantity: {
-							amount: ingredient_json.amount,
-							unit: ingredient_json.unitLong,
-						},
-						imageURL: ingredient_json.image,
-					});
-				});
-
+				const missingIngredient_object_list = getUniqueIngredients(recipe_json.missedIngredients);
 				recipe_object_list.push(searchRecipeByIdWithMissing(recipe_json.id, missingIngredient_object_list));
-
 			});
+
 			console.log(recipe_object_list);
 			return Promise.all(recipe_object_list);
-		})
-		.catch(err => {
+		} catch (err) {
 			console.error(err);
 			return {};
-		});
+		}
 	};
 	
 	const searchIngredient = (name) => {
@@ -128,7 +133,8 @@ export function ProvideSpoonacular({ children }) {
 		})
 		.then((response) => response.json())
 		.then((data) => {
-			const ingredient_json = (data && data.results.length > 0) ? data.results[0] : {}; // either grab first result or set to empty object
+			// either grab first result or set to empty object
+			const ingredient_json = (data && data.results.length > 0) ? data.results[0] : {};
 
 			if (typeof ingredient_json.name !== 'undefined' && typeof ingredient_json.image !== 'undefined') {
 				return {
