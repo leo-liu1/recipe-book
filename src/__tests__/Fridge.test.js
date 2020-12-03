@@ -1,4 +1,3 @@
-import React from 'react';
 import user from '@testing-library/user-event';
 import { screen, act, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
@@ -18,7 +17,7 @@ describe('Tests for the Fridge', () => {
 
     it('Can open up and add ingredients from the form', async () => {
         const mockCallback = jest.fn(x => x);
-        renderComponent(Fridge, { populateSearch: mockCallback});
+        renderComponent(Fridge, { populateSearch: mockCallback });
 
         user.click(screen.getByText('Add Ingredient'));
         const form = screen.getByText('Add an ingredient');

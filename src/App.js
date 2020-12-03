@@ -6,8 +6,8 @@ import { ProvideFirestore } from './components/handlers/FirestoreHandler';
 import { ProvideSpoonacular } from './components/handlers/SpoonacularHandler';
 import Navbar from './components/navigation/Navbar';
 
-import Bookmarks from './pages/Bookmarks';
 import Fridge from './pages/Fridge';
+import History from './pages/History';
 import Landing from './pages/Landing';
 import Recommendations from './pages/Recommendations';
 import Search from './pages/Search';
@@ -52,9 +52,9 @@ function Routing() {
           <Navbar isAuthenticated={isAuthenticated} searchStr={searchStr} />
           {isAuthenticated ? <Fridge populateSearch={(fridgeSearchStr) => setSearchStr(fridgeSearchStr)} /> : <Landing />}
         </Route>
-        <Route path="/bookmarks">
+        <Route path="/history">
           <Navbar isAuthenticated={isAuthenticated} />
-          {isAuthenticated ? <Bookmarks /> : <Redirect to="/login" />}
+          {isAuthenticated ? <History /> : <Redirect to="/login" />}
         </Route>
         <Route path="/recommendations">
           <Navbar isAuthenticated={isAuthenticated} />

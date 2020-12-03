@@ -33,12 +33,10 @@ const firestoreValue = {
             userID: 101,
         }),
     ]),
-    addUserBookmakedRecipes:        () => Promise.resolve(),
-    removeUserBookmakedRecipes:     () => Promise.resolve(),
-    getAllUserBookmarkedRecipes:    () => Promise.resolve(),
     addRecipeHistory:               () => Promise.resolve(),
-    getRecipeHistory:               () => Promise.resolve(),
-    getBookmarkHistory:             () => Promise.resolve(),
+    removeRecipeHistory:           () => Promise.resolve(),
+    getMostFrequentRecipeHistory:   () => Promise.resolve(),
+    getLastUpdatedRecipeHistory:    () => Promise.resolve(),
 }
 
 const spoonacularValue = {
@@ -52,11 +50,11 @@ const spoonacularValue = {
     searchSimilarRecipes:           () => Promise.resolve(),
 }
 
-export default function renderComponent(Component, props) {
+export default function renderComponent(component, props) {
     return render(<AuthContext.Provider value={authValue}>
         <FirestoreContext.Provider value={firestoreValue}>
             <SpoonacularContext.Provider value={spoonacularValue}>
-                {React.createElement(Component, props)}
+                {React.createElement(component, props)}
             </SpoonacularContext.Provider>
         </FirestoreContext.Provider>
     </AuthContext.Provider>);

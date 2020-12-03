@@ -1,20 +1,18 @@
 //import React from 'react';
-import React, { useRef, useState, useEffect, useContext } from 'react';
-import Recipe from '../components/classes/Recipe';
+import React, { useEffect, useContext } from 'react';
 import { FirestoreContext } from '../components/handlers/FirestoreHandler';
 import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
-import Ingredient from '../components/classes/Ingredient';
 
 export default function Recommendations() {
     document.title = "Recommendations";
 
-    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useContext(FirestoreContext);
+    const { getMostFrequentRecipeHistory } = useContext(FirestoreContext);
     const { searchSimilarRecipes,searchRecipeById } = useContext(SpoonacularContext);
 
 
     useEffect(() => {
 
-         getRecipeHistory().then(history => {
+        getMostFrequentRecipeHistory().then(history => {
          	  
               for(var i = history.length-1; i >=0; i--) {
                 var obj = history[i];

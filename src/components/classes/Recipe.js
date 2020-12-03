@@ -1,5 +1,3 @@
-import Ingredient from './Ingredient'
-
 /*
  Class used to hold recipe information
 

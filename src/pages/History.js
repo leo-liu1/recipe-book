@@ -1,28 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { FirestoreContext } from '../components/handlers/FirestoreHandler';
-//import Ingredient from '../components/classes/Ingredient';
 import Recipe from '../components/classes/Recipe';
 
-/*
-let sampleIngredient = new Ingredient({
-    name: "Test",
-    spoonacularName: "spoonacularName",
-    type: "type",
-    expirationDate: "expirationDate",
-    quantity: { amount: 2, unit: 'kg' },
-});
-*/
-let sampleRecipe = new Recipe({
- name: "Slow Cooker Balsamic Roast Beef French Dip Sandwich",
- recipeID: "612367",
- ingredients: [],
- imageURL:"https://carlsbadcravings.com/wp-content/uploads/2015/12/Slow-Cooker-French-Dip-Sandwiches-main.jpg",
- recipeURL:"https://www.closetcooking.com/slow-cooker-roast-beef-french-dip/",
-});
-
-export default function Bookmarks() {
-    document.title = "Bookmarks";
-    const { addRecipeHistory, removeRecipesHistory, getBookmarkHistory } = useContext(FirestoreContext);
+export default function History() {
+    document.title = "History";
+    const { addRecipeHistory, removeRecipeHistory, getLastUpdatedRecipeHistory } = useContext(FirestoreContext);
 
     const [allBooked, setAllBooked] = useState([]);
 
@@ -31,7 +13,7 @@ export default function Bookmarks() {
     }, []);
 
     async function getBookmarkedRecipes(){
-      getBookmarkHistory()
+      getLastUpdatedRecipeHistory()
         .then((allBks) => setAllBooked(allBks))
         .catch((err)=> console.error(err));
     }
@@ -42,7 +24,7 @@ export default function Bookmarks() {
     }
 
     async function removeBookmarkedRecipe(toRemove){
-      await removeRecipesHistory(toRemove);
+      await removeRecipeHistory(toRemove);
       getBookmarkedRecipes();
     }
 
@@ -73,7 +55,7 @@ export default function Bookmarks() {
                    </button>
 				      </div>
 			   ))}
-        <button onClick={() => {addBookmarkedRecipe(sampleRecipe)}}>
+        <button onClick={() => {addBookmarkedRecipe()}}>
                 Add Recipe to Bookmark
         </button>
         </div>

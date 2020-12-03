@@ -110,6 +110,7 @@ export function ProvideSpoonacular({ children }) {
 				recipe_object_list.push(searchRecipeByIdWithMissing(recipe_json.id, missingIngredient_object_list));
 
 			});
+			console.log(recipe_object_list);
 			return Promise.all(recipe_object_list);
 		})
 		.catch(err => {

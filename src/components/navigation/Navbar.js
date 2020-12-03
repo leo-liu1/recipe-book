@@ -5,7 +5,7 @@ import { AuthContext } from '../handlers/AuthHandler';
 import NavbarSearch from './NavbarSearch';
 
 import { ReactComponent as FridgeIcon } from '../../assets/icons/fridge.svg';
-import { ReactComponent as BookmarksIcon } from '../../assets/icons/bookmarks.svg';
+import { ReactComponent as HistoryIcon } from '../../assets/icons/history.svg';
 import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recommendations.svg';
 
 export default function Navbar({ isAuthenticated, searchStr }) {
@@ -34,8 +34,8 @@ export default function Navbar({ isAuthenticated, searchStr }) {
                 <div className="right">
                     {isAuthenticated ?
                         (<>
-                            <Link to="/bookmarks" className="navbar-link">
-                                <BookmarksIcon className="navbar-icon"/>
+                            <Link to="/history" className="navbar-link history">
+                                <HistoryIcon className="navbar-icon history"/>
                             </Link>
                             <Link to="/recommendations" className="navbar-link">
                                 <RecommendationsIcon className="navbar-icon"/>
