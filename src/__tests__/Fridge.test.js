@@ -3,7 +3,7 @@ import { screen, act, waitForElementToBeRemoved } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import Fridge from '../pages/Fridge';
-import renderComponent from "./testutil/MockDaddy";
+import renderComponent from "./testutil/MockContext";
 
 describe('Tests for the Fridge', () => {
     it('Renders the fridge correctly', async () => {
