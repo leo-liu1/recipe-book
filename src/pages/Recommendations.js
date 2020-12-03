@@ -1,4 +1,3 @@
-//import React from 'react';
 import React, { useEffect, useState, useContext } from 'react';
 import { FirestoreContext } from '../components/handlers/FirestoreHandler';
 import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
@@ -20,7 +19,6 @@ export default function Recommendations() {
                 });
             }));
         }).then((recommendedRecipes) => {
-            console.log(recommendedRecipes);
             setRecipesArray(recommendedRecipes);
         });
         

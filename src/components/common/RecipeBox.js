@@ -6,12 +6,12 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
     const redirectButton = useRef();
 
     const addToHistoryAndRedirect = async () => {
-        await addRecipeHistory(recipe).catch(err => console.log(err));
+        await addRecipeHistory(recipe).catch(err => console.error(err));
         redirectButton.current.click();
     };
 
     const removeFromHistory = async () => {
-        await removeRecipeHistory(recipe).catch(err => console.log(err));
+        await removeRecipeHistory(recipe).catch(err => console.error(err));
         removeFromHistoryPage(recipe);
     };
 

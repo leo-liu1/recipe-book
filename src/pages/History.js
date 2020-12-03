@@ -16,8 +16,6 @@ export default function History() {
           recipesObj[recipe.firestoreID] = recipe;
         });
 
-        console.log(recipes);
-
         setRecipesDict(recipesObj);
       }).catch((err)=> console.error(err));
     }, [getLastUpdatedRecipeHistory]);

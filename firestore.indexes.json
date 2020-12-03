@@ -7,6 +7,14 @@
         { "fieldPath": "userID", "order": "ASCENDING" },
         { "fieldPath": "frequency", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "history",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "userID", "order": "ASCENDING" },
+        { "fieldPath": "timeUpdated", "order": "DESCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
