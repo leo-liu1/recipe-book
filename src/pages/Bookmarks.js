@@ -13,11 +13,11 @@ let sampleIngredient = new Ingredient({
 });
 */
 let sampleRecipe = new Recipe({
- name: "Bookmarks",
- recipeID: "74293",
+ name: "Slow Cooker Balsamic Roast Beef French Dip Sandwich",
+ recipeID: "612367",
  ingredients: [],
- imageURL:"url",
- recipeURL:"",
+ imageURL:"https://carlsbadcravings.com/wp-content/uploads/2015/12/Slow-Cooker-French-Dip-Sandwiches-main.jpg",
+ recipeURL:"https://www.closetcooking.com/slow-cooker-roast-beef-french-dip/",
 });
 
 export default function Bookmarks() {
@@ -27,7 +27,7 @@ export default function Bookmarks() {
     const [allBooked, setAllBooked] = useState([]);
 
     useEffect(() => {
-        getBookmarkHistory()
+        getBookmarkedRecipes()
     }, []);
 
     async function getBookmarkedRecipes(){
@@ -38,28 +38,44 @@ export default function Bookmarks() {
 
     async function addBookmarkedRecipe(likeRecipe){
       await addRecipeHistory(likeRecipe);
-      //getBookmarkedRecipes();
+      getBookmarkedRecipes();
     }
 
     async function removeBookmarkedRecipe(toRemove){
       await removeRecipesHistory(toRemove);
-      //getBookmarkHistory();
+      getBookmarkedRecipes();
+    }
+
+    function convertObj(item){
+      let convertRecipe = new Recipe({
+        name:item.name,
+        recipeID:item.recipeID,
+        ingredients:item.ingredients,
+        imageURL:item.imageURL,
+        recipeURL:item.recipeURL,
+        missingIngredients:item.missingIngredients,
+        userID:item.userID,
+        frequency:item.frequency });
+        return convertRecipe;
     }
 
     return (<div className="bookmarks">
         <div className="page-title">Your Bookmarks</div>
         <div className="bookmarks-container">
-            <button onClick={() => {getBookmarkedRecipes()}}>
-              {console.log(allBooked)}
-              Bookmarked Recipes
-            </button>
-            <button onClick={() => {addBookmarkedRecipe(sampleRecipe)}}>
+        {allBooked.length>0 && allBooked.map((item) => (
+				      <div key={item.recipeID}>
+					         <h2>{item.name}</h2>
+                   <p>{item.frequency}</p>
+                   <img className="recipe" src={item.imageURL} alt="Recipe"/>
+                   <a className="recipe" style={{display: "table-cell"}} href = {item.recipeURL} target = "_blank" rel = "noopener noreferrer">{item.recipeURL}</a>
+                   <button onClick={() => {removeBookmarkedRecipe(convertObj(item))}}>
+                      Remove from Bookmark
+                   </button>
+				      </div>
+			   ))}
+        <button onClick={() => {addBookmarkedRecipe(sampleRecipe)}}>
                 Add Recipe to Bookmark
-            </button>
-            <button onClick={() => {removeBookmarkedRecipe(sampleRecipe)}}>
-                Remove from Firestore
-            </button>
-
+        </button>
         </div>
     </div>);
 }
