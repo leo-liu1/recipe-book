@@ -45,3 +45,16 @@ root/
 |  firestore.rules
 |  package.json # package and settings
 ```
+## How to Run Tests / Deploy Applcation
+
+###`npm install`
+
+Install all packages necessary to run the application
+
+###`npm run tests`
+
+ Use this command to run automated tests
+ 
+ ###`npm start`
+
+This starts the server in the developer mode
