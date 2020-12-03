@@ -47,14 +47,14 @@ root/
 ```
 ## How to Run Tests / Deploy Applcation
 
-###`npm install`
+### `npm install`
 
 Install all packages necessary to run the application
 
-###`npm run tests`
+### `npm run tests`
 
  Use this command to run automated tests
  
- ###`npm start`
+### `npm start`
 
 This starts the server in the developer mode
