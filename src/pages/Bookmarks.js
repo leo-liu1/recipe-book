@@ -13,8 +13,8 @@ let sampleIngredient = new Ingredient({
 });
 */
 let sampleRecipe = new Recipe({
- name: "Bookmark Pie",
- recipeID: "6259",
+ name: "Bookmarks",
+ recipeID: "74293",
  ingredients: [],
  imageURL:"url",
  recipeURL:"",

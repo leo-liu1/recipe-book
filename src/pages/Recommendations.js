@@ -8,37 +8,30 @@ import Ingredient from '../components/classes/Ingredient';
 
 export default function Recommendations() {
     document.title = "Recommendations";
-    const [posts, setPosts] = useState([]);
-    const [ids, setIDs] = useState([]);
+
     const { addUserIngredient, removeUserIngredient, getAllUserIngredients, getRecipeHistory } = useContext(FirestoreContext);
-    const { searchSimilarRecipes } = useContext(SpoonacularContext);
+    const { searchSimilarRecipes,searchRecipeById } = useContext(SpoonacularContext);
 
 
     useEffect(() => {
-        
-          //getRecipeHistory().then(data => setPosts(data))
-          /*getRecipeHistory().then(data => {
-              for(var i = 0; i < data.length; i++) {
-                var obj = data[i];
-                searchSimilarRecipes(obj.recipeID).then(data => data[0])
-                console.log(obj.recipeID);
+         getRecipeHistory().then(history => {
+              for(var i = history.length-1; i >=0; i--) {
+                var obj = history[i];
+                searchSimilarRecipes(obj.recipeID).then(IDs => {
+                	    searchRecipeById(IDs[0])
+                	        .then(data => data.getFirestoreData())
+                	        .then(recipe => {
+                	    	    document.getElementById("test").innerHTML += `<ul><li>${recipe.name}</li></ul>`
+                	        })
+
+                });
                 }
-          })*/
-          //searchSimilarRecipes("")
-          
+          })
     }); 
 
     return (<div className="recommendations">
         <div className="page-title">Your Recommendations</div>
-        <div className="recommendations-container">
-        <ul>
-        {posts.map((item) => (
-				<li key={item.id}>
-					<h2>{item.name}</h2>
-					<p>{item.frequency}</p>
-				</li>
-			))}
-        </ul>
+        <div className="recommendations-container" id="test">
         </div>
     </div>);
 }
