@@ -5,8 +5,7 @@ import Recipe from '../classes/Recipe';
 export const SpoonacularContext = createContext();
 
 export function ProvideSpoonacular({ children }) {
-	//const API_Key = process.env.REACT_APP_SPOONACULAR_API_KEY;
-	const API_Key = "fc28af9e717e4b1eaa84e7a9f5c2c5eb";
+	const API_Key = process.env.REACT_APP_SPOONACULAR_API_KEY;
 	const searchRecipeById = (recipeID) => {
 		let requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
 		return fetch(requestString, {
