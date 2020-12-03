@@ -1,21 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useLocation } from 'react-router-dom';
 import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
-import RecipeBox from './RecipeBox'
-import "./Recipe.css";
+import RecipeBox from '../components/common/RecipeBox';
 
 export default function Search() {
     document.title = "Search";
-    const [list, setList] = useState([])
+
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const query = urlParams.get('q');
-    const ingredientList = query.split(',').map(ingredientName => ingredientName.trim());
+
+    const [list, setList] = useState([]);
     const { searchRecipeByIngredients } = useContext(SpoonacularContext);
+    const ingredientList = query.split(',').map(ingredientName => ingredientName.trim());
 
     useEffect(()=>{
       fetchData();
-    },[]);
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.search]);
 
     const fetchData = () => {
       searchRecipeByIngredients(ingredientList)

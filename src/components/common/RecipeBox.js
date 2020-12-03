@@ -1,5 +1,5 @@
-import React, {useContext} from "react";
-import { FirestoreContext } from '../components/handlers/FirestoreHandler';
+import React, { useContext } from "react";
+import { FirestoreContext } from '../handlers/FirestoreHandler';
 
 export default function RecipeBox({ recipe }) {
     const { addRecipeHistory } = useContext(FirestoreContext);
