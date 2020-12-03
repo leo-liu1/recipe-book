@@ -45,7 +45,7 @@ root/
 |  firestore.rules
 |  package.json # package and settings
 ```
-## How to Run Tests / Deploy Applcation
+## How to Deploy and Run Tests
 
 ### `npm install`
 
