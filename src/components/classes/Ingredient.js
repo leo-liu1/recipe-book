@@ -50,15 +50,15 @@ export default class Ingredient {
             expirationDate: this.expirationDate,
             quantity: this.quantity,
             imageURL: this.imageURL,
-            userID: this.userID ? this.userID : "",
+            userID: this.userID,
         }
     }
 	
-	getSpoonacularName(){
+	getSpoonacularName() {
 		return this.spoonacularName;
 	}
 
 	getClassType() {
-        return "Ingredient"
+        return "Ingredient";
     }
 }

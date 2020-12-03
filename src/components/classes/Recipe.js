@@ -32,7 +32,7 @@ export default class Recipe {
       this.imageURL = imageURL ? imageURL : null;
       this.recipeURL = recipeURL;
       this.missingIngredients = missingIngredients ? missingIngredients : null;
-      this.userID = userID;
+      this.userID = userID ? userID : null;
       this.frequency = frequency ? frequency : 0;
    }
 

@@ -16,13 +16,15 @@ export default class Seasoning {
      * @param {Object} seasoning
      * @param {string} seasoning.name
      * @param {string|null} seasoning.spoonacularName
+     * @param {string|null} ingredient.imageURL
      * @param {string} userID
      * @param {string} seasoning.firestoreID
      */
-    constructor({ name, spoonacularName, userID, firestoreID }) {
+    constructor({ name, spoonacularName, userID, imageURL, firestoreID }) {
         this.name = name;
         this.spoonacularName = spoonacularName ? spoonacularName : null;
-        this.userID = userID;
+        this.imageURL = imageURL ? imageURL : null;
+        this.userID = userID ? userID : null;
         this.firestoreID = firestoreID;
     }
 
@@ -30,11 +32,12 @@ export default class Seasoning {
         return {
             name: this.name,
             spoonacularName: this.spoonacularName,
+            imageURL: this.imageURL,
             userID: this.userID,
         }
     }
 
     getClassType() {
-        return "Seasoning"
+        return "Seasoning";
     }
 }
