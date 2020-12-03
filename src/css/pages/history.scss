@@ -1,11 +1,11 @@
 @import '../partials/variables';
 
-.bookmarks {
+.history {
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    .bookmarks-container {
+    .history-container {
         width: $container-width;
     }
 }

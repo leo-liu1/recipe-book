@@ -41,9 +41,9 @@ export default function History() {
         return convertRecipe;
     }
 
-    return (<div className="bookmarks">
-        <div className="page-title">Your Bookmarks</div>
-        <div className="bookmarks-container">
+    return (<div className="history">
+        <div className="page-title">Your History</div>
+        <div className="history-container">
         {allBooked.length>0 && allBooked.map((item) => (
 				      <div key={item.recipeID}>
 					         <h2>{item.name}</h2>
