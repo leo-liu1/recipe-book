@@ -36,6 +36,10 @@ export function ProvideAuth({ children }) {
 
   const isUserAuthenticated = () => {
     return new Promise((resolve) => {
+      if (Auth.currentUser) {
+        resolve(true);
+      }
+
       const unsubscribe = Auth.onAuthStateChanged(user => {
         unsubscribe();
         if (user) {
@@ -53,8 +57,6 @@ export function ProvideAuth({ children }) {
     getUserID,
     isUserAuthenticated,
   }
-
-  console.log(value);
 
   return (
     <AuthContext.Provider value={value}>

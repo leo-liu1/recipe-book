@@ -8,15 +8,15 @@ import { ReactComponent as FridgeIcon } from '../../assets/icons/fridge.svg';
 import { ReactComponent as HistoryIcon } from '../../assets/icons/history.svg';
 import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recommendations.svg';
 
-export default function Navbar({ isAuthenticated, searchStr }) {
+export default function Navbar({ isAuthenticated, checkAuth, searchStr }) {
     const [loggedOut, setLoggedOut] = useState(false);
     const { logout } = useContext(AuthContext);
 
     useEffect(() => {
         if (loggedOut) {
-            logout();
+            logout().then(() => checkAuth());
         }
-    }, [loggedOut, logout]);
+    }, [loggedOut, logout, checkAuth]);
 
     return (<>
         {loggedOut && <Redirect push to="/" />}

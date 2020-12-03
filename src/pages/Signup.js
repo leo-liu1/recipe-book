@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
-export default function Signup() {
+export default function Signup({ checkAuth }) {
   document.title = "Signup";
 
   const [error, setError] = useState("");
@@ -32,6 +32,7 @@ export default function Signup() {
       setError("");
       setLoading(true);
       await signup(emailRef.current.value, pswdRef.current.value);
+      checkAuth();
     } catch {
       setError("Failed to create an account");
     }

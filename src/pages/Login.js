@@ -4,11 +4,12 @@ import { Link } from "react-router-dom";
 
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
-export default function Login() {
+export default function Login({ checkAuth }) {
   document.title = "Login";
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
   const emailRef = useRef();
   const pswdRef = useRef();
   const { login } = useContext(AuthContext);
@@ -20,6 +21,7 @@ export default function Login() {
       setError("");
       setLoading(true);
       await login(emailRef.current.value, pswdRef.current.value);
+      checkAuth();
     } catch {
       setError("Failed to log in");
     }

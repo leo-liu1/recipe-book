@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
 import { ProvideAuth, AuthContext } from './components/handlers/AuthHandler';
@@ -33,23 +33,22 @@ function Routing() {
   const [isAuthenticated, setAuthenticated] = useState(localStorage.getItem("auth") === "true");
   const [searchStr, setSearchStr] = useState('');
 
-  useEffect(() => {
-    function checkAuth() {
-      isUserAuthenticated().then(auth => {
-        localStorage.setItem("auth", auth);
-        setAuthenticated(auth);
-      });
-    }
-    checkAuth();
-
-    window.addEventListener('focus', checkAuth);
+  const checkAuth = useCallback(() => {
+    isUserAuthenticated().then(auth => {
+      localStorage.setItem("auth", auth);
+      setAuthenticated(auth);
+    });
   }, [isUserAuthenticated]);
+
+  useEffect(() => {
+    window.addEventListener('focus', checkAuth);
+  }, [checkAuth]);
 
   return (
     <BrowserRouter>
       <Switch>
         <Route exact path="/">
-          <Navbar isAuthenticated={isAuthenticated} searchStr={searchStr} />
+          <Navbar isAuthenticated={isAuthenticated} checkAuth={checkAuth} searchStr={searchStr} />
           {isAuthenticated ? <Fridge populateSearch={(fridgeSearchStr) => setSearchStr(fridgeSearchStr)} /> : <Landing />}
         </Route>
         <Route path="/history">
@@ -65,10 +64,10 @@ function Routing() {
           <Search />
         </Route>
         <Route path="/signup">
-          {isAuthenticated ? <Redirect to="/" /> : <Signup />}
+          {isAuthenticated ? <Redirect to="/" /> : <Signup checkAuth={checkAuth} />}
         </Route>
         <Route path="/login">
-          {isAuthenticated ? <Redirect to="/" /> : <Login />}
+          {isAuthenticated ? <Redirect to="/" /> : <Login checkAuth={checkAuth} />}
         </Route>
       </Switch>
     </BrowserRouter>
