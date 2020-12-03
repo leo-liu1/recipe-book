@@ -118,10 +118,6 @@ export function ProvideFirestore({ children }) {
 			.orderBy("frequency", "desc")
 			.limit(3)
 			.get();
-		/*return snapshot.docs.map((doc) => {
-			return new Recipe(doc.data());
-		});*/
-		//console.log(userID);
 		return Promise.all(snapshot.docs.map((doc) => {
 			return Object.assign(doc.data(), {id: doc.id});
 		}));

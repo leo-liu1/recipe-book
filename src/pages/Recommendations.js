@@ -5,7 +5,6 @@ import { FirestoreContext } from '../components/handlers/FirestoreHandler';
 import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
 import Ingredient from '../components/classes/Ingredient';
 
-
 export default function Recommendations() {
     document.title = "Recommendations";
 
@@ -16,6 +15,7 @@ export default function Recommendations() {
     useEffect(() => {
 
          getRecipeHistory().then(history => {
+         	  
               for(var i = history.length-1; i >=0; i--) {
                 var obj = history[i];
                 searchSimilarRecipes(obj.recipeID).then(IDs => {
