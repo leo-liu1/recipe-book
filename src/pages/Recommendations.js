@@ -17,13 +17,13 @@ export default function Recommendations() {
     useEffect(() => {
         
           //getRecipeHistory().then(data => setPosts(data))
-          getRecipeHistory().then(data => {
+          /*getRecipeHistory().then(data => {
               for(var i = 0; i < data.length; i++) {
                 var obj = data[i];
                 searchSimilarRecipes(obj.recipeID).then(data => data[0])
                 console.log(obj.recipeID);
                 }
-          })
+          })*/
           //searchSimilarRecipes("")
           
     }); 

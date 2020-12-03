@@ -92,7 +92,7 @@ export function ProvideFirestore({ children }) {
 		let timestamp = new Date();
 
 		console.log(timestamp);
-		if (!snapshot.exists) {
+		if (snapshot.empty) {
 			return Firestore.collection('history')
 				.add({ ...recipe.getFirestoreData(), userID: userID, frequency: 1})
 				.then(function(docRef) {
