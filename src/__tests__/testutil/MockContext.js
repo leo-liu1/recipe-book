@@ -68,7 +68,6 @@ const firestoreValue = {
 
 const spoonacularValue = {
     searchRecipeById:               () => Promise.resolve(),
-    searchRecipeByIdWithMissing:    () => Promise.resolve(),
     searchRecipeByIngredients:      () => Promise.resolve([mockRecipe]),
     searchIngredient:               (name) => Promise.resolve({
         spoonacularName: name,
