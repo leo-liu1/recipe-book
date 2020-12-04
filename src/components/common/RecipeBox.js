@@ -58,7 +58,12 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
                     </div>
                 </div>
             </div>
-            <form action={recipe.recipeURL} target="_blank" className="hidden"><button ref={redirectButton}></button></form>
+            <form onSubmit={ e => e.preventDefault() }
+                  action={recipe.recipeURL}
+                  target="_blank"
+                  className="hidden">
+                <button ref={redirectButton}/>
+            </form>
         </div>
     );
 }
