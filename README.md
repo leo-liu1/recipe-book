@@ -11,7 +11,11 @@ root/
 |  |  __tests__/
 |  |  |  testutil/
 |  |  |  |  MockContext.js # util helper class to mock dependency
+|  |  |  Firestore.test.js # firestore component tests
 |  |  |  Fridge.test.js # fridge component tests
+|  |  |  History.test.js # history component tests
+|  |  |  Recommendation.test.js # recommendation component tests
+|  |  |  Search.test.js # search component tests
 |  |  assets/ # contains our fonts, icons, images
 |  |  components/
 |  |  |  classes/ # contains our data classes
@@ -19,6 +23,8 @@ root/
 |  |  |  |  Nutrient.js
 |  |  |  |  Recipe.js
 |  |  |  |  Seasoning.js
+|  |  |  common/
+|  |  |  |  RecipeBox.js # component to display recipes
 |  |  |  handlers/
 |  |  |  |  AuthHandler.js # class to handle user authentication
 |  |  |  |  FirebaseHandler.js # class to handle communication w/ firestore api
@@ -33,7 +39,6 @@ root/
 |  |  |  |  History.js # user History page component
 |  |  |  |  Landing.js # main Landing page component
 |  |  |  |  Login.js # user Login page component
-|  |  |  |  RecipeBox.js # component to display recipes
 |  |  |  |  Recommendation.js # recommended recipe page component
 |  |  |  |  Search.js # search page component
 |  |  |  |  Signup.js # user Signups page component
