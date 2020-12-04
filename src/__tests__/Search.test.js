@@ -31,8 +31,6 @@ describe('Tests for the Search page', () => {
         const ingredient = screen.getByText('MockIngredient2');
         expect(ingredient).toBeInTheDocument();
         user.click(screen.getByText('Go to Recipe'));
-
         await act(() => Promise.resolve());
-        screen.debug();
     });
 });
