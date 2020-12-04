@@ -2,6 +2,9 @@ import React from 'react';
 
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
+/**
+ * Landing page for unauthenticated users
+ */
 export default function Landing() {
     document.title = "Recipe to Cook";
 

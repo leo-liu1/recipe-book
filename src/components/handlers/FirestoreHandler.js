@@ -7,31 +7,61 @@ import Recipe from '../classes/Recipe.js';
 
 import { AuthContext } from './AuthHandler';
 
+/**
+ * Firestore context used for when we want to use Firestore functions from Firebase
+ */
 export const FirestoreContext = createContext();
 
+/**
+ * Provides Firestore context for use in the app
+ * @param {Object} FirestoreProps
+ * @param {*} FirestoreProps.children - React components to be rendered 
+ */
 export function ProvideFirestore({ children }) {
-	const { getUserID } = useContext(AuthContext);
+	// get authentication status from Auth Context
+	const { isUserAuthenticated } = useContext(AuthContext);
 
+	/**
+	 * Returns the user ID if the user is authenticated
+	 * @returns {Promise<string|null>} user ID
+	 */
 	const checkAuth = async () => {
-		return getUserID().then(userID => {
+		return isUserAuthenticated().then(userID => {
 			if (userID) {
 				return userID;
+			} else {
+				return null;
 			}
 		});
 	};
 	
+	/**
+	 * Adds the user ingredient to the fridge
+	 * @param {Ingredient} ingredient - ingredient object to be added
+	 * @returns {Promise} Promise
+	 */
 	const addUserIngredient = async (ingredient) => {
 		const userID = await checkAuth();
 		return Firestore.collection('ingredients')
 			.add({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 	
+	/**
+	 * Removes the user ingredient from the fridge
+	 * @param {Ingredient} ingredient - ingredient to be removed
+	 * @returns {Promise} Promise
+	 */
 	const removeUserIngredient = async (ingredient) => {
 		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
 			.delete();
 	}
 
+	/**
+	 * Updates the user ingredient in the fridge
+	 * @param {Ingredient} ingredient - ingredient to be updated
+	 * @returns {Promise} Promise
+	 */
 	const updateUserIngredient = async (ingredient) => {
 		const userID = await checkAuth();
 		return await Firestore.collection('ingredients')
@@ -39,6 +69,10 @@ export function ProvideFirestore({ children }) {
 			.update({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 
+	/**
+	 * Gets all the user's ingredients from the fridge
+	 * @returns {Promise<Ingredient[]>} Promise of all user ingredients (can be Ingredient or Seasoning)
+	 */
 	const getAllUserIngredients = async () => {
 		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('ingredients')
@@ -52,15 +86,20 @@ export function ProvideFirestore({ children }) {
 		});
 	}
 
+	/**
+	 * Adds the recipe to our history
+	 * @param {Recipe} recipe - recipe to be added
+	 * @returns {Promise} Promise
+	 */
 	const addRecipeHistory = async (recipe) => {
 		const userID = await checkAuth();
-		const snapshot = await Firestore.collection('history')
+		const snapshot = await Firestore.collection('history') // check if the document already exists
 			.where("userID", "==", userID)
-			.where("recipeID", "==", recipe.getRecipeID())
+			.where("recipeID", "==", recipe.recipeID)
 			.get();
 		let timestamp = new Date();
 
-		if (snapshot.empty) {
+		if (snapshot.empty) { // if we're adding for the first time, create the document
 			return Firestore.collection('history')
 				.add({
 					...recipe.getFirestoreData(),
@@ -68,7 +107,7 @@ export function ProvideFirestore({ children }) {
 					frequency: 1,
 					timeUpdated: timestamp,
 				});
-		} else {
+		} else { // else, run a transaction to increment the frequency by one
 			return Promise.all(snapshot.docs.map((doc) => {
 				let docRef = Firestore.collection("history").doc(doc.id);
 
@@ -81,11 +120,15 @@ export function ProvideFirestore({ children }) {
 		}
 	}
 
+	/**
+	 * Removes the recipe from our history
+	 * @param {Recipe} recipe - Recipe to be removed
+	 */
 	const removeRecipeHistory = async (recipe) => {
 		const userID = await checkAuth();
 		const snapshot = await Firestore.collection('history')
 			.where("userID", "==", userID)
-			.where("recipeID", "==", recipe.getRecipeID())
+			.where("recipeID", "==", recipe.recipeID)
 			.get();
 
 		return Promise.all(snapshot.docs.map((doc) => {
@@ -95,24 +138,34 @@ export function ProvideFirestore({ children }) {
 		}));
 	}
 	
-	const getMostFrequentRecipeHistory = async () => {
+	/**
+	 * Gets the most frequent recipes from our history
+	 * @param {Number} count - the amount of recipes to retrieve
+	 * @returns {Promise<Recipe[]>} Promise of our most frequent recipes
+	 */
+	const getMostFrequentRecipeHistory = async (count) => {
 		const userID = await checkAuth();
 		const snapshot = await Firestore.collection("history")
 			.where("userID", "==", userID)
 			.orderBy("frequency", "desc")
-			.limit(3)
+			.limit(count)
 			.get();
 		return snapshot.docs.map((doc) => {
 			return new Recipe({ ...doc.data(), firestoreID: doc.id });
 		});
 	}
 
-	const getLastUpdatedRecipeHistory = async () => {
+	/**
+	 * Gets the 10 last updated recipes from our history
+	 * @param {Number} count - the amount of recipes to retrieve
+	 * @returns {Promise<Recipe[]>} Promise of our last updated recipes
+	 */
+	const getLastUpdatedRecipeHistory = async (count) => {
 		const userID = await checkAuth();
 		const snapshot = await Firestore.collection("history")
 			.where("userID", "==", userID)
 			.orderBy("timeUpdated", "desc")
-			.limit(10)
+			.limit(count)
 			.get();
 		
 		return snapshot.docs.map((doc) => {
@@ -120,6 +173,9 @@ export function ProvideFirestore({ children }) {
 		});
 	}
 	
+	/**
+     * value of all the functions that we can use in the FirestoreContext
+     */
 	const value = {
 		addUserIngredient,
 		removeUserIngredient,

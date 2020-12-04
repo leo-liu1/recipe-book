@@ -4,6 +4,15 @@ import { Link } from 'react-router-dom';
 
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
+/**
+ * @callback checkAuth
+ */
+
+/**
+ * Signup page for user authentication
+ * @param {Object} signup
+ * @param {checkAuth} signup.checkAuth - Callback that rechecks user authentication
+ */
 export default function Signup({ checkAuth }) {
   document.title = "Signup";
 
@@ -14,8 +23,12 @@ export default function Signup({ checkAuth }) {
   const pswdConfirmRef = useRef();
   const { signup } = useContext(AuthContext);
 
-  async function submitHandler(e){
-    e.preventDefault();
+  /**
+   * Handler for when the form is submitted
+   * @param {onSubmit} event - Event that triggers when the form is submitted 
+   */
+  async function submitHandler(event){
+    event.preventDefault();
     if (pswdRef.current.value !== pswdConfirmRef.current.value) {
       return setError("Passwords do not match");
     }

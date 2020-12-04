@@ -2,6 +2,9 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
 
+/**
+ * Firebase config using environment variables to initialize Firebase
+ */
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -12,8 +15,18 @@ const firebaseConfig = {
     appId: process.env.REACT_APP_FIREBASE_APP_ID,
     measureId: process.env.REACT_APP_MEASUREMENT_ID,
 };
-  
+
+/**
+ * Initialization configuration for firebase
+ */
 export const Firebase = firebase.initializeApp(firebaseConfig);
 
+/**
+ * Export Firestore functions
+ */
 export const Firestore = Firebase.firestore();
+
+/**
+ * Export Auth functions
+ */
 export const Auth = Firebase.auth();

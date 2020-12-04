@@ -1,11 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Redirect, useLocation } from 'react-router-dom';
 
+/**
+ * @constant - Path to search page
+ * @type {string}
+ * @default
+ */
 const SEARCH_PATH = '/search';
 
+/**
+ * Search bar for the navbar that we can use to find recipes from our ingredients.
+ * @param {Object} navbarSearch
+ * @param {string} navbarSearch.searchStr - query string that we will use to search 
+ */
 export default function NavbarSearch({ searchStr }) {
-    const [currSearch, setCurrSearch] = useState(searchStr);
-    const [prevSearch, setPrevSearch] = useState('');
+    const [currSearch, setCurrSearch] = useState(searchStr); // track the current search as part of the state
+    const [prevSearch, setPrevSearch] = useState(''); // track what we just last searched
     const inputRef = useRef();
     const location = useLocation();
     
@@ -17,23 +27,29 @@ export default function NavbarSearch({ searchStr }) {
     }, [searchStr]);
     
     useEffect(() => {
-        if (location.pathname === SEARCH_PATH) {
+        if (location.pathname === SEARCH_PATH) { // if we're on the search page
             const urlParams = new URLSearchParams(location.search);
             const query = urlParams.get('q');
-            if (prevSearch !== query) {
+            if (prevSearch !== query) { // if the previous search is not the current URL query, set it and populate the input value
                 setPrevSearch(query);
                 inputRef.current.value = query;
             }
-        } else if (!currSearch) {
+        } else if (!currSearch) { // if we're not on the search page and there is no current search, clear prev search and the input value
             setPrevSearch('');
             inputRef.current.value = '';
         }
         
-        if (currSearch) {
+        if (currSearch) { // reset the value of curr search after our query
             setCurrSearch('');
         }
     }, [location.pathname, location.search, currSearch, prevSearch]);
 
+    /**
+     * Sets current search after the user has finished typing their search
+     * @param {onClick|onEnter} event - Event that fires after search is finished
+     * @listens onClick
+     * @listens onEnter
+     */
     function handleSearch(event) {
         // set currSearch to input value if enter or click; enter for input and click for button
         if (event.key === "Enter" || event.type === "click") {
@@ -42,6 +58,7 @@ export default function NavbarSearch({ searchStr }) {
     }
 
     return (<>
+        {/* redirect only if currSearch and we have our input currently has a value */}
         {currSearch && inputRef.current && <Redirect
             push
             to={{

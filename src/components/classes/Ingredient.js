@@ -1,35 +1,18 @@
-/*
- Internal class used for information hiding principle, which stores information about a specific ingredient, including
- its own image url.
-
- name: String
- spoonacularName: nullable String
-    - Used as a more Spoonacular's API friendly name, found by querying Spoonacular about its preferred name
- type: String
-    - Can be of 4 specific types, which can be:
-        - Vegetable, Meat, Dairy, Carb
- expirationDate: Date
- quantity: JSON
-    - Should look like:
-    {
-        amount: X,
-        unit: Y,
-    }
- imageURL: nullable String
- */
-
+/** Class representing a ingredient object */
 export default class Ingredient {
     /**
+     * Internal class used for information hiding principle, which stores information about a specific
+     * ingredient, including its own image url.
      * @constructor
      * @param {Object} ingredient
      * @param {string} ingredient.name
-     * @param {string|null} ingredient.spoonacularName 
+     * @param {string|null} [ingredient.spoonacularName=null] - Used as a more Spoonacular's API friendly name, found by querying Spoonacular about its preferred name
      * @param {string} ingredient.type
      * @param {Date} ingredient.expirationDate
      * @param {{amount: number, unit: string}} ingredient.quantity
-     * @param {string|null} ingredient.imageURL
-     * @param {string} ingredient.userID
-     * @param {string} ingredient.firestoreID
+     * @param {string|null} [ingredient.imageURL=null] - Link to image
+     * @param {string} [ingredient.userID=null] - User ID from Firebase
+     * @param {string} [ingredient.firestoreID=null] - ID in Firestore
      */
     constructor({ name, spoonacularName, type, expirationDate, quantity, imageURL, userID, firestoreID }) {
         this.name = name;
@@ -39,9 +22,22 @@ export default class Ingredient {
         this.quantity = quantity;
         this.imageURL = imageURL ? imageURL : null;
         this.userID = userID ? userID : null;
-        this.firestoreID = firestoreID;
+        this.firestoreID = firestoreID ? firestoreID : null;
     }
 
+    /**
+     * @type {Object} firestoreIngredient
+     * @property {string} firestoreIngredient.name
+     * @property {string|null} [firestoreIngredient.spoonacularName=null] - Used as a more Spoonacular's API friendly name, found by querying Spoonacular about its preferred name
+     * @property {string} firestoreIngredient.type
+     * @property {Date} firestoreIngredient.expirationDate
+     * @property {{amount: number, unit: string}} firestoreIngredient.quantity
+     * @property {string|null} [firestoreIngredient.imageURL=null] - Link to image
+     * @property {string} [firestoreIngredient.userID=null] - User ID from Firebase
+     * 
+     * Returns the firestore data for the ingredient
+     * @returns {firestoreIngredient}
+     */
     getFirestoreData() {
         return {
             name: this.name,
@@ -53,11 +49,11 @@ export default class Ingredient {
             userID: this.userID,
         }
     }
-	
-	getSpoonacularName() {
-		return this.spoonacularName;
-	}
 
+    /**
+     * Returns the type of ingredient that it is.
+     * @returns {string} ingredient
+     */
 	getClassType() {
         return "Ingredient";
     }

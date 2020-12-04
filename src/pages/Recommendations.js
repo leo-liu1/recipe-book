@@ -4,6 +4,9 @@ import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
 
 import RecipeBox from '../components/common/RecipeBox';
 
+/**
+ * Recommendations page that displays recipe recommendations
+ */
 export default function Recommendations() {
     document.title = "Recommendations";
 
@@ -12,11 +15,11 @@ export default function Recommendations() {
     const [recipesArray, setRecipesArray] = useState(null);
 
     useEffect(() => {
-        getMostFrequentRecipeHistory().then((recipeHistory) => {
-            return Promise.all(recipeHistory.map(recipeHistoryObj => {
-                return searchSimilarRecipes(recipeHistoryObj.recipeID).then((similarRecipeID) => {
+        getMostFrequentRecipeHistory(3).then((recipeHistory) => {
+            return Promise.all(recipeHistory.map(recipeHistoryObj => { // wait for all our promises to resolve
+                return searchSimilarRecipes(recipeHistoryObj.recipeID).then((similarRecipeID) => { // search for similar recipes
                     if (similarRecipeID) {
-                        return searchRecipeById(similarRecipeID);
+                        return searchRecipeById(similarRecipeID); // search the recipe by recipe ID after our query
                     } else {
                         return null;
                     }
@@ -31,6 +34,7 @@ export default function Recommendations() {
 
     return (<div className="recommendations">
         <div className="page-title">Your Recommendations</div>
+        {/* on first render, we do not render anything */}
         {recipesArray !== null &&
             <div className="recommendations-container">
                 {recipesArray.length === 0 ?
@@ -41,4 +45,3 @@ export default function Recommendations() {
             </div>}
     </div>);
 }
-

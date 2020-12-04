@@ -7,8 +7,8 @@ import { FirestoreContext } from '../../components/handlers/FirestoreHandler';
 import { SpoonacularContext } from '../../components/handlers/SpoonacularHandler';
 
 import Ingredient from '../../components/classes/Ingredient';
-import Recipe from '../../components/classes/Recipe'
-import MeatImage from '../../assets/images/meat.jpg'
+import Recipe from '../../components/classes/Recipe';
+import MeatImage from '../../assets/images/meat.jpg';
 
 const mockRecipe = new Recipe({
     name: 'MockRecipe1',
@@ -49,7 +49,6 @@ const authValue = {
     signup:                         () => Promise.resolve(),
     login:                          () => Promise.resolve(),
     logout:                         () => Promise.resolve(),
-    getUserID:                      () => Promise.resolve(),
     isUserAuthenticated:            () => Promise.resolve(),
 }
 

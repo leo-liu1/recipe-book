@@ -4,6 +4,15 @@ import { Link } from "react-router-dom";
 
 import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
+/**
+ * @callback checkAuth
+ */
+
+/**
+ * Login page for user authentication
+ * @param {Object} login
+ * @param {checkAuth} login.checkAuth - Callback that rechecks user authentication
+ */
 export default function Login({ checkAuth }) {
   document.title = "Login";
 
@@ -14,8 +23,12 @@ export default function Login({ checkAuth }) {
   const pswdRef = useRef();
   const { login } = useContext(AuthContext);
 
-  async function submitHandler(e) {
-    e.preventDefault();
+  /**
+   * Handler for when the form is submitted
+   * @param {onSubmit} event - Event that triggers when the form is submitted 
+   */
+  async function submitHandler(event) {
+    event.preventDefault();
 
     try {
       setError("");

@@ -3,6 +3,9 @@ import { useLocation } from 'react-router-dom';
 import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
 import RecipeBox from '../components/common/RecipeBox';
 
+/**
+ * Search page that is dependent on the URL search parameters to run our search.
+ */
 export default function Search() {
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
@@ -15,12 +18,15 @@ export default function Search() {
     const ingredientList = query.split(',').map(ingredientName => ingredientName.trim());
 
     useEffect(()=>{
-        setRecipesArray(null); // reset state
+        setRecipesArray(null); // reset state after every query
         fetchData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location.search]);
+    }, [location.search]); // we rerun our search if the search parameters in the URL change
 
+    /**
+     * Search for recipes by our ingredients
+     */
     const fetchData = () => {
         searchRecipeByIngredients(ingredientList)
             .then(data => {
@@ -36,6 +42,7 @@ export default function Search() {
         <div className="page-title">
             <div className="page-title-text">You Searched for {query}</div>
         </div>
+        {/* on first render, we do not render anything */}
         {recipesArray !== null && 
             <div className="search-container">
                 {recipesArray.length === 0 ?

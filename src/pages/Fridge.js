@@ -16,11 +16,29 @@ import seasoningImage from '../assets/images/seasoning.jpg';
 
 import "react-datepicker/dist/react-datepicker.css";
 
+/**
+ * @callback populateSearch
+ * @param {string} fridgeSearchStr - string that will populate our navbar search
+ */
+
+/**
+ * @constant - How many items we should show per row
+ * @type {Number}
+ * @default
+ */
 const ITEM_ROW_LENGTH = 4;
 
+/**
+ * Fridge that renders all our user ingredients. A user can add, remove, and update ingredients or
+ * seasonings from the fridge. Additionally, they can select ingredients that they would like to
+ * make recipes for.
+ * 
+ * @param {Object} fridge
+ * @param {populateSearch} fridge.populateSearch - Callback that triggers when we select items from the fridge we want to search for
+ */
 export default function Fridge({ populateSearch }) {
     document.title = 'Fridge';
-    const ingredientTypes = [
+    const ingredientTypes = [ // list of default types of ingredients
         'Meat',
         'Dairy',
         'Vegetable',
@@ -46,7 +64,7 @@ export default function Fridge({ populateSearch }) {
     const [chosenIngredients, setChosenIngredients] = useState({});
 
     const { addUserIngredient, removeUserIngredient, getAllUserIngredients, updateUserIngredient } = useContext(FirestoreContext);
-    useEffect(() => {
+    useEffect(() => { // get all user ingredients on load
         getAllUserIngredients()
         .then((ingredients) => setFridge(ingredients))
         .catch((err) => console.error(err));
@@ -54,6 +72,12 @@ export default function Fridge({ populateSearch }) {
 
     const { searchIngredient } = useContext(SpoonacularContext);
 
+    /**
+     * Triggers when the user selects an ingredient to edit. Shows the form and populates it
+     * based off the ingredient's information.
+     * @param {Ingredient} ingredient - ingredient to edit
+     * @param {Number} index - index of the ingredient that is being edited
+     */
     function editIngredient(ingredient, index) {
         setShowForm(true);
         setNewIngredient(false);
@@ -79,6 +103,11 @@ export default function Fridge({ populateSearch }) {
         }
     }
 
+    /**
+     * Handler for whenever the form is changed
+     * @param {onChange} event - Event that triggers when the form is changed
+     * @listens onChange
+     */
     function handleFormChange(event) {
         const value = event.target.value;
         const name = event.target.name;
@@ -89,14 +118,24 @@ export default function Fridge({ populateSearch }) {
         });
     }
 
+    /**
+     * Handler for when the form is submitted
+     * @param {onSubmit} event - Event that triggers when the form is submitted
+     * @listens onSubmit
+     */
     function handleSubmit(event) {
         event.preventDefault();
         setShowForm(false);
         clearFormData();
     }
 
+    /**
+     * Handler when the user either edits the ingredient or adds it. Creates the ingredient if it
+     * does not exist, queries Spoonacular for the name in Spoonacular, and then refreshes the
+     * fridge to reflect the new edit or addition.
+     */
     function handleAdd() {
-        if (!formFilled()) {
+        if (!formFilled()) { // if the form is not filled, return
             return;
         }        
 
@@ -122,7 +161,8 @@ export default function Fridge({ populateSearch }) {
         
         const name = formData.formIngredientName;
 
-        if (typeof formData.formIngredientIndex === 'number') {
+        if (typeof formData.formIngredientIndex === 'number') { // editing ingredient
+            // query Spoonacular to set the ingredient's Spoonacular name
             searchIngredient(name).then(({ spoonacularName, imageURL }) => {
                 if (typeof spoonacularName !== 'undefined') {
                     newElement.spoonacularName = spoonacularName;
@@ -130,25 +170,30 @@ export default function Fridge({ populateSearch }) {
                 }
                 return updateUserIngredient(newElement);
             })
-            .then(() => getAllUserIngredients())
+            .then(() => getAllUserIngredients()) // refresh the fridge
             .then((userIngredients) => setFridge(userIngredients))
             .catch((err) => console.error(err));
-        } else {
+        } else { // adding new ingredient
+            // query Spoonacular to set the ingredient's Spoonacular name
             searchIngredient(name).then(({ spoonacularName, imageURL }) => {
                 if (typeof spoonacularName !== 'undefined') {
                     newElement.spoonacularName = spoonacularName;
                     newElement.imageURL = imageURL;
                 }
                 return addUserIngredient(newElement);
-            }).then((docRef) => {
+            }).then((docRef) => { // set the firestore ID to be the document ID
                 newElement.firestoreID = docRef.id;
-                return getAllUserIngredients();
+                return getAllUserIngredients(); // refresh the fridge
             })
             .then((userIngredients) => setFridge(userIngredients))
             .catch((err) => console.error(err));
         }
     }
 
+    /**
+     * Returns true if the form if the necessary fields for the ingredient or seasoning are filled
+     * @returns {boolean} If the form was filled out correctly or not
+     */
     function formFilled() {
         if (isSeasoning) {
             return formData.formIngredientName !== '';
@@ -164,6 +209,9 @@ export default function Fridge({ populateSearch }) {
         return validate;
     }
 
+    /**
+     * Resets the form data
+     */
     function clearFormData() {
         setFormData({
             formIngredientName: "",
@@ -176,21 +224,31 @@ export default function Fridge({ populateSearch }) {
         });
     }
 
+    /**
+     * Handler to remove the ingredient from the fridge and refresh the form
+     */
     function handleRemove() {
         if (typeof formData.formIngredientIndex === 'number') {
             let ingredientToRemove = fridge[formData.formIngredientIndex];
             removeUserIngredient(ingredientToRemove)
-                .then(() => getAllUserIngredients())
+                .then(() => getAllUserIngredients()) // refreshes the fridge
                 .then((userIngredients) => setFridge(userIngredients))
                 .catch(err => console.error(err));
         }
     }
 
+    /**
+     * Handler if the user wants to exit out of the form dialog without changes
+     */
     function handleCancel() {
         clearFormData();
         setShowForm(false);
     }
 
+    /**
+     * Handles the creation of the ingredient and decides between Ingredient and Seasoning
+     * @param {string} type - Ingredient or Seasoning
+     */
     function handleCreateIngredient(type) {
         if (!showForm || !formFilled()) {
             // if the dialog is already open, do not close the form if we're switching from ingredient to seasoning or vice versa
@@ -205,19 +263,28 @@ export default function Fridge({ populateSearch }) {
         clearFormData();
     }
 
+    /**
+     * Handler for toggling between choosing ingredients and editing ingredients
+     * @param {boolean} toggleChoose - true if choose mode is active, false if we're editing ingredients
+     */
     function chooseIngredients(toggleChoose) {
         setChooseActive(toggleChoose);
 
         if (!toggleChoose) {
             setChosenIngredients({}); // remove all chosen ingredients from our state
-            populateSearch('');
+            populateSearch(''); // clear the search bar
         } else {
-            setShowForm(false);
+            setShowForm(false); // close the form if we're choosing
         }
     }
 
+    /**
+     * Function that populates the navbar search with the ingredients that the user chooses
+     * @param {Ingredient} ingredient - Ingredient that is being clicked
+     * @param {boolean} selected - If the ingredient is actively being selected or not
+     */
     function chooseIngredient(ingredient, selected) {
-        const newChosen = selected ?
+        const newChosen = selected ? // if the ingredient was selected, we add it as a mapping from firestoreID to Ingredient
             { ...chosenIngredients, [ingredient.firestoreID]: ingredient } :
             { ...chosenIngredients, [ingredient.firestoreID]: null };
         
@@ -228,9 +295,12 @@ export default function Fridge({ populateSearch }) {
             return ingredient.spoonacularName ? ingredient.spoonacularName : ingredient.name;
         }).join(', '); // join them all together, separated by commas
 
-        populateSearch(fridgeSearchStr);
+        populateSearch(fridgeSearchStr); // populate the navbar search with the chosen ingredients
     }
 
+    /**
+     * Renders the form component
+     */
     function renderForm() {
         return (
             <div className="form-dialog">
@@ -339,6 +409,7 @@ export default function Fridge({ populateSearch }) {
                     <button className={chooseIngredientClass} disabled={chooseActive} onClick={() => chooseIngredients(true)}>Choose Ingredients</button>
                 </div>
             </div>
+            {/* on first render, we do not render anything */}
             {fridge !== null &&
                 <div className="fridge-container">
                     {fridge.length === 0 ?
@@ -377,6 +448,25 @@ export default function Fridge({ populateSearch }) {
     );
 }
 
+/**
+ * @callback editIngredient
+ * @param {Ingredient} ingredient - ingredient to edit
+ * @param {Number} index - index of the ingredient that is being edited
+ * 
+ * @callback chooseIngredient
+ * @param {Ingredient} ingredient - Ingredient that is being clicked
+ * @param {boolean} selected - If the ingredient is actively being selected or not
+ */
+
+/**
+ * Helper function to Fridge that renders all the boxes that we use to show the ingredients
+ * @param {Object} box
+ * @param {Ingredient} box.ingredient - Ingredient to render
+ * @param {Number} box.index - Index of the box
+ * @param {editIngredient} box.editIngredient - Callback function from Fridge that determines what ingredient to modify
+ * @param {boolean} box.chooseActive - Whether the choose mode is active or not
+ * @param {chooseIngredient} box.chooseIngredient - Callback function from Fridge that determines what ingredient to choose
+ */
 function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient }) {
     const [selected, setSelected] = useState(false);
 
@@ -390,6 +480,11 @@ function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient
     const isSeasoning = ingredient.getClassType() === "Seasoning";
     const expDate = isSeasoning ? null : new Date(ingredient.expirationDate).toLocaleDateString();
 
+    /**
+     * Returns default image based off what user clasifies for the ingredient
+     * @param {Ingredient} ingredient - Ingredient object
+     * @returns {string} Default image to be rendered
+     */
     function getDefaultImage(ingredient) {
         let type = ingredient.getClassType() === "Seasoning" ? "Seasoning" : ingredient.type;
         switch(type) {
@@ -410,6 +505,11 @@ function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient
         }
     }
 
+    /**
+     * Handler that triggers when the box is clicked
+     * @param {Ingredient} ingredient - Ingredient that was clicked
+     * @param {Number} index - Index of the ingredient
+     */
     function handleClick(ingredient, index) {
         if (!chooseActive) {
             editIngredient(ingredient, index);

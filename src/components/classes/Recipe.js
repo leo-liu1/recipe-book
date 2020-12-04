@@ -1,31 +1,24 @@
-/*
- Class used to hold recipe information
-
- name: String
- recipeID: String
-    - Used to query Spoonacular's API for their actual recipe later on
- ingredients: Ingredient[]
-    - See Ingredient.js for class info
- imageURL: nullable String
- recipeURL: String
-    - Holds the URL for the actual recipe (not Spoonacular's, but the one that they use to display)
- missingIngredients: nullable Ingredient[]
-    - Holds data from the user of the ingredients they are missing to create this recipe
- */
+/** Class representing a recipe object */
 export default class Recipe {
    /**
-     * @constructor
-     * @param {Object} recipe
-     * @param {string} recipe.name
-     * @param {string} recipe.recipeID 
-     * @param {Ingredient[]} recipe.ingredients
-     * @param {string|null} recipe.imageURL
-     * @param {string} recipe.recipeURL
-     * @param {Ingredient[]|null} recipe.missingIngredients
-     * @param {string} recipe.userID
-     * @param {string} recipe.firestoreID
-     * @param {Number} recipe.frequency
-     */
+     * @typedef {import('./Ingredient').default} Ingredient
+    */
+
+   /**
+    * Internal class used for information hiding principle, which stores information about a specific
+    * recipe, including its own image url.
+    * @constructor
+    * @param {Object} recipe
+    * @param {string} recipe.name - Recipe title
+    * @param {string} recipe.recipeID - Used to query Spoonacular for the recipe
+    * @param {Ingredient[]} recipe.ingredients - Array of ingredients needed to make the recipe
+    * @param {string|null} [recipe.imageURL=null] - Image URL of the recipe
+    * @param {string} recipe.recipeURL - URL to the recipe
+    * @param {Ingredient[]|null} [recipe.missingIngredients=null] - Array of missing ingredients that are included as part of the Recipe
+    * @param {string|null} [recipe.userID=null] - User ID from Firebase
+    * @param {string|null} [recipe.firestoreID=null] - ID to collection in Firestore
+    * @param {Number} [recipe.frequency=0] - Number of times the user has clicked the recipe
+    */
    constructor({ name, recipeID, ingredients, imageURL, recipeURL, missingIngredients, userID, firestoreID, frequency }) {
       this.name = name;
       this.recipeID = recipeID;
@@ -38,6 +31,21 @@ export default class Recipe {
       this.frequency = frequency ? frequency : 0;
    }
 
+   /**
+    * @type {Object} firestoreRecipe
+    * @property {string} firestoreRecipe.name - Recipe title
+    * @property {string} firestoreRecipe.recipeID - Used to query Spoonacular for the recipe
+    * @property {Ingredient[]} firestoreRecipe.ingredients - Array of ingredients needed to make the recipe
+    * @property {string|null} [firestoreRecipe.imageURL=null] - Image URL of the recipe
+    * @property {string} firestoreRecipe.recipeURL - URL to the recipe
+    * @property {Ingredient[]|null} [firestoreRecipe.missingIngredients=null] - Array of missing ingredients that are included as part of the Recipe
+    * @property {string|null} [firestoreRecipe.userID=null] - User ID from Firebase
+    * @property {string|null} [firestoreRecipe.firestoreID=null] - ID to collection in Firestore
+    * @property {Number} [firestoreRecipe.frequency=0] - Number of times the user has clicked the recipe
+    * 
+    * Returns the firestore data for the recipe
+    * @returns {firestoreRecipe}
+    */
    getFirestoreData() {
       return {
          name: this.name,
@@ -50,9 +58,5 @@ export default class Recipe {
          firestoreID: this.firestoreID,
          frequency: this.frequency,
       }
-   }
-
-   getRecipeID(){
-      return this.recipeID;
    }
 }
