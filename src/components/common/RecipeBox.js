@@ -1,13 +1,20 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useState } from "react";
 import { FirestoreContext } from '../handlers/FirestoreHandler';
 
 export default function RecipeBox({ recipe, removeFromHistoryPage }) {
     const { addRecipeHistory, removeRecipeHistory } = useContext(FirestoreContext);
-    const redirectButton = useRef();
+    const [clicked, setClicked] = useState(false);
 
-    const addToHistoryAndRedirect = async () => {
+    const addToHistoryAndRedirect = async (event) => {
+        if (clicked) {
+            return;
+        }
+
+        event.preventDefault();
+
         await addRecipeHistory(recipe).catch(err => console.error(err));
-        redirectButton.current.click();
+        setClicked(true);
+        event.target.click();
     };
 
     const removeFromHistory = async () => {
@@ -15,9 +22,7 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
         removeFromHistoryPage(recipe);
     };
 
-    if (typeof recipe.ingredients === 'undefined' || typeof recipe.missingIngredients === 'undefined') {
-        return (<div className="">Error: could not load recipe</div>);
-    }
+    const error = (typeof recipe.ingredients === 'undefined' || typeof recipe.missingIngredients === 'undefined');
 
     const ingredientsElement = recipe.ingredients
         .map((ingredient) => <div key={ingredient.spoonacularName} className="ingredient">{ingredient.name}</div>);
@@ -27,43 +32,48 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
 
     return (
         <div className="recipe-box">
-            <div className="image-container">
-                <img className="image"
-                    src={recipe.imageURL}
-                    alt={recipe.name} />
-                <div className="button-container">
-                    <button className="button add" onClick={addToHistoryAndRedirect}>Go to Recipe</button>
-                    {typeof removeFromHistoryPage !== 'undefined' &&
-                    <button className="button" onClick={removeFromHistory}>Remove Recipe From History</button>}
-                </div>
-            </div>
-            <div className="content-container">
-                <div className="content">
-                    <div className="title">
-                        <div className="name">{recipe.name}</div>
-                    </div>
-                    <div className="ingredients-container">
-                        <div className="ingredients">
-                            <div className="text">
-                                Ingredients:
-                            </div>
-                            {ingredientsElement}
-                        </div>
-                        <div className="ingredients">
-                            <div className="text">
-                                Missing Ingredients:
-                            </div>
-                            {missingIngredientsElement}
+            {error ? <div className="error">Error: could not load recipe</div> :
+                <>
+                    <div className="image-container">
+                        <img className="image"
+                            src={recipe.imageURL}
+                            alt={recipe.name} />
+                        <div className="button-container">
+                            <a
+                                href={recipe.recipeURL}
+                                className="button"
+                                onClick={addToHistoryAndRedirect}
+                                onContextMenu={() => { return false; }}
+                                target="_blank"
+                                rel="noreferrer">
+                                Go to Recipe
+                            </a>
+                            {typeof removeFromHistoryPage !== 'undefined' &&
+                            <button className="button" onClick={removeFromHistory}>Remove Recipe From History</button>}
                         </div>
                     </div>
-                </div>
-            </div>
-            <form
-                action={recipe.recipeURL}
-                target="_blank"
-                className="hidden">
-                <button ref={redirectButton}/>
-            </form>
+                    <div className="content-container">
+                        <div className="content">
+                            <div className="title">
+                                <div className="name">{recipe.name}</div>
+                            </div>
+                            <div className="ingredients-container">
+                                <div className="ingredients">
+                                    <div className="text">
+                                        Ingredients:
+                                    </div>
+                                    {ingredientsElement}
+                                </div>
+                                <div className="ingredients">
+                                    <div className="text">
+                                        Missing Ingredients:
+                                    </div>
+                                    {missingIngredientsElement}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </>}
         </div>
     );
 }

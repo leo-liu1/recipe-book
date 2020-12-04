@@ -8,7 +8,7 @@ import { SpoonacularContext } from '../../components/handlers/SpoonacularHandler
 
 import Ingredient from '../../components/classes/Ingredient';
 import Recipe from '../../components/classes/Recipe'
-import MeatImage from '../../assets/images/meat.jpg'
+import MeatImage from '../../assets/images/meat.jpg';
 
 const mockRecipe = new Recipe({
     name: 'MockRecipe1',
@@ -114,7 +114,7 @@ const authValue = {
     logout:                         () => Promise.resolve(),
     getUserID:                      () => Promise.resolve(),
     isUserAuthenticated:            () => Promise.resolve(),
-}
+};
 
 const firestoreValue = {
     addUserIngredient:              (Ingredient) => Promise.resolve({
@@ -124,10 +124,10 @@ const firestoreValue = {
     updateUserIngredient:           () => Promise.resolve(),
     getAllUserIngredients:          () => Promise.resolve([mockIngredient]),
     addRecipeHistory:               () => Promise.resolve(),
-    removeRecipeHistory:           () => Promise.resolve(),
+    removeRecipeHistory:            () => Promise.resolve(),
     getMostFrequentRecipeHistory:   () => Promise.resolve([mockRecipe2]),
     getLastUpdatedRecipeHistory:    () => Promise.resolve([mockRecipe]),
-}
+};
 
 const spoonacularValue = {
     searchRecipeById:               () => Promise.resolve(mockRecipe2),
@@ -137,7 +137,7 @@ const spoonacularValue = {
         imageURL: 'testImage',
     }),
     searchSimilarRecipes:           () => Promise.resolve([mockRecipe2]),
-}
+};
 
 export default function renderComponent(component, props, route='', wrapper={}) {
     if (route) {
