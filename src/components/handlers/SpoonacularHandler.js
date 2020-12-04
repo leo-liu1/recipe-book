@@ -53,13 +53,29 @@ export function ProvideSpoonacular({ children }) {
 		});
 	};
 
+	const checkSpoonacularFailure = (responseJSON) => {
+		if (responseJSON.status === 'failure') { // if we reach our rate limit, throw an error
+			throw new Error('Spoonacular API rate limit reached');
+		} else {
+			return responseJSON;
+		}
+	}
+
+	const getSpoonacularAndFirestore = (spoonacularRequest) => {
+		return Promise.all([ // we can make both requests simultaneously
+			fetch(spoonacularRequest, { method: 'GET' })
+				.then(response => response.json())
+				.then(responseJSON => {
+					return checkSpoonacularFailure(responseJSON);
+				}),
+			getAllUserIngredients(),
+		]);
+	}
+
 	const searchRecipeById = async (recipeID) => {
-		const requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
+		const spoonacularRequest = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
 		try {
-			const [spoonacularResponse, firestoreIngredients] = await Promise.all([ // we can make both requests simultaneously
-				fetch(requestString, { method: 'GET' }).then(response => response.json()),
-				getAllUserIngredients(),
-			]);
+			const [spoonacularResponse, firestoreIngredients] = await getSpoonacularAndFirestore(spoonacularRequest);
 
 			const recipeIngredients = getUniqueIngredients(spoonacularResponse.extendedIngredients);
 
@@ -83,7 +99,7 @@ export function ProvideSpoonacular({ children }) {
 	const getRecipeURL = async (recipeID) => {
 		let requestString = `https://api.spoonacular.com/recipes/${recipeID}/information?apiKey=${API_Key}&includeNutrition=false`;
 		try {
-			const recipeJSON = await (await fetch(requestString, { method: 'GET' })).json();
+			const recipeJSON = checkSpoonacularFailure(await (await fetch(requestString, { method: 'GET' })).json());
 
 			return recipeJSON.sourceUrl;
 		} catch (err) {
@@ -94,13 +110,12 @@ export function ProvideSpoonacular({ children }) {
 	
 	const searchRecipeByIngredients = async (ingredientList) => {
 		const ingredientsString = ingredientList.join(",+");
-		const requestString = `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${API_Key}&ingredients=${ingredientsString}&number=5`;
+		const spoonacularRequest = `https://api.spoonacular.com/recipes/findByIngredients?apiKey=${API_Key}&ingredients=${ingredientsString}&number=5`;
 
 		try {
-			const [spoonacularResponse, firestoreIngredients] = await Promise.all([ // we can make both requests simultaneously
-				fetch(requestString, { method: 'GET' }).then(response => response.json()),
-				getAllUserIngredients(),
-			]);
+			const [spoonacularResponse, firestoreIngredients] = await getSpoonacularAndFirestore(spoonacularRequest);
+
+			console.log(spoonacularResponse);
 
 			const recipeArray = spoonacularResponse.map(async (recipeJSON) => {
 				const missingIngredients = getUniqueIngredients(recipeJSON.missedIngredients);
@@ -120,53 +135,45 @@ export function ProvideSpoonacular({ children }) {
 			return Promise.all(recipeArray);
 		} catch (err) {
 			console.error(err);
-			return {};
+			return [];
 		}
 	};
 	
-	const searchIngredient = (name) => {
-		let requestString = `https://api.spoonacular.com/food/ingredients/search?apiKey=${API_Key}&query=`;
-		requestString = `${requestString}${name}&number=1`; // limited to only the first response
+	const searchIngredient = async (name) => {
+		const spoonacularRequest = `https://api.spoonacular.com/food/ingredients/search?apiKey=${API_Key}&query=${name}&number=1`; // limited to only the first response
 		
-		return fetch(requestString, {
-			method: 'GET',
-		})
-		.then((response) => response.json())
-		.then((data) => {
+		try {
+			const responseJSON = checkSpoonacularFailure(await (await fetch(spoonacularRequest, { method: 'GET' })).json());
 			// either grab first result or set to empty object
-			const ingredient_json = (data && data.results.length > 0) ? data.results[0] : {};
+			const ingredientJSON = (responseJSON && responseJSON.results.length > 0) ? responseJSON.results[0] : {};
 
-			if (typeof ingredient_json.name !== 'undefined' && typeof ingredient_json.image !== 'undefined') {
+			if (typeof ingredientJSON.name !== 'undefined' && typeof ingredientJSON.image !== 'undefined') {
 				return {
-					spoonacularName: ingredient_json.name,
-					imageURL: `https://spoonacular.com/cdn/ingredients_250x250/${ingredient_json.image}`,
+					spoonacularName: ingredientJSON.name,
+					imageURL: `https://spoonacular.com/cdn/ingredients_250x250/${ingredientJSON.image}`,
 				};
 			} else {
 				return {};
 			}
-		})
-		.catch((err) => {
+		} catch (err) {
 			console.error(err);
 			return {};
-		});
+		}
 	};
 	
-	const searchSimilarRecipes = (recipeID) => {
-		const requestString = `https://api.spoonacular.com/recipes/${recipeID}/similar?apiKey=${API_Key}&number=1`;
-		return fetch(requestString, {
-			method: 'GET',
-		})
-		.then((response) => response.json())
-		.then((recipe_json_list) => {
-			const recipe_object_list = recipe_json_list.map((recipe_json) => {
+	const searchSimilarRecipes = async (recipeID) => {
+		const spoonacularRequest = `https://api.spoonacular.com/recipes/${recipeID}/similar?apiKey=${API_Key}&number=1`;
+
+		try {
+			const recipeJSONArray = checkSpoonacularFailure(await (await fetch(spoonacularRequest, { method: 'GET' })).json());
+			const recipeObjectArray = recipeJSONArray.map((recipe_json) => {
 				return recipe_json.id;
 			});
-			return recipe_object_list ? recipe_object_list[0] : null; // either return the recipeID or null
-		})
-		.catch((err) => {
+			return recipeObjectArray ? recipeObjectArray[0] : null;
+		} catch (err) {
 			console.error(err);
-			return {};
-		});
+			return null;
+		}
 	};
 
 	const value = {

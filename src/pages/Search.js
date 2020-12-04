@@ -10,11 +10,12 @@ export default function Search() {
     const urlParams = new URLSearchParams(location.search);
     const query = urlParams.get('q');
 
-    const [list, setList] = useState([]);
+    const [recipesArray, setRecipesArray] = useState(null);
     const { searchRecipeByIngredients } = useContext(SpoonacularContext);
     const ingredientList = query.split(',').map(ingredientName => ingredientName.trim());
 
     useEffect(()=>{
+      setRecipesArray(null); // reset state
       fetchData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,7 +24,7 @@ export default function Search() {
     const fetchData = () => {
       searchRecipeByIngredients(ingredientList)
       .then(data => {
-        setList(data);
+        setRecipesArray(data);
       })
       .catch(err => {
         console.error(err);
@@ -35,10 +36,13 @@ export default function Search() {
         <div className="page-title">
             <div className="page-title-text">You Searched for {query}</div>
         </div>
-        <div className="search-container">
-          {list.length > 0 && list.map((recipe, index) => (
-            <RecipeBox key={index} recipe={recipe} />
-          ))}
-        </div>
+        {recipesArray !== null && 
+          <div className="search-container">
+            {recipesArray.length === 0 ?
+              <div className="empty-search">Your search returned no results.</div> :
+              recipesArray.map((recipe) => (
+                <RecipeBox key={recipe.recipeID} recipe={recipe} />
+              ))}
+          </div>}
     </div>);
 }

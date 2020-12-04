@@ -15,11 +15,15 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
         removeFromHistoryPage(recipe);
     };
 
+    if (typeof recipe.ingredients === 'undefined' || typeof recipe.missingIngredients === 'undefined') {
+        return (<div className="">Error: could not load recipe</div>);
+    }
+
     const ingredientsElement = recipe.ingredients
-        .map((ingredient) => <div className="ingredient">{ingredient.name}</div>);
+        .map((ingredient) => <div key={ingredient.spoonacularName} className="ingredient">{ingredient.name}</div>);
     
     const missingIngredientsElement = recipe.missingIngredients
-        .map((ingredient) => <div className="ingredient">{ingredient.name}</div>)
+        .map((ingredient) => <div key={ingredient.spoonacularName} className="ingredient">{ingredient.name}</div>);
 
     return (
         <div className="recipe-box">

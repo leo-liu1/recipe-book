@@ -7,6 +7,10 @@
 
     .search-container {
         width: $container-width;
+
+        .empty-search {
+            font-family: $font;
+        }
     }
 
     .page-title {
