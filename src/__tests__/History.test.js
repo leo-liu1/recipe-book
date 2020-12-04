@@ -9,7 +9,7 @@ describe('Tests for the History page', () => {
     it('Renders the empty history page correctly', async () => {
         renderComponent(History, {});
 
-        expect(screen.getByText('Your search history is empty. Search for a recipe to add to your history!')).toBeInTheDocument();
+        expect(screen.getByText('Your History')).toBeInTheDocument();
         await act(() => Promise.resolve());
     });
 

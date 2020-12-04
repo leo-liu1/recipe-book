@@ -9,7 +9,7 @@ describe('Tests for the Recommendation page', () => {
     it('Renders the empty recommendation page correctly', async () => {
         renderComponent(Recommendation, {});
 
-        expect(screen.getByText('You currently have no recommendations. Search for a recipe to add to your history!')).toBeInTheDocument();
+        expect(screen.getByText('Your Recommendations')).toBeInTheDocument();
         await act(() => Promise.resolve());
     });
 
