@@ -115,8 +115,6 @@ export function ProvideSpoonacular({ children }) {
 		try {
 			const [spoonacularResponse, firestoreIngredients] = await getSpoonacularAndFirestore(spoonacularRequest);
 
-			console.log(spoonacularResponse);
-
 			const recipeArray = spoonacularResponse.map(async (recipeJSON) => {
 				const missingIngredients = getUniqueIngredients(recipeJSON.missedIngredients);
 				const fridgeMissingIngredients = getIngredientsNotInFirestore(missingIngredients, firestoreIngredients);
@@ -189,15 +187,3 @@ export function ProvideSpoonacular({ children }) {
 		</SpoonacularContext.Provider>
 	)
 }
-
-/*
-const api = "1026ca0dc757467e8c1c9e62bb994d48";
-const spoon=new SpoonacularHandler(api);
-console.log(spoon.searchRecipeById("716429"));
-spoon.searchSimilarRecipes("716429").then(data => {
-	console.log(data);
-})
-spoon.searchIngredient("apple").then(data => {
-	//console.log(data);
-})*/
-
