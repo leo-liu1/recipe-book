@@ -28,7 +28,7 @@ export default function Fridge({ populateSearch }) {
         'Carbs',
     ];
     
-    const [fridge, setFridge] = useState([]); // state to keep track of all fridge ingredients
+    const [fridge, setFridge] = useState(null); // state to keep track of all fridge ingredients, on first render we don't render anything
     const [showForm, setShowForm] = useState(false);
     const [originalTitle, setOriginalTitle] = useState(''); // used for editing ingredients, display original ingredient name
     const [newIngredient, setNewIngredient] = useState(false);
@@ -308,7 +308,7 @@ export default function Fridge({ populateSearch }) {
 
     // create empty elements so that the last ingredient added to the fridge is left aligned with the other ingredients in a grid
     let emptyElements = [];
-    if (fridge.length % ITEM_ROW_LENGTH !== 0) {
+    if (fridge && fridge.length % ITEM_ROW_LENGTH !== 0) {
         for (let i = 0; i < ITEM_ROW_LENGTH - (fridge.length % ITEM_ROW_LENGTH); i++) {
             emptyElements.push(<div className="empty" key={i}/>);
         }
@@ -339,20 +339,21 @@ export default function Fridge({ populateSearch }) {
                     <button className={chooseIngredientClass} disabled={chooseActive} onClick={() => chooseIngredients(true)}>Choose Ingredients</button>
                 </div>
             </div>
-            <div className="fridge-container">
-                {fridge.length === 0 ?
-                    <div className="empty-fridge">Your fridge is currently empty. Add an ingredient to begin!</div> :
-                    fridge.map((ingredient, index) =>
-                        <Box
-                            key={index}
-                            ingredient={ingredient}
-                            index={index}
-                            editIngredient={editIngredient}
-                            chooseActive={chooseActive}
-                            chooseIngredient={chooseIngredient}
-                        />)}
-                {emptyElements}
-            </div>
+            {fridge !== null &&
+                <div className="fridge-container">
+                    {fridge.length === 0 ?
+                        <div className="empty-fridge">Your fridge is currently empty. Add an ingredient to begin!</div> :
+                        fridge.map((ingredient, index) =>
+                            <Box
+                                key={index}
+                                ingredient={ingredient}
+                                index={index}
+                                editIngredient={editIngredient}
+                                chooseActive={chooseActive}
+                                chooseIngredient={chooseIngredient}
+                            />)}
+                    {emptyElements}
+                </div>}
             <div className="add-container">
                 <div className="button-background">
                     <button

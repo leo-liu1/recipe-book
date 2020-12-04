@@ -7,7 +7,7 @@ export default function History() {
     document.title = "History";
 
     const { getLastUpdatedRecipeHistory } = useContext(FirestoreContext);
-    const [recipesDict, setRecipesDict] = useState({});
+    const [recipesDict, setRecipesDict] = useState(null);
 
     useEffect(() => {
       getLastUpdatedRecipeHistory().then((recipes) => {
@@ -27,16 +27,17 @@ export default function History() {
       });
     }
 
-    const recipesArray = Object.values(recipesDict).filter(recipe => recipe !== null);
+    const recipesArray = recipesDict && Object.values(recipesDict).filter(recipe => recipe !== null);
 
     return (<div className="history">
         <div className="page-title">Your History</div>
-        <div className="history-container">
-          {recipesArray.length === 0 ?
-            <div className="empty-history">Your search history is empty. Search for a recipe to add to your history!</div> :
-            recipesArray.map((recipe, index) => (
-              <RecipeBox key={index} recipe={recipe} removeFromHistoryPage={removeFromHistoryPage} />
-            ))}
-        </div>
+        {recipesDict !== null &&
+          <div className="history-container">
+            {recipesArray.length === 0 ?
+              <div className="empty-history">Your search history is empty. Search for a recipe to add to your history!</div> :
+              recipesArray.map((recipe) => (
+                <RecipeBox key={recipe.firestoreID} recipe={recipe} removeFromHistoryPage={removeFromHistoryPage} />
+              ))}
+          </div>}
     </div>);
 }

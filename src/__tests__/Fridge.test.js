@@ -1,5 +1,5 @@
 import user from '@testing-library/user-event';
-import { screen, act, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import Fridge from '../pages/Fridge';
@@ -18,6 +18,7 @@ describe('Tests for the Fridge', () => {
     it('Can open up and add ingredients from the form', async () => {
         const mockCallback = jest.fn(x => x);
         renderComponent(Fridge, { populateSearch: mockCallback });
+        await waitFor(() => expect(screen.getByText('Mock1')).toBeInTheDocument());
 
         user.click(screen.getByText('Add Ingredient'));
         const form = screen.getByText('Add an ingredient');
@@ -27,7 +28,6 @@ describe('Tests for the Fridge', () => {
         user.type(screen.getByLabelText('Unit'), 'lbs');
         user.click(screen.getByText('Add'));
         expect(form).not.toBeInTheDocument();
-        await waitForElementToBeRemoved(() => screen.getByText('Your fridge is currently empty. Add an ingredient to begin!'));
-        expect(screen.getByText('Mock1')).toBeInTheDocument();
+        await waitFor(() => expect(screen.getByText('Mock1')).toBeInTheDocument());
     });
 });

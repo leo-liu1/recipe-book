@@ -15,11 +15,15 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
         removeFromHistoryPage(recipe);
     };
 
+    if (typeof recipe.ingredients === 'undefined' || typeof recipe.missingIngredients === 'undefined') {
+        return (<div className="">Error: could not load recipe</div>);
+    }
+
     const ingredientsElement = recipe.ingredients
-        .map((ingredient, index) => <div className="ingredient" key={index}>{ingredient.name}</div>);
+        .map((ingredient) => <div key={ingredient.spoonacularName} className="ingredient">{ingredient.name}</div>);
     
     const missingIngredientsElement = recipe.missingIngredients
-        .map((ingredient, index) => <div className="ingredient" key={index}>{ingredient.name}</div>)
+        .map((ingredient) => <div key={ingredient.spoonacularName} className="ingredient">{ingredient.name}</div>);
 
     return (
         <div className="recipe-box">
@@ -54,10 +58,10 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
                     </div>
                 </div>
             </div>
-            <form onSubmit={ e => e.preventDefault() }
-                  action={recipe.recipeURL}
-                  target="_blank"
-                  className="hidden">
+            <form
+                action={recipe.recipeURL}
+                target="_blank"
+                className="hidden">
                 <button ref={redirectButton}/>
             </form>
         </div>
