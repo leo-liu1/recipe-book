@@ -4,7 +4,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import { AuthContext } from '../../components/handlers/AuthHandler';
 import { FirestoreContext } from '../../components/handlers/FirestoreHandler';
-import { SpoonacularContext } from '../../components/handlers/SpoonacularHandler';
+import { SpoonacularContext, ProvideSpoonacular } from '../../components/handlers/SpoonacularHandler';
 
 import Ingredient from '../../components/classes/Ingredient';
 import Recipe from '../../components/classes/Recipe';
@@ -151,11 +151,11 @@ export default function renderComponent(component, props, route='', wrapper={}) 
     </AuthContext.Provider>, wrapper);
 }
 
-export function renderSpoonacular(spoonacularValue, wrapper={}) {
+export function renderSpoonacular(spoonacularChildren, wrapper={}) {
     
     return render(<AuthContext.Provider value={authValue}>
         <FirestoreContext.Provider value={firestoreValue}>
-            {ProvideSpoonacular({ children })}
+            {ProvideSpoonacular({ spoonacularChildren })}
         </FirestoreContext.Provider>
     </AuthContext.Provider>, wrapper);
 }
