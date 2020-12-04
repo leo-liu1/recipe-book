@@ -8,7 +8,7 @@ import { SpoonacularContext } from '../../components/handlers/SpoonacularHandler
 
 import Ingredient from '../../components/classes/Ingredient';
 import Recipe from '../../components/classes/Recipe'
-import MeatImage from '../../assets/images/meat.jpg';
+import MeatImage from '../../assets/images/meat.jpg'
 
 const mockRecipe = new Recipe({
     name: 'MockRecipe1',
@@ -29,70 +29,7 @@ const mockRecipe = new Recipe({
     ],
     imageURL: MeatImage,
     recipeURL: "https://www.google.com/",
-    missingIngredients: [
-        new Ingredient({
-            name: 'MockIngredient5',
-            spoonacularName: 'MockSpoon1',
-            type: "Dairy",
-            expirationDate: 1234,
-            quantity: {
-                amount: 1,
-                unit: 'oz',
-            },
-            userID: 12345,
-            firestoreID: 'abc'
-        })
-    ],
-    userID: 12345,
-    firestoreID: 'ab',
-    frequency: 1
-});
-
-const mockRecipe2 = new Recipe({
-    name: 'MockRecipe2',
-    recipeID: 12345,
-    ingredients: [
-        new Ingredient({
-            name: 'MockIngredient3',
-            spoonacularName: 'MockSpoon2',
-            type: "Dairy",
-            expirationDate: 1234,
-            quantity: {
-                amount: 1,
-                unit: 'oz',
-            },
-            userID: 12345,
-            firestoreID: 'abc'
-        }),
-        new Ingredient({
-            name: 'MockIngredient6',
-            spoonacularName: 'MockSpoon4',
-            type: "Dairy",
-            expirationDate: 1234,
-            quantity: {
-                amount: 1,
-                unit: 'oz',
-            },
-            userID: 12345,
-            firestoreID: 'abcde'
-        }),
-    ],
-    imageURL: MeatImage,
-    recipeURL: "https://www.google.com/",
-    missingIngredients: [
-        new Ingredient({
-            name: 'MockIngredient4',
-            spoonacularName: 'MockSpoon2',
-            type: "Dairy",
-            expirationDate: 1234,
-            quantity: {
-                amount: 1,
-                unit: 'oz',
-            },
-            userID: 12345,
-            firestoreID: 'abc'
-        }),
-    ],
+    missingIngredients: [],
     userID: 12345,
     firestoreID: 'ab',
     frequency: 1
@@ -114,7 +51,7 @@ const authValue = {
     logout:                         () => Promise.resolve(),
     getUserID:                      () => Promise.resolve(),
     isUserAuthenticated:            () => Promise.resolve(),
-};
+}
 
 const firestoreValue = {
     addUserIngredient:              (Ingredient) => Promise.resolve({
@@ -124,20 +61,20 @@ const firestoreValue = {
     updateUserIngredient:           () => Promise.resolve(),
     getAllUserIngredients:          () => Promise.resolve([mockIngredient]),
     addRecipeHistory:               () => Promise.resolve(),
-    removeRecipeHistory:            () => Promise.resolve(),
-    getMostFrequentRecipeHistory:   () => Promise.resolve([mockRecipe2]),
-    getLastUpdatedRecipeHistory:    () => Promise.resolve([mockRecipe]),
-};
+    removeRecipeHistory:           () => Promise.resolve(),
+    getMostFrequentRecipeHistory:   () => Promise.resolve(),
+    getLastUpdatedRecipeHistory:    () => Promise.resolve(),
+}
 
 const spoonacularValue = {
-    searchRecipeById:               () => Promise.resolve(mockRecipe2),
+    searchRecipeById:               () => Promise.resolve(),
     searchRecipeByIngredients:      () => Promise.resolve([mockRecipe]),
     searchIngredient:               (name) => Promise.resolve({
         spoonacularName: name,
         imageURL: 'testImage',
     }),
-    searchSimilarRecipes:           () => Promise.resolve([mockRecipe2]),
-};
+    searchSimilarRecipes:           () => Promise.resolve(),
+}
 
 export default function renderComponent(component, props, route='', wrapper={}) {
     if (route) {
@@ -148,6 +85,15 @@ export default function renderComponent(component, props, route='', wrapper={}) 
             <SpoonacularContext.Provider value={spoonacularValue}>
                 {React.createElement(component, props)}
             </SpoonacularContext.Provider>
+        </FirestoreContext.Provider>
+    </AuthContext.Provider>, wrapper);
+}
+
+export default function renderSpoonacular(spoonacularValue, wrapper={}) {
+    
+    return render(<AuthContext.Provider value={authValue}>
+        <FirestoreContext.Provider value={firestoreValue}>
+            <SpoonacularContext.Provider value={spoonacularValue}>
         </FirestoreContext.Provider>
     </AuthContext.Provider>, wrapper);
 }
