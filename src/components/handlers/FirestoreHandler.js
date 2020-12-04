@@ -33,9 +33,10 @@ export function ProvideFirestore({ children }) {
 	}
 
 	const updateUserIngredient = async (ingredient) => {
+		const userID = await checkAuth();
 		return await Firestore.collection('ingredients')
 			.doc(ingredient.firestoreID)
-			.update({ ...ingredient.getFirestoreData() });
+			.update({ ...ingredient.getFirestoreData(), userID: userID });
 	}
 
 	const getAllUserIngredients = async () => {
