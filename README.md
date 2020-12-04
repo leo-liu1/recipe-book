@@ -20,19 +20,17 @@ root/
 |  |  components/
 |  |  |  classes/ # contains our data classes
 |  |  |  |  Ingredient.js
-|  |  |  |  Nutrient.js
 |  |  |  |  Recipe.js
 |  |  |  |  Seasoning.js
 |  |  |  common/
 |  |  |  |  RecipeBox.js # component to display recipes
+|  |  |  |  Navbar.js # nav bar on top of page
+|  |  |  |  NavbarSearch.js # search bar in nav bar
 |  |  |  handlers/
 |  |  |  |  AuthHandler.js # class to handle user authentication
 |  |  |  |  FirebaseHandler.js # class to handle communication w/ firestore api
 |  |  |  |  FirestoreHandler.js # class to handle communication w/ firestore api
 |  |  |  |  SpoonacularHandler.js # class to handle communication w/ spoonacular's spi
-|  |  |  navigation/
-|  |  |  |  Navbar.js # nav bar on top of page
-|  |  |  |  NavbarSearch.js # search bar in nav bar
 |  |  |  css/ # contains our css styling sheets
 |  |  |  pages/
 |  |  |  |  Fridge.js # main Fridge page component
@@ -59,7 +57,7 @@ Install all packages necessary to run the application
 ### `npm run tests`
 
  Use this command to run automated tests
- 
+
 ### `npm start`
 
-This starts the server in the developer mode
+This starts the server in the developer mode. You need the `.env` file in order to start the application.
