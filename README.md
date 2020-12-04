@@ -52,11 +52,11 @@ root/
 
 ### `npm install`
 
-Install all packages necessary to run the application
+Install all packages necessary to run the application.
 
 ### `npm run tests`
 
- Use this command to run automated tests
+ Use this command to run automated tests. We use [Jest](https://jestjs.io/) as our testing framework.
 
 ### `npm start`
 
