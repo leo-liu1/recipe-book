@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/common/Navbar.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/common/Navbar.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect, useContext } from 'react';
+import { Link, Redirect } from 'react-router-dom';
+
+import { AuthContext } from '../handlers/AuthHandler';
+import NavbarSearch from './NavbarSearch';
+
+import { ReactComponent as FridgeIcon } from '../../assets/icons/fridge.svg';
+import { ReactComponent as HistoryIcon } from '../../assets/icons/history.svg';
+import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recommendations.svg';
+
+/**
+ * @callback checkAuth
+ */
+
+/**
+ * Navbar function that renders all navbar elements
+ * 
+ * @class
+ * @param {Object} navbar
+ * @param {boolean} navbar.isAuthenticated - Whether the user is authenticated or not
+ * @param {checkAuth} navbar.checkAuth - Callback that rechecks user authentication
+ * @param {string} navbar.searchStr - Search string resulting from a query from our fridge, to be used in NavbarSearch
+ */
+function Navbar({ isAuthenticated, checkAuth, searchStr }) {
+    const [loggedOut, setLoggedOut] = useState(false); // state to keep track of whether we've logged out or not
+    const { logout } = useContext(AuthContext);
+
+    useEffect(() => {
+        if (loggedOut) { // if we've logged out, trigger the logout function from AuthContext and then recheck our authentication
+            logout().then(() => checkAuth());
+        }
+    }, [loggedOut, logout, checkAuth]);
+
+    return (&lt;>
+        {loggedOut &amp;&amp; &lt;Redirect push to="/" />} {/* redirect to landing after log out */}
+        &lt;nav className="navigation">
+            &lt;div className="container">
+                &lt;div className="left">
+                    &lt;Link to="/" className="title">
+                        &lt;FridgeIcon className="logo-icon"/>
+                        &lt;div className="text">
+                            Recipe to Cook
+                        &lt;/div>
+                    &lt;/Link>
+                &lt;/div>
+                {isAuthenticated &amp;&amp; &lt;NavbarSearch searchStr={searchStr} />} {/* only show search if we are authenticated */}
+                &lt;div className="right">
+                    {/* conditional logic to display unauthenticated/authenticated resources */}
+                    {isAuthenticated ?
+                        (&lt;>
+                            &lt;Link to="/history" className="navbar-link history">
+                                &lt;HistoryIcon className="navbar-icon history"/>
+                            &lt;/Link>
+                            &lt;Link to="/recommendations" className="navbar-link">
+                                &lt;RecommendationsIcon className="navbar-icon"/>
+                            &lt;/Link>
+                            &lt;div className="logout" onClick={() => { setLoggedOut(true); }}>Logout&lt;/div>
+                        &lt;/>) :
+                        (&lt;div className="login">
+                            &lt;Link to="/login">Login&lt;/Link>
+                            &lt;Link to="/signup" className="signup">Sign Up&lt;/Link>
+                        &lt;/div>)}
+                &lt;/div>
+            &lt;/div>
+        &lt;/nav>
+    &lt;/>);
+}
+
+export default Navbar;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Box.html">Box</a></li><li><a href="Fridge.html">Fridge</a></li><li><a href="History.html">History</a></li><li><a href="Ingredient.html">Ingredient</a></li><li><a href="Landing.html">Landing</a></li><li><a href="Login.html">Login</a></li><li><a href="Navbar.html">Navbar</a></li><li><a href="NavbarSearch.html">NavbarSearch</a></li><li><a href="ProvideAuth.html">ProvideAuth</a></li><li><a href="ProvideFirestore.html">ProvideFirestore</a></li><li><a href="ProvideSpoonacular.html">ProvideSpoonacular</a></li><li><a href="Recipe.html">Recipe</a></li><li><a href="RecipeBox.html">RecipeBox</a></li><li><a href="Recommendations.html">Recommendations</a></li><li><a href="Search.html">Search</a></li><li><a href="Seasoning.html">Seasoning</a></li><li><a href="Signup.html">Signup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#Firebase">Firebase</a></li><li><a href="global.html#Firestore">Firestore</a></li><li><a href="global.html#FirestoreContext">FirestoreContext</a></li><li><a href="global.html#SpoonacularContext">SpoonacularContext</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 04 2020 19:45:35 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

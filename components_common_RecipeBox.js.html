@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/common/RecipeBox.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/common/RecipeBox.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useContext, useState } from "react";
+import { FirestoreContext } from '../handlers/FirestoreHandler';
+
+/**
+ * @callback removeFromHistoryPage
+ * @param {Recipe} recipe - Recipe to be removed from history page (only frontend)
+ */
+
+/**
+ * Frontend component to display each individual recipe and its corresponding ingredients and URL
+ * 
+ * @class
+ * @param {Object} recipeBox
+ * @param {Recipe} recipe - Recipe object to be displayed
+ * @param {removeFromHistoryPage} removeFromHistoryPage - Callback function that removes the recipe from the history, if the user is on the history page
+ */
+function RecipeBox({ recipe, removeFromHistoryPage }) {
+    const { addRecipeHistory, removeRecipeHistory } = useContext(FirestoreContext);
+    const [clicked, setClicked] = useState(false); // state to keep track of whether or not the recipe URL was clicked
+
+    /**
+     * Adds the recipe object to our history in Firestore and redirects the user to the URL
+     * @param {onClick} event - event that triggers when the recipeURL is clicked
+     * @listens onClick
+     */
+    const addToHistoryAndRedirect = async (event) => {
+        if (clicked) { // if we already clicked, do nothing. This no longer prevents the default event, allowing us to redirect.
+            return;
+        }
+
+        event.preventDefault(); // prevent redirect
+
+        await addRecipeHistory(recipe).catch(err => console.error(err)); // wait for us to add our recipe history
+        setClicked(true);
+        event.target.click(); // click the link again after we update our state
+    };
+
+    /**
+     * Removes the recipe from our history, and calls the callback function removeFromHistoryPage
+     */
+    const removeFromHistory = async () => {
+        await removeRecipeHistory(recipe).catch(err => console.error(err));
+        removeFromHistoryPage(recipe);
+    };
+
+    // error message that will be displayed if we cannot find ingredients
+    const error = (typeof recipe.ingredients === 'undefined' || typeof recipe.missingIngredients === 'undefined');
+
+    const ingredientsElement = recipe.ingredients ?
+        recipe.ingredients.map((ingredient) =>
+            &lt;div key={ingredient.spoonacularName} className="ingredient">{ingredient.name}&lt;/div>) :
+        (&lt;>&lt;/>);
+    
+    const missingIngredientsElement = recipe.missingIngredients ?
+        recipe.missingIngredients.map((ingredient) =>
+            &lt;div key={ingredient.spoonacularName} className="ingredient">{ingredient.name}&lt;/div>) :
+        (&lt;>&lt;/>);
+
+    return (
+        &lt;div className="recipe-box">
+            {/* display error message if we could not load the recipe */}
+            {error ? &lt;div className="error">Error: could not load recipe&lt;/div> :
+                &lt;>
+                    &lt;div className="image-container">
+                        &lt;img className="image"
+                            src={recipe.imageURL}
+                            alt={recipe.name} />
+                        &lt;div className="button-container">
+                            &lt;a
+                                href={recipe.recipeURL}
+                                className="button"
+                                onClick={addToHistoryAndRedirect}
+                                target="_blank"
+                                rel="noreferrer">
+                                Go to Recipe
+                            &lt;/a>
+                            {/* only display remove button if we're on the history page */}
+                            {typeof removeFromHistoryPage !== 'undefined' &amp;&amp;
+                                &lt;button className="button" onClick={removeFromHistory}>Remove Recipe From History&lt;/button>}
+                        &lt;/div>
+                    &lt;/div>
+                    &lt;div className="content-container">
+                        &lt;div className="content">
+                            &lt;div className="title">
+                                &lt;div className="name">{recipe.name}&lt;/div>
+                            &lt;/div>
+                            &lt;div className="ingredients-container">
+                                &lt;div className="ingredients">
+                                    &lt;div className="text">
+                                        Ingredients:
+                                    &lt;/div>
+                                    {ingredientsElement}
+                                &lt;/div>
+                                &lt;div className="ingredients">
+                                    &lt;div className="text">
+                                        Missing Ingredients:
+                                    &lt;/div>
+                                    {missingIngredientsElement}
+                                &lt;/div>
+                            &lt;/div>
+                        &lt;/div>
+                    &lt;/div>
+                &lt;/>}
+        &lt;/div>
+    );
+}
+
+export default RecipeBox;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Box.html">Box</a></li><li><a href="Fridge.html">Fridge</a></li><li><a href="History.html">History</a></li><li><a href="Ingredient.html">Ingredient</a></li><li><a href="Landing.html">Landing</a></li><li><a href="Login.html">Login</a></li><li><a href="Navbar.html">Navbar</a></li><li><a href="NavbarSearch.html">NavbarSearch</a></li><li><a href="ProvideAuth.html">ProvideAuth</a></li><li><a href="ProvideFirestore.html">ProvideFirestore</a></li><li><a href="ProvideSpoonacular.html">ProvideSpoonacular</a></li><li><a href="Recipe.html">Recipe</a></li><li><a href="RecipeBox.html">RecipeBox</a></li><li><a href="Recommendations.html">Recommendations</a></li><li><a href="Search.html">Search</a></li><li><a href="Seasoning.html">Seasoning</a></li><li><a href="Signup.html">Signup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#Firebase">Firebase</a></li><li><a href="global.html#Firestore">Firestore</a></li><li><a href="global.html#FirestoreContext">FirestoreContext</a></li><li><a href="global.html#SpoonacularContext">SpoonacularContext</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 04 2020 19:45:35 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

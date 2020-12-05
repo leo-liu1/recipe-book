@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/common/NavbarSearch.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/common/NavbarSearch.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useEffect, useRef, useState } from 'react';
+import { Redirect, useLocation } from 'react-router-dom';
+
+/**
+ * @constant - Path to search page
+ * @type {string}
+ * @default
+ */
+
+/**
+ * Search bar for the navbar that we can use to find recipes from our ingredients
+ * 
+ * @class
+ * @param {Object} navbarSearch
+ * @param {string} navbarSearch.searchStr - query string that we will use to search 
+ */
+function NavbarSearch({ searchStr }) {
+    const SEARCH_PATH = '/search';
+
+    const [currSearch, setCurrSearch] = useState(searchStr); // track the current search as part of the state
+    const [prevSearch, setPrevSearch] = useState(''); // track what we just last searched
+    const inputRef = useRef();
+    const location = useLocation();
+    
+    // set the input value to whatever we get from the passed in search string
+    useEffect(() => {
+        if (typeof searchStr !== 'undefined') {
+            inputRef.current.value = searchStr;
+        }
+    }, [searchStr]);
+    
+    useEffect(() => {
+        if (location.pathname === SEARCH_PATH) { // if we're on the search page
+            const urlParams = new URLSearchParams(location.search);
+            const query = urlParams.get('q');
+            if (prevSearch !== query) { // if the previous search is not the current URL query, set it and populate the input value
+                setPrevSearch(query);
+                inputRef.current.value = query;
+            }
+        } else if (!currSearch) { // if we're not on the search page and there is no current search, clear prev search and the input value
+            setPrevSearch('');
+            inputRef.current.value = '';
+        }
+        
+        if (currSearch) { // reset the value of curr search after our query
+            setCurrSearch('');
+        }
+    }, [location.pathname, location.search, currSearch, prevSearch]);
+
+    /**
+     * Sets current search after the user has finished typing their search
+     * @param {onClick|onEnter} event - Event that fires after search is finished
+     * @listens onClick
+     * @listens onEnter
+     */
+    function handleSearch(event) {
+        // set currSearch to input value if enter or click; enter for input and click for button
+        if (event.key === "Enter" || event.type === "click") {
+            setCurrSearch(inputRef.current.value);
+        }
+    }
+
+    return (&lt;>
+        {/* redirect only if currSearch and we have our input currently has a value */}
+        {currSearch &amp;&amp; inputRef.current &amp;&amp; &lt;Redirect
+            push
+            to={{
+                pathname: SEARCH_PATH,
+                search: `q=${encodeURIComponent(inputRef.current.value)}`,
+            }} />}
+        &lt;div className="search">
+            &lt;input placeholder="Search for a recipe..." className="input" ref={inputRef} onKeyUp={handleSearch}/>
+            &lt;button className="button" onClick={handleSearch}>Search&lt;/button>
+        &lt;/div>
+    &lt;/>);
+}
+
+export default NavbarSearch;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Box.html">Box</a></li><li><a href="Fridge.html">Fridge</a></li><li><a href="History.html">History</a></li><li><a href="Ingredient.html">Ingredient</a></li><li><a href="Landing.html">Landing</a></li><li><a href="Login.html">Login</a></li><li><a href="Navbar.html">Navbar</a></li><li><a href="NavbarSearch.html">NavbarSearch</a></li><li><a href="ProvideAuth.html">ProvideAuth</a></li><li><a href="ProvideFirestore.html">ProvideFirestore</a></li><li><a href="ProvideSpoonacular.html">ProvideSpoonacular</a></li><li><a href="Recipe.html">Recipe</a></li><li><a href="RecipeBox.html">RecipeBox</a></li><li><a href="Recommendations.html">Recommendations</a></li><li><a href="Search.html">Search</a></li><li><a href="Seasoning.html">Seasoning</a></li><li><a href="Signup.html">Signup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#Firebase">Firebase</a></li><li><a href="global.html#Firestore">Firestore</a></li><li><a href="global.html#FirestoreContext">FirestoreContext</a></li><li><a href="global.html#SpoonacularContext">SpoonacularContext</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 04 2020 19:45:35 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
