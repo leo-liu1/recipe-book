@@ -1,6 +1,6 @@
 # Recipe To Cook
 
-Created with [Create React App](https://github.com/facebook/create-react-app). Visit https://recipe-to-cook.web.app/ to see the live version.
+Created with [Create React App](https://github.com/facebook/create-react-app). Visit [https://recipe-to-cook.web.app/](https://recipe-to-cook.web.app/) to see the live version.
 
 ## Directory Structure
 
