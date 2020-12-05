@@ -14,6 +14,8 @@ export const FirestoreContext = createContext();
 
 /**
  * Provides Firestore context for use in the app
+ * 
+ * @class
  * @param {Object} FirestoreProps
  * @param {*} FirestoreProps.children - React components to be rendered 
  */
@@ -140,7 +142,7 @@ export function ProvideFirestore({ children }) {
 	
 	/**
 	 * Gets the most frequent recipes from our history
-	 * @param {Number} count - the amount of recipes to retrieve
+	 * @param {number} count - the amount of recipes to retrieve
 	 * @returns {Promise<Recipe[]>} Promise of our most frequent recipes
 	 */
 	const getMostFrequentRecipeHistory = async (count) => {
@@ -157,7 +159,7 @@ export function ProvideFirestore({ children }) {
 
 	/**
 	 * Gets the 10 last updated recipes from our history
-	 * @param {Number} count - the amount of recipes to retrieve
+	 * @param {number} count - the amount of recipes to retrieve
 	 * @returns {Promise<Recipe[]>} Promise of our last updated recipes
 	 */
 	const getLastUpdatedRecipeHistory = async (count) => {

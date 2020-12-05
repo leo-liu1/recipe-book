@@ -10,10 +10,12 @@ import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
 /**
  * Signup page for user authentication
+ * 
+ * @class
  * @param {Object} signup
  * @param {checkAuth} signup.checkAuth - Callback that rechecks user authentication
  */
-export default function Signup({ checkAuth }) {
+function Signup({ checkAuth }) {
   document.title = "Signup";
 
   const [error, setError] = useState("");
@@ -88,3 +90,5 @@ export default function Signup({ checkAuth }) {
     </div>
   );
 }
+
+export default Signup;

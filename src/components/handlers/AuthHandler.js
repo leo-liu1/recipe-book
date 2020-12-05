@@ -8,6 +8,8 @@ export const AuthContext = createContext();
 
 /**
  * Provides authentication context for use in the app
+ * 
+ * @class
  * @param {Object} AuthProps
  * @param {*} AuthProps.children - React components to be rendered 
  */

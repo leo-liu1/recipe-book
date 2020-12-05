@@ -1,5 +1,5 @@
 /** Class representing a seasoning object */
-export default class Seasoning {
+class Seasoning {
     /**
      * Internal class used for information hiding principle, which stores information about a specific
      * seasoning, including its own image url.
@@ -20,14 +20,14 @@ export default class Seasoning {
     }
 
     /**
-     * @type {Object} firestoreIngredient
-     * @property {string} firestoreIngredient.name
-     * @property {string|null} [firestoreIngredient.spoonacularName=null] - Used as a more Spoonacular's API friendly name, found by querying Spoonacular about its preferred name
-     * @property {string|null} [firestoreIngredient.imageURL=null] - Link to image
-     * @property {string} [firestoreIngredient.userID=null] - User ID from Firebase
+     * @typedef {Object} firestoreSeasoning
+     * @property {string} firestoreSeasoning.name
+     * @property {string|null} [firestoreSeasoning.spoonacularName=null] - Used as a more Spoonacular's API friendly name, found by querying Spoonacular about its preferred name
+     * @property {string|null} [firestoreSeasoning.imageURL=null] - Link to image
+     * @property {string} [firestoreSeasoning.userID=null] - User ID from Firebase
      * 
      * Returns the firestore data for the ingredient
-     * @returns {firestoreIngredient}
+     * @returns {firestoreSeasoning}
      */
     getFirestoreData() {
         return {
@@ -46,3 +46,5 @@ export default class Seasoning {
         return "Seasoning";
     }
 }
+
+export default Seasoning;

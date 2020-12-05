@@ -22,21 +22,22 @@ import "react-datepicker/dist/react-datepicker.css";
  */
 
 /**
- * @constant - How many items we should show per row
- * @type {Number}
- * @default
- */
-const ITEM_ROW_LENGTH = 4;
-
-/**
  * Fridge that renders all our user ingredients. A user can add, remove, and update ingredients or
  * seasonings from the fridge. Additionally, they can select ingredients that they would like to
  * make recipes for.
  * 
+ * @class
  * @param {Object} fridge
  * @param {populateSearch} fridge.populateSearch - Callback that triggers when we select items from the fridge we want to search for
  */
-export default function Fridge({ populateSearch }) {
+function Fridge({ populateSearch }) {
+    /**
+     * @constant - How many items we should show per row
+     * @type {number}
+     * @default
+     */
+    const ITEM_ROW_LENGTH = 4;
+        
     document.title = 'Fridge';
     const ingredientTypes = [ // list of default types of ingredients
         'Meat',
@@ -76,7 +77,7 @@ export default function Fridge({ populateSearch }) {
      * Triggers when the user selects an ingredient to edit. Shows the form and populates it
      * based off the ingredient's information.
      * @param {Ingredient} ingredient - ingredient to edit
-     * @param {Number} index - index of the ingredient that is being edited
+     * @param {number} index - index of the ingredient that is being edited
      */
     function editIngredient(ingredient, index) {
         setShowForm(true);
@@ -451,8 +452,10 @@ export default function Fridge({ populateSearch }) {
 /**
  * @callback editIngredient
  * @param {Ingredient} ingredient - ingredient to edit
- * @param {Number} index - index of the ingredient that is being edited
- * 
+ * @param {number} index - index of the ingredient that is being edited
+ */
+
+/** 
  * @callback chooseIngredient
  * @param {Ingredient} ingredient - Ingredient that is being clicked
  * @param {boolean} selected - If the ingredient is actively being selected or not
@@ -460,9 +463,11 @@ export default function Fridge({ populateSearch }) {
 
 /**
  * Helper function to Fridge that renders all the boxes that we use to show the ingredients
+ * 
+ * @class
  * @param {Object} box
  * @param {Ingredient} box.ingredient - Ingredient to render
- * @param {Number} box.index - Index of the box
+ * @param {number} box.index - Index of the box
  * @param {editIngredient} box.editIngredient - Callback function from Fridge that determines what ingredient to modify
  * @param {boolean} box.chooseActive - Whether the choose mode is active or not
  * @param {chooseIngredient} box.chooseIngredient - Callback function from Fridge that determines what ingredient to choose
@@ -508,7 +513,7 @@ function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient
     /**
      * Handler that triggers when the box is clicked
      * @param {Ingredient} ingredient - Ingredient that was clicked
-     * @param {Number} index - Index of the ingredient
+     * @param {number} index - Index of the ingredient
      */
     function handleClick(ingredient, index) {
         if (!chooseActive) {
@@ -540,3 +545,5 @@ function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient
         </div>
     );
 }
+
+export default Fridge;

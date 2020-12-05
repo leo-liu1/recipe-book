@@ -4,13 +4,11 @@ import { FirestoreContext } from '../components/handlers/FirestoreHandler';
 import RecipeBox from '../components/common/RecipeBox';
 
 /**
- * @typedef {import('../components/classes/Recipe').default} Recipe
- */
-
-/**
  * History page that displays our most recent searches
+ * 
+ * @class
  */
-export default function History() {
+function History() {
     document.title = "History";
 
     const { getLastUpdatedRecipeHistory } = useContext(FirestoreContext);
@@ -54,3 +52,5 @@ export default function History() {
           </div>}
     </div>);
 }
+
+export default History;

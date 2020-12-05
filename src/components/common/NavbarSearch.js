@@ -6,14 +6,17 @@ import { Redirect, useLocation } from 'react-router-dom';
  * @type {string}
  * @default
  */
-const SEARCH_PATH = '/search';
 
 /**
- * Search bar for the navbar that we can use to find recipes from our ingredients.
+ * Search bar for the navbar that we can use to find recipes from our ingredients
+ * 
+ * @class
  * @param {Object} navbarSearch
  * @param {string} navbarSearch.searchStr - query string that we will use to search 
  */
-export default function NavbarSearch({ searchStr }) {
+function NavbarSearch({ searchStr }) {
+    const SEARCH_PATH = '/search';
+
     const [currSearch, setCurrSearch] = useState(searchStr); // track the current search as part of the state
     const [prevSearch, setPrevSearch] = useState(''); // track what we just last searched
     const inputRef = useRef();
@@ -71,3 +74,5 @@ export default function NavbarSearch({ searchStr }) {
         </div>
     </>);
 }
+
+export default NavbarSearch;

@@ -4,8 +4,10 @@ import { ReactComponent as FridgeIcon } from '../assets/icons/fridge.svg';
 
 /**
  * Landing page for unauthenticated users
+ * 
+ * @class
  */
-export default function Landing() {
+function Landing() {
     document.title = "Recipe to Cook";
 
     return (<div className="landing">
@@ -22,3 +24,5 @@ export default function Landing() {
         </div>
     </div>);
 }
+
+export default Landing;

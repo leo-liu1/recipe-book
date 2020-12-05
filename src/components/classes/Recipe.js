@@ -1,9 +1,5 @@
 /** Class representing a recipe object */
-export default class Recipe {
-   /**
-     * @typedef {import('./Ingredient').default} Ingredient
-    */
-
+class Recipe {
    /**
     * Internal class used for information hiding principle, which stores information about a specific
     * recipe, including its own image url.
@@ -17,7 +13,7 @@ export default class Recipe {
     * @param {Ingredient[]|null} [recipe.missingIngredients=null] - Array of missing ingredients that are included as part of the Recipe
     * @param {string|null} [recipe.userID=null] - User ID from Firebase
     * @param {string|null} [recipe.firestoreID=null] - ID to collection in Firestore
-    * @param {Number} [recipe.frequency=0] - Number of times the user has clicked the recipe
+    * @param {number} [recipe.frequency=0] - Number of times the user has clicked the recipe
     */
    constructor({ name, recipeID, ingredients, imageURL, recipeURL, missingIngredients, userID, firestoreID, frequency }) {
       this.name = name;
@@ -32,7 +28,7 @@ export default class Recipe {
    }
 
    /**
-    * @type {Object} firestoreRecipe
+    * @typedef {Object} firestoreRecipe
     * @property {string} firestoreRecipe.name - Recipe title
     * @property {string} firestoreRecipe.recipeID - Used to query Spoonacular for the recipe
     * @property {Ingredient[]} firestoreRecipe.ingredients - Array of ingredients needed to make the recipe
@@ -41,7 +37,7 @@ export default class Recipe {
     * @property {Ingredient[]|null} [firestoreRecipe.missingIngredients=null] - Array of missing ingredients that are included as part of the Recipe
     * @property {string|null} [firestoreRecipe.userID=null] - User ID from Firebase
     * @property {string|null} [firestoreRecipe.firestoreID=null] - ID to collection in Firestore
-    * @property {Number} [firestoreRecipe.frequency=0] - Number of times the user has clicked the recipe
+    * @property {number} [firestoreRecipe.frequency=0] - Number of times the user has clicked the recipe
     * 
     * Returns the firestore data for the recipe
     * @returns {firestoreRecipe}
@@ -60,3 +56,5 @@ export default class Recipe {
       }
    }
 }
+
+export default Recipe;

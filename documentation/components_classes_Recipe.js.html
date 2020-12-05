@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/classes/Recipe.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/classes/Recipe.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** Class representing a recipe object */
+class Recipe {
+   /**
+    * Internal class used for information hiding principle, which stores information about a specific
+    * recipe, including its own image url.
+    * @constructor
+    * @param {Object} recipe
+    * @param {string} recipe.name - Recipe title
+    * @param {string} recipe.recipeID - Used to query Spoonacular for the recipe
+    * @param {Ingredient[]} recipe.ingredients - Array of ingredients needed to make the recipe
+    * @param {string|null} [recipe.imageURL=null] - Image URL of the recipe
+    * @param {string} recipe.recipeURL - URL to the recipe
+    * @param {Ingredient[]|null} [recipe.missingIngredients=null] - Array of missing ingredients that are included as part of the Recipe
+    * @param {string|null} [recipe.userID=null] - User ID from Firebase
+    * @param {string|null} [recipe.firestoreID=null] - ID to collection in Firestore
+    * @param {number} [recipe.frequency=0] - Number of times the user has clicked the recipe
+    */
+   constructor({ name, recipeID, ingredients, imageURL, recipeURL, missingIngredients, userID, firestoreID, frequency }) {
+      this.name = name;
+      this.recipeID = recipeID;
+      this.ingredients = ingredients;
+      this.imageURL = imageURL ? imageURL : null;
+      this.recipeURL = recipeURL;
+      this.missingIngredients = missingIngredients ? missingIngredients : null;
+      this.userID = userID ? userID : null;
+      this.firestoreID = firestoreID ? firestoreID : null;
+      this.frequency = frequency ? frequency : 0;
+   }
+
+   /**
+    * @typedef {Object} firestoreRecipe
+    * @property {string} firestoreRecipe.name - Recipe title
+    * @property {string} firestoreRecipe.recipeID - Used to query Spoonacular for the recipe
+    * @property {Ingredient[]} firestoreRecipe.ingredients - Array of ingredients needed to make the recipe
+    * @property {string|null} [firestoreRecipe.imageURL=null] - Image URL of the recipe
+    * @property {string} firestoreRecipe.recipeURL - URL to the recipe
+    * @property {Ingredient[]|null} [firestoreRecipe.missingIngredients=null] - Array of missing ingredients that are included as part of the Recipe
+    * @property {string|null} [firestoreRecipe.userID=null] - User ID from Firebase
+    * @property {string|null} [firestoreRecipe.firestoreID=null] - ID to collection in Firestore
+    * @property {number} [firestoreRecipe.frequency=0] - Number of times the user has clicked the recipe
+    * 
+    * Returns the firestore data for the recipe
+    * @returns {firestoreRecipe}
+    */
+   getFirestoreData() {
+      return {
+         name: this.name,
+         recipeID: this.recipeID,
+         ingredients: this.ingredients.map((ingredient) => ingredient.getFirestoreData()),
+         imageURL: this.imageURL,
+         recipeURL: this.recipeURL,
+         missingIngredients: this.missingIngredients.map((ingredient) => ingredient.getFirestoreData()),
+         userID: this.userID,
+         firestoreID: this.firestoreID,
+         frequency: this.frequency,
+      }
+   }
+}
+
+export default Recipe;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Box.html">Box</a></li><li><a href="Fridge.html">Fridge</a></li><li><a href="History.html">History</a></li><li><a href="Ingredient.html">Ingredient</a></li><li><a href="Landing.html">Landing</a></li><li><a href="Login.html">Login</a></li><li><a href="Navbar.html">Navbar</a></li><li><a href="NavbarSearch.html">NavbarSearch</a></li><li><a href="ProvideAuth.html">ProvideAuth</a></li><li><a href="ProvideFirestore.html">ProvideFirestore</a></li><li><a href="ProvideSpoonacular.html">ProvideSpoonacular</a></li><li><a href="Recipe.html">Recipe</a></li><li><a href="RecipeBox.html">RecipeBox</a></li><li><a href="Recommendations.html">Recommendations</a></li><li><a href="Search.html">Search</a></li><li><a href="Seasoning.html">Seasoning</a></li><li><a href="Signup.html">Signup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#Firebase">Firebase</a></li><li><a href="global.html#Firestore">Firestore</a></li><li><a href="global.html#FirestoreContext">FirestoreContext</a></li><li><a href="global.html#SpoonacularContext">SpoonacularContext</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 04 2020 19:29:41 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

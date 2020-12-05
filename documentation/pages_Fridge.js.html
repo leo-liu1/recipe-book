@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Fridge.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Fridge.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import React, { useState, useEffect, useContext } from 'react';
+import ClassNames from 'classnames';
+
+import { FirestoreContext } from '../components/handlers/FirestoreHandler';
+import { SpoonacularContext } from '../components/handlers/SpoonacularHandler';
+import DatePicker from "react-datepicker";
+import Ingredient from '../components/classes/Ingredient';
+import Seasoning from '../components/classes/Seasoning';
+
+import meatImage from '../assets/images/meat.jpg';
+import dairyImage from '../assets/images/dairy.jpg';
+import carbImage from '../assets/images/carb.jpg';
+import fruitImage from '../assets/images/fruit.jpg';
+import vegetableImage from '../assets/images/vegetable.jpg';
+import seasoningImage from '../assets/images/seasoning.jpg';
+
+import "react-datepicker/dist/react-datepicker.css";
+
+/**
+ * @callback populateSearch
+ * @param {string} fridgeSearchStr - string that will populate our navbar search
+ */
+
+/**
+ * Fridge that renders all our user ingredients. A user can add, remove, and update ingredients or
+ * seasonings from the fridge. Additionally, they can select ingredients that they would like to
+ * make recipes for.
+ * 
+ * @class
+ * @param {Object} fridge
+ * @param {populateSearch} fridge.populateSearch - Callback that triggers when we select items from the fridge we want to search for
+ */
+function Fridge({ populateSearch }) {
+    /**
+     * @constant - How many items we should show per row
+     * @type {number}
+     * @default
+     */
+    const ITEM_ROW_LENGTH = 4;
+        
+    document.title = 'Fridge';
+    const ingredientTypes = [ // list of default types of ingredients
+        'Meat',
+        'Dairy',
+        'Vegetable',
+        'Fruit',
+        'Carbs',
+    ];
+    
+    const [fridge, setFridge] = useState(null); // state to keep track of all fridge ingredients, on first render we don't render anything
+    const [showForm, setShowForm] = useState(false);
+    const [originalTitle, setOriginalTitle] = useState(''); // used for editing ingredients, display original ingredient name
+    const [newIngredient, setNewIngredient] = useState(false);
+    const [isSeasoning, setIsSeasoning] = useState(false);
+    const [formData, setFormData] = useState({ // data associated with the input form
+        formIngredientName: '',
+        formIngredientType: ingredientTypes[0],
+        formIngredientExp: new Date(),
+        formIngredientAmount: '',
+        formIngredientUnit: '',
+        formIngredientIndex: null,
+        formIngredientID: null,
+    });
+    const [chooseActive, setChooseActive] = useState(false); // toggles between edit and choose ingredient
+    const [chosenIngredients, setChosenIngredients] = useState({});
+
+    const { addUserIngredient, removeUserIngredient, getAllUserIngredients, updateUserIngredient } = useContext(FirestoreContext);
+    useEffect(() => { // get all user ingredients on load
+        getAllUserIngredients()
+        .then((ingredients) => setFridge(ingredients))
+        .catch((err) => console.error(err));
+    }, [getAllUserIngredients]);
+
+    const { searchIngredient } = useContext(SpoonacularContext);
+
+    /**
+     * Triggers when the user selects an ingredient to edit. Shows the form and populates it
+     * based off the ingredient's information.
+     * @param {Ingredient} ingredient - ingredient to edit
+     * @param {number} index - index of the ingredient that is being edited
+     */
+    function editIngredient(ingredient, index) {
+        setShowForm(true);
+        setNewIngredient(false);
+        setOriginalTitle(ingredient.name);
+        if (ingredient.getClassType() === "Seasoning") {
+            setIsSeasoning(true);
+            setFormData({
+                formIngredientName: ingredient.name,
+                formIngredientIndex: index,
+                formIngredientID: ingredient.firestoreID,
+            })
+        } else {
+            setIsSeasoning(false);
+            setFormData({
+                formIngredientName: ingredient.name,
+                formIngredientType: ingredient.type,
+                formIngredientExp: new Date(ingredient.expirationDate),
+                formIngredientAmount: ingredient.quantity.amount,
+                formIngredientUnit: ingredient.quantity.unit,
+                formIngredientIndex: index,
+                formIngredientID: ingredient.firestoreID,
+            });
+        }
+    }
+
+    /**
+     * Handler for whenever the form is changed
+     * @param {onChange} event - Event that triggers when the form is changed
+     * @listens onChange
+     */
+    function handleFormChange(event) {
+        const value = event.target.value;
+        const name = event.target.name;
+
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    }
+
+    /**
+     * Handler for when the form is submitted
+     * @param {onSubmit} event - Event that triggers when the form is submitted
+     * @listens onSubmit
+     */
+    function handleSubmit(event) {
+        event.preventDefault();
+        setShowForm(false);
+        clearFormData();
+    }
+
+    /**
+     * Handler when the user either edits the ingredient or adds it. Creates the ingredient if it
+     * does not exist, queries Spoonacular for the name in Spoonacular, and then refreshes the
+     * fridge to reflect the new edit or addition.
+     */
+    function handleAdd() {
+        if (!formFilled()) { // if the form is not filled, return
+            return;
+        }        
+
+        const newElement = isSeasoning
+            ? new Seasoning({
+                name: formData.formIngredientName,
+                spoonacularName: null,
+                imageURL: null,
+                firestoreID: formData.formIngredientID,
+            })
+            : new Ingredient({
+                name: formData.formIngredientName,
+                spoonacularName: null,
+                type: formData.formIngredientType,
+                expirationDate: formData.formIngredientExp.getTime(),
+                quantity: {
+                    amount: formData.formIngredientAmount,
+                    unit: formData.formIngredientUnit,
+                },
+                imageURL: null,
+                firestoreID: formData.formIngredientID,
+            });
+        
+        const name = formData.formIngredientName;
+
+        if (typeof formData.formIngredientIndex === 'number') { // editing ingredient
+            // query Spoonacular to set the ingredient's Spoonacular name
+            searchIngredient(name).then(({ spoonacularName, imageURL }) => {
+                if (typeof spoonacularName !== 'undefined') {
+                    newElement.spoonacularName = spoonacularName;
+                    newElement.imageURL = imageURL;
+                }
+                return updateUserIngredient(newElement);
+            })
+            .then(() => getAllUserIngredients()) // refresh the fridge
+            .then((userIngredients) => setFridge(userIngredients))
+            .catch((err) => console.error(err));
+        } else { // adding new ingredient
+            // query Spoonacular to set the ingredient's Spoonacular name
+            searchIngredient(name).then(({ spoonacularName, imageURL }) => {
+                if (typeof spoonacularName !== 'undefined') {
+                    newElement.spoonacularName = spoonacularName;
+                    newElement.imageURL = imageURL;
+                }
+                return addUserIngredient(newElement);
+            }).then((docRef) => { // set the firestore ID to be the document ID
+                newElement.firestoreID = docRef.id;
+                return getAllUserIngredients(); // refresh the fridge
+            })
+            .then((userIngredients) => setFridge(userIngredients))
+            .catch((err) => console.error(err));
+        }
+    }
+
+    /**
+     * Returns true if the form if the necessary fields for the ingredient or seasoning are filled
+     * @returns {boolean} If the form was filled out correctly or not
+     */
+    function formFilled() {
+        if (isSeasoning) {
+            return formData.formIngredientName !== '';
+        } // else is ingredient
+
+        let validate = true;
+        Object.values(formData).forEach(value => {
+            if (value === '') {
+                validate = false;
+            }
+        });
+
+        return validate;
+    }
+
+    /**
+     * Resets the form data
+     */
+    function clearFormData() {
+        setFormData({
+            formIngredientName: "",
+            formIngredientType: ingredientTypes[0],
+            formIngredientExp: new Date(),
+            formIngredientAmount: "",
+            formIngredientUnit: "",
+            formIngredientIndex: null,
+            formIngredientID: null,
+        });
+    }
+
+    /**
+     * Handler to remove the ingredient from the fridge and refresh the form
+     */
+    function handleRemove() {
+        if (typeof formData.formIngredientIndex === 'number') {
+            let ingredientToRemove = fridge[formData.formIngredientIndex];
+            removeUserIngredient(ingredientToRemove)
+                .then(() => getAllUserIngredients()) // refreshes the fridge
+                .then((userIngredients) => setFridge(userIngredients))
+                .catch(err => console.error(err));
+        }
+    }
+
+    /**
+     * Handler if the user wants to exit out of the form dialog without changes
+     */
+    function handleCancel() {
+        clearFormData();
+        setShowForm(false);
+    }
+
+    /**
+     * Handles the creation of the ingredient and decides between Ingredient and Seasoning
+     * @param {string} type - Ingredient or Seasoning
+     */
+    function handleCreateIngredient(type) {
+        if (!showForm || !formFilled()) {
+            // if the dialog is already open, do not close the form if we're switching from ingredient to seasoning or vice versa
+            if (showForm &amp;&amp; (((type === "Ingredient" &amp;&amp; isSeasoning)) || (type === "Seasoning" &amp;&amp; !isSeasoning))) {
+                // do nothing
+            } else {
+                setShowForm(!showForm);
+            }
+        }
+        setNewIngredient(true);
+        type === "Ingredient" ? setIsSeasoning(false) : setIsSeasoning(true);
+        clearFormData();
+    }
+
+    /**
+     * Handler for toggling between choosing ingredients and editing ingredients
+     * @param {boolean} toggleChoose - true if choose mode is active, false if we're editing ingredients
+     */
+    function chooseIngredients(toggleChoose) {
+        setChooseActive(toggleChoose);
+
+        if (!toggleChoose) {
+            setChosenIngredients({}); // remove all chosen ingredients from our state
+            populateSearch(''); // clear the search bar
+        } else {
+            setShowForm(false); // close the form if we're choosing
+        }
+    }
+
+    /**
+     * Function that populates the navbar search with the ingredients that the user chooses
+     * @param {Ingredient} ingredient - Ingredient that is being clicked
+     * @param {boolean} selected - If the ingredient is actively being selected or not
+     */
+    function chooseIngredient(ingredient, selected) {
+        const newChosen = selected ? // if the ingredient was selected, we add it as a mapping from firestoreID to Ingredient
+            { ...chosenIngredients, [ingredient.firestoreID]: ingredient } :
+            { ...chosenIngredients, [ingredient.firestoreID]: null };
+        
+        setChosenIngredients(newChosen);
+        const fridgeSearchStr = Object.values(newChosen).filter((ingredient) => { // get only elements that are non-null
+            return ingredient !== null;
+        }).map((ingredient) => { // return only the name for each ingredient
+            return ingredient.spoonacularName ? ingredient.spoonacularName : ingredient.name;
+        }).join(', '); // join them all together, separated by commas
+
+        populateSearch(fridgeSearchStr); // populate the navbar search with the chosen ingredients
+    }
+
+    /**
+     * Renders the form component
+     */
+    function renderForm() {
+        return (
+            &lt;div className="form-dialog">
+                &lt;div className="form-dialog-container">
+                    &lt;div className="form-title">
+                        {newIngredient ?
+                            `Add a${isSeasoning ?
+                                ' seasoning' :
+                                'n ingredient'}` :
+                            `Edit ${originalTitle}`}
+                    &lt;/div>
+                    &lt;form className="form" onSubmit={handleSubmit}>
+                        &lt;div className="input">
+                            &lt;label htmlFor="formIngredientName">Name&lt;/label>
+                            &lt;input
+                                name="formIngredientName"
+                                id="formIngredientName"
+                                type="text"
+                                value={formData.formIngredientName}
+                                onChange={handleFormChange}
+                                required/>
+                        &lt;/div>
+                        {!isSeasoning &amp;&amp; &lt;div className="input">
+                            &lt;label htmlFor="formIngredientType">Type&lt;/label>
+                            &lt;select
+                                name="formIngredientType"
+                                id="formIngredientType"
+                                value={formData.formIngredientType}
+                                onChange={handleFormChange}
+                                required>
+                                {ingredientTypes.map((type, index) => {
+                                    return (&lt;option value={type} key={index}>{type}&lt;/option>);
+                                })}
+                            &lt;/select>
+                        &lt;/div>}
+                        {!isSeasoning &amp;&amp; &lt;div className="input">
+                            &lt;label htmlFor="formIngredientAmount">Amount&lt;/label>
+                            &lt;input
+                                name="formIngredientAmount"
+                                id="formIngredientAmount"
+                                type="number"
+                                value={formData.formIngredientAmount}
+                                onChange={handleFormChange}
+                                required/>
+                        &lt;/div>}
+                        {!isSeasoning &amp;&amp; &lt;div className="input">
+                            &lt;label htmlFor="formIngredientUnit">Unit&lt;/label>
+                            &lt;input
+                                name="formIngredientUnit"
+                                id="formIngredientUnit"
+                                type="text"
+                                value={formData.formIngredientUnit}
+                                onChange={handleFormChange}
+                                required/>
+                        &lt;/div>}
+                        {!isSeasoning &amp;&amp; &lt;div className="input">
+                            &lt;label htmlFor="datePicker">Expiration Date&lt;/label>
+                            &lt;DatePicker className="datepicker"
+                                        id="datepicker"
+                                        placeholderText="Click to select date"
+                                        minDate={formData.formIngredientExp}
+                                        selected={formData.formIngredientExp}
+                                        onChange={date => setFormData({...formData, formIngredientExp: date})} />
+                        &lt;/div>}
+                        &lt;div className="button-container">
+                            &lt;button className="button add" onClick={() => handleAdd()}>{newIngredient ? "Add" : "Edit"}&lt;/button>
+                            {!newIngredient &amp;&amp; &lt;button className="button remove" onClick={() => handleRemove()}>Remove&lt;/button>}
+                            &lt;button className="button cancel" onClick={() => handleCancel()}>Cancel&lt;/button>
+                        &lt;/div>
+                    &lt;/form>
+                &lt;/div>
+            &lt;/div>
+        );
+    }
+
+    // create empty elements so that the last ingredient added to the fridge is left aligned with the other ingredients in a grid
+    let emptyElements = [];
+    if (fridge &amp;&amp; fridge.length % ITEM_ROW_LENGTH !== 0) {
+        for (let i = 0; i &lt; ITEM_ROW_LENGTH - (fridge.length % ITEM_ROW_LENGTH); i++) {
+            emptyElements.push(&lt;div className="empty" key={i}/>);
+        }
+    }
+
+    const editIngredientClass = ClassNames('button', 'edit-ingredient', {
+        active: !chooseActive,
+        inactive: chooseActive,
+    });
+    const chooseIngredientClass = ClassNames('button', 'choose-ingredient', {
+        active: chooseActive,
+        inactive: !chooseActive,
+    });
+    
+    const addButtonClass = ClassNames('button', {
+        active: !chooseActive,
+        inactive: chooseActive,
+    });
+
+    return (
+        &lt;div className="fridge">
+            &lt;div className="page-title">
+                &lt;div className="page-title-text">
+                    Your Fridge
+                &lt;/div>
+                &lt;div className="edit-container">
+                    &lt;button className={editIngredientClass} disabled={!chooseActive} onClick={() => chooseIngredients(false)}>Edit Ingredients&lt;/button>
+                    &lt;button className={chooseIngredientClass} disabled={chooseActive} onClick={() => chooseIngredients(true)}>Choose Ingredients&lt;/button>
+                &lt;/div>
+            &lt;/div>
+            {/* on first render, we do not render anything */}
+            {fridge !== null &amp;&amp;
+                &lt;div className="fridge-container">
+                    {fridge.length === 0 ?
+                        &lt;div className="empty-fridge">Your fridge is currently empty. Add an ingredient to begin!&lt;/div> :
+                        fridge.map((ingredient, index) =>
+                            &lt;Box
+                                key={index}
+                                ingredient={ingredient}
+                                index={index}
+                                editIngredient={editIngredient}
+                                chooseActive={chooseActive}
+                                chooseIngredient={chooseIngredient}
+                            />)}
+                    {emptyElements}
+                &lt;/div>}
+            &lt;div className="add-container">
+                &lt;div className="button-background">
+                    &lt;button
+                        className={addButtonClass}
+                        onClick={() => handleCreateIngredient("Ingredient")}
+                        disabled={chooseActive}>
+                        Add Ingredient
+                    &lt;/button>
+                &lt;/div>
+                &lt;div className="button-background">
+                    &lt;button
+                        className={addButtonClass}
+                        onClick={() => handleCreateIngredient("Seasoning")}
+                        disabled={chooseActive}>
+                        Add Seasoning
+                    &lt;/button>
+                &lt;/div>
+            &lt;/div>
+            {showForm ? renderForm() : null}
+        &lt;/div>
+    );
+}
+
+/**
+ * @callback editIngredient
+ * @param {Ingredient} ingredient - ingredient to edit
+ * @param {number} index - index of the ingredient that is being edited
+ */
+
+/** 
+ * @callback chooseIngredient
+ * @param {Ingredient} ingredient - Ingredient that is being clicked
+ * @param {boolean} selected - If the ingredient is actively being selected or not
+ */
+
+/**
+ * Helper function to Fridge that renders all the boxes that we use to show the ingredients
+ * 
+ * @class
+ * @param {Object} box
+ * @param {Ingredient} box.ingredient - Ingredient to render
+ * @param {number} box.index - Index of the box
+ * @param {editIngredient} box.editIngredient - Callback function from Fridge that determines what ingredient to modify
+ * @param {boolean} box.chooseActive - Whether the choose mode is active or not
+ * @param {chooseIngredient} box.chooseIngredient - Callback function from Fridge that determines what ingredient to choose
+ */
+function Box({ ingredient, index, editIngredient, chooseActive, chooseIngredient }) {
+    const [selected, setSelected] = useState(false);
+
+    // if the user switches to edit ingredient, unselect all options
+    useEffect(() => {
+        if (!chooseActive) {
+            setSelected(false);
+        }
+    }, [chooseActive]);
+
+    const isSeasoning = ingredient.getClassType() === "Seasoning";
+    const expDate = isSeasoning ? null : new Date(ingredient.expirationDate).toLocaleDateString();
+
+    /**
+     * Returns default image based off what user clasifies for the ingredient
+     * @param {Ingredient} ingredient - Ingredient object
+     * @returns {string} Default image to be rendered
+     */
+    function getDefaultImage(ingredient) {
+        let type = ingredient.getClassType() === "Seasoning" ? "Seasoning" : ingredient.type;
+        switch(type) {
+            case "Meat":
+                return meatImage;
+            case "Dairy":
+                return dairyImage;
+            case "Carbs":
+                return carbImage;
+            case "Fruit":
+                return fruitImage;
+            case "Vegetable":
+                return vegetableImage;
+            case "Seasoning":
+                return seasoningImage;
+            default:
+                return carbImage;
+        }
+    }
+
+    /**
+     * Handler that triggers when the box is clicked
+     * @param {Ingredient} ingredient - Ingredient that was clicked
+     * @param {number} index - Index of the ingredient
+     */
+    function handleClick(ingredient, index) {
+        if (!chooseActive) {
+            editIngredient(ingredient, index);
+        } else {
+            chooseIngredient(ingredient, !selected);
+            setSelected(!selected);
+        }
+    }
+
+    const selectedClass = {
+        // selected: selected &amp;&amp; chooseActive,
+        'not-selected': !selected &amp;&amp; chooseActive,
+    };
+    const imageClass = ClassNames('image', selectedClass);
+    const ingredientClass = ClassNames('ingredient', selectedClass);
+    const expirationDateClass = ClassNames('expiration-date', selectedClass);
+
+    return (
+        &lt;div className="box" onClick={() => handleClick(ingredient, index)}>
+            &lt;img className={imageClass}
+                src={ingredient.imageURL ? ingredient.imageURL : getDefaultImage(ingredient)}
+                alt="Ingredient" />
+            &lt;div className={ingredientClass}>
+                &lt;div className="name">{ingredient.name} &lt;/div>
+                {!isSeasoning &amp;&amp; &lt;div className="quantity">({ingredient.quantity.amount} {ingredient.quantity.unit})&lt;/div>}
+            &lt;/div>
+            &lt;div className={expirationDateClass}>{isSeasoning ? &lt;>&amp;nbsp;&lt;/> : `Expires: ${expDate}`}&lt;/div>
+        &lt;/div>
+    );
+}
+
+export default Fridge;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Box.html">Box</a></li><li><a href="Fridge.html">Fridge</a></li><li><a href="History.html">History</a></li><li><a href="Ingredient.html">Ingredient</a></li><li><a href="Landing.html">Landing</a></li><li><a href="Login.html">Login</a></li><li><a href="Navbar.html">Navbar</a></li><li><a href="NavbarSearch.html">NavbarSearch</a></li><li><a href="ProvideAuth.html">ProvideAuth</a></li><li><a href="ProvideFirestore.html">ProvideFirestore</a></li><li><a href="ProvideSpoonacular.html">ProvideSpoonacular</a></li><li><a href="Recipe.html">Recipe</a></li><li><a href="RecipeBox.html">RecipeBox</a></li><li><a href="Recommendations.html">Recommendations</a></li><li><a href="Search.html">Search</a></li><li><a href="Seasoning.html">Seasoning</a></li><li><a href="Signup.html">Signup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#Firebase">Firebase</a></li><li><a href="global.html#Firestore">Firestore</a></li><li><a href="global.html#FirestoreContext">FirestoreContext</a></li><li><a href="global.html#SpoonacularContext">SpoonacularContext</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Fri Dec 04 2020 19:29:41 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

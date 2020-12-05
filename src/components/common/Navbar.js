@@ -15,12 +15,13 @@ import { ReactComponent as RecommendationsIcon } from '../../assets/icons/recomm
 /**
  * Navbar function that renders all navbar elements
  * 
+ * @class
  * @param {Object} navbar
  * @param {boolean} navbar.isAuthenticated - Whether the user is authenticated or not
  * @param {checkAuth} navbar.checkAuth - Callback that rechecks user authentication
  * @param {string} navbar.searchStr - Search string resulting from a query from our fridge, to be used in NavbarSearch
  */
-export default function Navbar({ isAuthenticated, checkAuth, searchStr }) {
+function Navbar({ isAuthenticated, checkAuth, searchStr }) {
     const [loggedOut, setLoggedOut] = useState(false); // state to keep track of whether we've logged out or not
     const { logout } = useContext(AuthContext);
 
@@ -64,3 +65,5 @@ export default function Navbar({ isAuthenticated, checkAuth, searchStr }) {
         </nav>
     </>);
 }
+
+export default Navbar;

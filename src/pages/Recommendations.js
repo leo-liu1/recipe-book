@@ -6,8 +6,10 @@ import RecipeBox from '../components/common/RecipeBox';
 
 /**
  * Recommendations page that displays recipe recommendations
+ * 
+ * @class
  */
-export default function Recommendations() {
+function Recommendations() {
     document.title = "Recommendations";
 
     const { getMostFrequentRecipeHistory } = useContext(FirestoreContext);
@@ -45,3 +47,5 @@ export default function Recommendations() {
             </div>}
     </div>);
 }
+
+export default Recommendations;

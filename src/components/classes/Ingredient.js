@@ -1,5 +1,5 @@
 /** Class representing a ingredient object */
-export default class Ingredient {
+class Ingredient {
     /**
      * Internal class used for information hiding principle, which stores information about a specific
      * ingredient, including its own image url.
@@ -26,8 +26,8 @@ export default class Ingredient {
     }
 
     /**
-     * @type {Object} firestoreIngredient
-     * @property {string} firestoreIngredient.name
+     * @typedef {Object} firestoreIngredient
+     * @property {string} name
      * @property {string|null} [firestoreIngredient.spoonacularName=null] - Used as a more Spoonacular's API friendly name, found by querying Spoonacular about its preferred name
      * @property {string} firestoreIngredient.type
      * @property {Date} firestoreIngredient.expirationDate
@@ -58,3 +58,5 @@ export default class Ingredient {
         return "Ingredient";
     }
 }
+
+export default Ingredient;

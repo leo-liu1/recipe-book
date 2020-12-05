@@ -5,8 +5,10 @@ import RecipeBox from '../components/common/RecipeBox';
 
 /**
  * Search page that is dependent on the URL search parameters to run our search.
+ * 
+ * @class
  */
-export default function Search() {
+function Search() {
     const location = useLocation();
     const urlParams = new URLSearchParams(location.search);
     const query = urlParams.get('q');
@@ -53,3 +55,5 @@ export default function Search() {
             </div>}
     </div>);
 }
+
+export default Search;

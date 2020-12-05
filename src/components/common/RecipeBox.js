@@ -2,19 +2,19 @@ import React, { useContext, useState } from "react";
 import { FirestoreContext } from '../handlers/FirestoreHandler';
 
 /**
- * @typedef {import('../classes/Recipe').default} Recipe
- * 
  * @callback removeFromHistoryPage
  * @param {Recipe} recipe - Recipe to be removed from history page (only frontend)
  */
 
 /**
  * Frontend component to display each individual recipe and its corresponding ingredients and URL
+ * 
+ * @class
  * @param {Object} recipeBox
  * @param {Recipe} recipe - Recipe object to be displayed
  * @param {removeFromHistoryPage} removeFromHistoryPage - Callback function that removes the recipe from the history, if the user is on the history page
  */
-export default function RecipeBox({ recipe, removeFromHistoryPage }) {
+function RecipeBox({ recipe, removeFromHistoryPage }) {
     const { addRecipeHistory, removeRecipeHistory } = useContext(FirestoreContext);
     const [clicked, setClicked] = useState(false); // state to keep track of whether or not the recipe URL was clicked
 
@@ -104,3 +104,5 @@ export default function RecipeBox({ recipe, removeFromHistoryPage }) {
         </div>
     );
 }
+
+export default RecipeBox;

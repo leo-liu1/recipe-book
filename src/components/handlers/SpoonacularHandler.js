@@ -11,6 +11,8 @@ export const SpoonacularContext = createContext();
 
 /**
  * Provides Spoonacular context for use in the app
+ * 
+ * @class
  * @param {Object} SpoonacularProps
  * @param {*} SpoonacularProps.children - React components to be rendered 
  */
@@ -107,7 +109,7 @@ export function ProvideSpoonacular({ children }) {
 
 	/**
 	 * Returns recipe for the given recipe ID
-	 * @param {Number} recipeID - ID of Recipe to search for
+	 * @param {number} recipeID - ID of Recipe to search for
 	 * @returns {Promise<Recipe>} Recipe associated with the ID
 	 */
 	const searchRecipeById = async (recipeID) => {
@@ -136,7 +138,7 @@ export function ProvideSpoonacular({ children }) {
 
 	/**
 	 * Gets the recipe URL from the ID
-	 * @param {Number} recipeID - ID for the recipe
+	 * @param {number} recipeID - ID for the recipe
 	 * @returns {Promise<string>} Link to the recipe
 	 */
 	const getRecipeURL = async (recipeID) => {
@@ -216,7 +218,7 @@ export function ProvideSpoonacular({ children }) {
 
 	/**
 	 * Search Spoonacular for similar recipes from the given recipe ID
-	 * @param {Number} recipeID - ID for the recipe
+	 * @param {number} recipeID - ID for the recipe
 	 * @returns {Promise<Recipe>} Promise containing a similar recipe to the given recipe ID
 	 */
 	const searchSimilarRecipes = async (recipeID) => {
