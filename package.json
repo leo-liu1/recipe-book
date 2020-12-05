@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "react-scripts build && firebase deploy",
+    "deploy": "npm run deploy-prod && npm run deploy-docs",
+    "deploy-prod": "react-scripts build && firebase deploy",
     "deploy-docs": "gh-pages -d docs"
   },
   "eslintConfig": {
