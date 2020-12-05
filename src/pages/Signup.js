@@ -76,8 +76,8 @@ function Signup({ checkAuth }) {
               <label htmlFor="confirmPassword">Confirm password</label>
               <input type="password" id="confirmPassword" ref={pswdConfirmRef} placeholder="********" required />
           </div>
-          <div className="error">{error}</div>
-          <button disabled={loading} type="submit" className="action">
+          <div className="error" data-testid="error">{error}</div>
+          <button disabled={loading} type="submit" className="action" data-testid="submit">
               Sign Up
           </button>
           </form>

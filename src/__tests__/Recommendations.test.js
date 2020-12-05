@@ -1,20 +1,20 @@
 import user from '@testing-library/user-event';
-import { screen, act, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-import Recommendation from '../pages/Recommendations';
+import Recommendations from '../pages/Recommendations';
 import renderComponent from "./testutil/MockContext";
 
-describe('Tests for the Recommendation page', () => {
+describe('Tests for the Recommendations page', () => {
     it('Renders the empty recommendation page correctly', async () => {
-        renderComponent(Recommendation, {});
+        renderComponent(Recommendations);
 
         expect(screen.getByText('Your Recommendations')).toBeInTheDocument();
         await act(() => Promise.resolve());
     });
 
     it('Renders dummy recipe', async () => {
-        renderComponent(Recommendation, {});
+        renderComponent(Recommendations);
         await act(() => Promise.resolve());
 
         expect(screen.getByText('MockRecipe2')).toBeInTheDocument();

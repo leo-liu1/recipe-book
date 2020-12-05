@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom/extend-expect';
 
 import { AuthContext } from '../../components/handlers/AuthHandler';
@@ -110,7 +111,7 @@ const mockIngredient = new Ingredient({
 
 const authValue = {
     signup:                         () => Promise.resolve(),
-    login:                          () => Promise.resolve(),
+    login:                          (email, password) => { password !== '' ? Promise.resolve() : Promise.reject() },
     logout:                         () => Promise.resolve(),
     isUserAuthenticated:            () => Promise.resolve(),
 };
@@ -138,17 +139,19 @@ const spoonacularValue = {
     searchSimilarRecipes:           () => Promise.resolve([mockRecipe2]),
 };
 
-export default function renderComponent(component, props, route='', wrapper={}) {
+export default function renderComponent(component, props={}, route='') {
     if (route) {
         window.history.pushState({}, 'Test page', route)
     }
     return render(<AuthContext.Provider value={authValue}>
         <FirestoreContext.Provider value={firestoreValue}>
             <SpoonacularContext.Provider value={spoonacularValue}>
-                {React.createElement(component, props)}
+                <BrowserRouter>
+                    {React.createElement(component, props)}
+                </BrowserRouter>
             </SpoonacularContext.Provider>
         </FirestoreContext.Provider>
-    </AuthContext.Provider>, wrapper);
+    </AuthContext.Provider>);
 }
 
 export function renderSpoonacular(spoonacularChildren, wrapper={}) {

@@ -8,7 +8,7 @@ import renderComponent from "./testutil/MockContext";
 describe('Tests for the Fridge', () => {
     it('Renders the fridge correctly', async () => {
         const mockCallback = jest.fn(x => x);
-        renderComponent(Fridge, { populateSearch: mockCallback});
+        renderComponent(Fridge, { populateSearch: mockCallback });
 
         expect(screen.getByText('Your Fridge')).toBeInTheDocument();
         expect(screen.getByText('Add Ingredient')).toBeInTheDocument();

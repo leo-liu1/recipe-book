@@ -61,8 +61,8 @@ function Login({ checkAuth }) {
               <label htmlFor="password">Password</label>
               <input type="password" id="password" ref={pswdRef} placeholder="********" required />
             </div>
-            <div className="error">{error}</div>
-            <button disabled={loading} type="submit" className="action">
+            <div className="error" data-testid="error">{error}</div>
+            <button disabled={loading} type="submit" className="action" data-testid="submit">
               Log In
             </button>
           </form>

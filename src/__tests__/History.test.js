@@ -7,14 +7,14 @@ import renderComponent from "./testutil/MockContext";
 
 describe('Tests for the History page', () => {
     it('Renders the empty history page correctly', async () => {
-        renderComponent(History, {});
+        renderComponent(History);
 
         expect(screen.getByText('Your History')).toBeInTheDocument();
         await act(() => Promise.resolve());
     });
 
     it('Renders dummy recipe and removes it from history page as requested', async () => {
-        renderComponent(History, {});
+        renderComponent(History);
 
         await act(() => Promise.resolve());
         expect(screen.getByText('MockRecipe1')).toBeInTheDocument();
