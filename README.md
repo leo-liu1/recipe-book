@@ -65,3 +65,7 @@ Install all packages necessary to run the application.
 This starts the server in the developer mode. You need the `.env` file in order to start the application.
 
 Please note: Our application requires the .env file (included in the CCLE submission), and it can only handle 150 requests (to the Spoonacular Handler) per day.
+
+### API Documentation
+
+Full API documentation can be found [Here](https://leo-liu1.github.io/recipe-to-cook/)
