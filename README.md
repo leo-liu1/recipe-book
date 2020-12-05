@@ -61,3 +61,5 @@ Install all packages necessary to run the application.
 ### `npm start`
 
 This starts the server in the developer mode. You need the `.env` file in order to start the application.
+
+Please note: Our application requires the .env file (included in the CCLE submission), and it can only handle 150 requests (to the Spoonacular Handler) per day.
