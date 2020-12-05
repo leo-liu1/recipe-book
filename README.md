@@ -68,4 +68,4 @@ Please note: Our application requires the `.env` file (included in the CCLE subm
 
 ## API Documentation
 
-Full API documentation can be found [Here](https://leo-liu1.github.io/recipe-to-cook/)
+Full API documentation can be found [here](https://leo-liu1.github.io/recipe-to-cook/).
