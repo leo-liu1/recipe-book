@@ -54,7 +54,7 @@ root/
 
 Install all packages necessary to run the application.
 
-### `npm run tests`
+### `npm run test`
 
  Use this command to run automated tests. We use [Jest](https://jestjs.io/) as our testing framework.
 
@@ -62,8 +62,8 @@ Install all packages necessary to run the application.
 
 This starts the server in the developer mode. You need the `.env` file in order to start the application.
 
-Please note: Our application requires the .env file (included in the CCLE submission), and it can only handle 150 requests (to the Spoonacular Handler) per day.
+Please note: Our application requires the .env file (included in the CCLE submission) to be included in the root folder of the project, and it can only handle 150 requests (to the Spoonacular Handler) per day.
 
-### API Documentation
+## API Documentation
 
 Full API documentation can be found [Here](https://leo-liu1.github.io/recipe-to-cook/)
