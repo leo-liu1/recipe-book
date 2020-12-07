@@ -53,11 +53,15 @@
 |  |  __tests__/
 |  |  |  testutil/
 |  |  |  |  MockContext.js # util helper class to mock dependency
-|  |  |  Firestore.test.js # firestore component tests
+|  |  |  FirestoreHandler.test.js # firestore component tests
 |  |  |  Fridge.test.js # fridge component tests
 |  |  |  History.test.js # history component tests
 |  |  |  Recommendation.test.js # recommendation component tests
 |  |  |  Search.test.js # search component tests
+|  |  |  Login.test.js # log in component tests
+|  |  |  Signup.test.js # sign up component tests
+|  |  |  SpoonacularHandler.test.js # Spoonacular handler tests
+|  |  |  AuthHandler.test.js # Auth handler tests
 |  |  assets/ # contains our fonts, icons, images
 |  |  components/
 |  |  |  classes/ # contains our data classes
@@ -83,22 +87,23 @@
 |  |  |  |  Search.js # search page component
 |  |  |  |  Signup.js # user Signups page component
 |  |  |  App.js # main app file
-|  |  |  injex.js
+|  |  |  index.js
+|  .env # environment variable file needed to run our application
 |  README.md
 |  firebase.json # firebase config file
-|  firestore.indexes.json
-|  firestore.rules
+|  firestore.indexes.json # our composite indexes used in Firestore for some of our queries
+|  firestore.rules # our Firestore security rules we use for authentication
 |  package.json # package and settings
 </code></pre>
 <h2>How to Deploy and Run Tests</h2>
 <h3><code>npm install</code></h3>
 <p>Install all packages necessary to run the application.</p>
-<h3><code>npm run tests</code></h3>
+<h3><code>npm run test</code></h3>
 <p>Use this command to run automated tests. We use <a href="https://jestjs.io/">Jest</a> as our testing framework.</p>
 <h3><code>npm start</code></h3>
 <p>This starts the server in the developer mode.</p>
-<p>Please note: Our application requires the .env file (included in the CCLE submission), and it can only handle 150 requests (to the Spoonacular Handler) per day.</p>
-<h3>API Documentation</h3>
+<p>Please note: Our application requires the <code>.env</code> file (included in the CCLE submission) to be included in the root folder of the project. Included in the file contains our Firesbase API key and our Spoonacular API key, the latter of which can only handle 150 requests per day.</p>
+<h2>API Documentation</h2>
 <p>Full API documentation can be found <a href="https://leo-liu1.github.io/recipe-to-cook/">here</a>.</p></article>
     </section>
 
@@ -110,7 +115,7 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Box.html">Box</a></li><li><a href="Fridge.html">Fridge</a></li><li><a href="History.html">History</a></li><li><a href="Ingredient.html">Ingredient</a></li><li><a href="Landing.html">Landing</a></li><li><a href="Login.html">Login</a></li><li><a href="Navbar.html">Navbar</a></li><li><a href="NavbarSearch.html">NavbarSearch</a></li><li><a href="ProvideAuth.html">ProvideAuth</a></li><li><a href="ProvideFirestore.html">ProvideFirestore</a></li><li><a href="ProvideSpoonacular.html">ProvideSpoonacular</a></li><li><a href="Recipe.html">Recipe</a></li><li><a href="RecipeBox.html">RecipeBox</a></li><li><a href="Recommendations.html">Recommendations</a></li><li><a href="Search.html">Search</a></li><li><a href="Seasoning.html">Seasoning</a></li><li><a href="Signup.html">Signup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#Firebase">Firebase</a></li><li><a href="global.html#Firestore">Firestore</a></li><li><a href="global.html#FirestoreContext">FirestoreContext</a></li><li><a href="global.html#SpoonacularContext">SpoonacularContext</a></li></ul>
+    <h2><a href="./">Home</a></h2><h3>Classes</h3><ul><li><a href="Box.html">Box</a></li><li><a href="Fridge.html">Fridge</a></li><li><a href="History.html">History</a></li><li><a href="Ingredient.html">Ingredient</a></li><li><a href="Landing.html">Landing</a></li><li><a href="Login.html">Login</a></li><li><a href="Navbar.html">Navbar</a></li><li><a href="NavbarSearch.html">NavbarSearch</a></li><li><a href="ProvideAuth.html">ProvideAuth</a></li><li><a href="ProvideFirestore.html">ProvideFirestore</a></li><li><a href="ProvideSpoonacular.html">ProvideSpoonacular</a></li><li><a href="Recipe.html">Recipe</a></li><li><a href="RecipeBox.html">RecipeBox</a></li><li><a href="Recommendations.html">Recommendations</a></li><li><a href="Search.html">Search</a></li><li><a href="Seasoning.html">Seasoning</a></li><li><a href="Signup.html">Signup</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Auth">Auth</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#Firebase">Firebase</a></li><li><a href="global.html#Firestore">Firestore</a></li><li><a href="global.html#FirestoreContext">FirestoreContext</a></li><li><a href="global.html#SpoonacularContext">SpoonacularContext</a></li></ul>
 </nav>
 
 <br class="clear">
