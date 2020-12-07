@@ -1,6 +1,6 @@
-import user from '@testing-library/user-event';
-import { screen, act, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+/*
+  These tests directly connect to our backend API and thus could be flakey.
+*/
 
 import { Auth } from '../components/handlers/FirebaseHandler';
 
@@ -36,43 +36,38 @@ const isUserAuthenticated = () => {
 };
 
 
-describe('Tests for the Auth', () => {
+describe('Tests for Auth', () => {
     it('login', async () => {
         const account = {
-          email: 'syeaziran@yahoo.com',
-          password: 'GoBruins'
-        }
+          email: 'jest@test.com',
+          password: 'jesttest',
+        };
 
-        const user = await login(account.email, account.password)
+        const user = await login(account.email, account.password);
         expect(user.email).toBe(account.email);
-
     });
 
     
     it('signup', async () => {
         const account = {
           email: 'testuser_' +  Math.random() + '@test.com',
-          password: '123456'
-        }
+          password: '123456',
+        };
 
         const user = await signup(account.email, account.password)
         expect(user.email).toBe(account.email);
 
+        await user.delete(); // delete user after the test is done
     });
 
     it('logout', async () => {
-
         await logout()
         expect(Auth.currentUser).toBe(null);
-
     });
 
     it('isUserAuthenticated', async () => {
-
       const user = await isUserAuthenticated();
       const currentUserId = Auth.currentUser ? Auth.currentUser.uid : null;
       expect(user).toBe(currentUserId);
-
     });
-
 });

@@ -1,5 +1,5 @@
 import user from '@testing-library/user-event';
-import { screen, act, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
 import Login from '../pages/Login';
@@ -9,7 +9,6 @@ describe('Tests for the Login page', () => {
     it('Renders the login page correctly', async () => {
         const mockCallback = jest.fn();
         renderComponent(Login, { checkAuth: mockCallback });
-        await act(() => Promise.resolve(), null);
 
         expect(screen.getByText('Log in')).toBeInTheDocument();
     });

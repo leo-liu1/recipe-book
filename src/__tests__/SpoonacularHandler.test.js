@@ -1,10 +1,10 @@
-import user from '@testing-library/user-event';
-import { screen, act, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+/*
+  These tests directly connect to our backend API and thus could be flakey.
+*/
+
 import Ingredient from '../components/classes/Ingredient';
 import Recipe from '../components/classes/Recipe';
 
-//import { Auth } from '../components/handlers/FirebaseHandler';
 const API_Key = "c97dfa83d6134ce3853ff2bbd1c6f90f";
 
 const getUniqueIngredients = (ingredientJSONArray) => {
