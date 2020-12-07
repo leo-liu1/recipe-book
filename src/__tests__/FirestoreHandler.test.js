@@ -1,11 +1,12 @@
 /*
-  These tests directly connect to our backend API and thus could be flaky.
+  These tests directly connect to our backend API and thus could be flaky. This
+  does not include all of our tests, as we had trouble setting up Jest to run
+  everything. For our other calls, we tested the API manually by using
+  Firestore's security rules playground.
 */
 
 import { Firestore, Auth } from '../components/handlers/FirebaseHandler';
 import Ingredient from '../components/classes/Ingredient';
-import Seasoning from '../components/classes/Seasoning';
-import Recipe from '../components/classes/Recipe';
 
 // functions from AuthHandler, for testing purposes
 const isUserAuthenticated = () => {
@@ -73,110 +74,6 @@ const updateUserIngredient = async (ingredient) => {
 		.update({ ...ingredient.getFirestoreData(), userID: userID });
 }
 
-/**
- * Gets all the user's ingredients from the fridge
- * @returns {Promise<Ingredient[]>} Promise of all user ingredients (can be Ingredient or Seasoning)
- */
-const getAllUserIngredients = async () => {
-	const userID = await checkAuth();
-	const snapshot = await Firestore.collection('ingredients')
-		.where("userID", "==", userID)
-		.get();
-
-	return snapshot.docs.map((doc) => {
-		return doc.data().quantity
-			? new Ingredient({ ...doc.data(), firestoreID: doc.id })
-			: new Seasoning({ ...doc.data(), firestoreID: doc.id });
-	});
-}
-
-/**
- * Adds the recipe to our history
- * @param {Recipe} recipe - recipe to be added
- * @returns {Promise} Promise
- */
-const addRecipeHistory = async (recipe) => {
-	const userID = await checkAuth();
-	const snapshot = await Firestore.collection('history') // check if the document already exists
-		.where("userID", "==", userID)
-		.where("recipeID", "==", recipe.recipeID)
-		.get();
-	let timestamp = new Date();
-
-	if (snapshot.empty) { // if we're adding for the first time, create the document
-		return Firestore.collection('history')
-			.add({
-				...recipe.getFirestoreData(),
-				userID: userID,
-				frequency: 1,
-				timeUpdated: timestamp,
-			});
-	} else { // else, run a transaction to increment the frequency by one
-		return Promise.all(snapshot.docs.map((doc) => {
-			let docRef = Firestore.collection("history").doc(doc.id);
-
-			return Firestore.runTransaction((transaction) =>
-				transaction.get(docRef).then((editDoc) => {
-					const newFreq = editDoc.data().frequency + 1;
-					transaction.update(docRef, { frequency: newFreq, timeUpdated: timestamp });
-			}));
-		}));
-	}
-}
-
-/**
- * Removes the recipe from our history
- * @param {Recipe} recipe - Recipe to be removed
- */
-const removeRecipeHistory = async (recipe) => {
-	const userID = await checkAuth();
-	const snapshot = await Firestore.collection('history')
-		.where("userID", "==", userID)
-		.where("recipeID", "==", recipe.recipeID)
-		.get();
-
-	return Promise.all(snapshot.docs.map((doc) => {
-		return Firestore.collection('history')
-			.doc(doc.id)
-			.delete();
-	}));
-}
-
-/**
- * Gets the most frequent recipes from our history
- * @param {number} count - the amount of recipes to retrieve
- * @returns {Promise<Recipe[]>} Promise of our most frequent recipes
- */
-const getMostFrequentRecipeHistory = async (count) => {
-	const userID = await checkAuth();
-	const snapshot = await Firestore.collection("history")
-		.where("userID", "==", userID)
-		.orderBy("frequency", "desc")
-		.limit(count)
-		.get();
-	return snapshot.docs.map((doc) => {
-		return new Recipe({ ...doc.data(), firestoreID: doc.id });
-	});
-}
-
-/**
- * Gets the 10 last updated recipes from our history
- * @param {number} count - the amount of recipes to retrieve
- * @returns {Promise<Recipe[]>} Promise of our last updated recipes
- */
-const getLastUpdatedRecipeHistory = async (count) => {
-	const userID = await checkAuth();
-	const snapshot = await Firestore.collection("history")
-		.where("userID", "==", userID)
-		.orderBy("timeUpdated", "desc")
-		.limit(count)
-		.get();
-	
-	return snapshot.docs.map((doc) => {
-		return new Recipe({ ...doc.data(), firestoreID: doc.id });
-	});
-}
-
 // consts for testing purposes
 const ingredient1 = new Ingredient({
 	name: 'MockIngredient',
@@ -190,7 +87,7 @@ const ingredient1 = new Ingredient({
 });
 
 describe('Tests for Firestore', () => {
-	let firestoreID = '';
+	let ingredientFirestoreID = '';
 
 	beforeAll(async () => {
 		await login('jest@test.com', 'jesttest');
@@ -207,7 +104,7 @@ describe('Tests for Firestore', () => {
 		const doc = await addIngredient;
 		expect(doc.id).toBeDefined();
 
-		firestoreID = doc.id;
+		ingredientFirestoreID = doc.id;
 	});
 
 	it('Update the ingredient', async () => {
@@ -220,7 +117,7 @@ describe('Tests for Firestore', () => {
 				amount: 1,
 				unit: 'oz',
 			},
-			firestoreID: firestoreID,
+			firestoreID: ingredientFirestoreID,
 		});
 
 		const updateIngredient = updateUserIngredient(ingredient2);
@@ -228,7 +125,7 @@ describe('Tests for Firestore', () => {
 	});
 	
 	it('Remove the ingredient from the fridge', async () => {
-		const removeIngredient = removeUserIngredient(new Ingredient({ firestoreID: firestoreID }));
+		const removeIngredient = removeUserIngredient(new Ingredient({ firestoreID: ingredientFirestoreID }));
 		await expect(removeIngredient).resolves.toBeUndefined();
-    });
+	});
 });
