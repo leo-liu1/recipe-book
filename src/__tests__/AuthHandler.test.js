@@ -1,5 +1,5 @@
 /*
-  These tests directly connect to our backend API and thus could be flakey.
+  These tests directly connect to our backend API and thus could be flaky.
 */
 
 import { Auth } from '../components/handlers/FirebaseHandler';
