@@ -13,14 +13,14 @@ root/
 |  |  __tests__/
 |  |  |  testutil/
 |  |  |  |  MockContext.js # util helper class to mock dependency
-|  |  |  Firestore.test.js # firestore component tests
+|  |  |  FirestoreHandler.test.js # firestore component tests
 |  |  |  Fridge.test.js # fridge component tests
 |  |  |  History.test.js # history component tests
 |  |  |  Recommendation.test.js # recommendation component tests
 |  |  |  Search.test.js # search component tests
 |  |  |  Login.test.js # log in component tests
 |  |  |  Signup.test.js # sign up component tests
-|  |  |  Spoonacular.test.js # Spoonacular handler tests
+|  |  |  SpoonacularHandler.test.js # Spoonacular handler tests
 |  |  |  AuthHandler.test.js # Auth handler tests
 |  |  assets/ # contains our fonts, icons, images
 |  |  components/
@@ -47,11 +47,12 @@ root/
 |  |  |  |  Search.js # search page component
 |  |  |  |  Signup.js # user Signups page component
 |  |  |  App.js # main app file
-|  |  |  injex.js
+|  |  |  index.js
+|  .env # environment variable file needed to run our application
 |  README.md
 |  firebase.json # firebase config file
-|  firestore.indexes.json
-|  firestore.rules
+|  firestore.indexes.json # our composite indexes used in Firestore for some of our queries
+|  firestore.rules # our Firestore security rules we use for authentication
 |  package.json # package and settings
 ```
 ## How to Deploy and Run Tests
@@ -68,7 +69,7 @@ Install all packages necessary to run the application.
 
 This starts the server in the developer mode.
 
-Please note: Our application requires the `.env` file (included in the CCLE submission) to be included in the root folder of the project, and it can only handle 150 requests (to the Spoonacular Handler) per day.
+Please note: Our application requires the `.env` file (included in the CCLE submission) to be included in the root folder of the project. Included in the file contains our Firesbase API key and our Spoonacular API key, the latter of which can only handle 150 requests per day.
 
 ## API Documentation
 
