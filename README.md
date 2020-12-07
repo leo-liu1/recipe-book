@@ -18,6 +18,10 @@ root/
 |  |  |  History.test.js # history component tests
 |  |  |  Recommendation.test.js # recommendation component tests
 |  |  |  Search.test.js # search component tests
+|  |  |  Login.test.js # log in component tests
+|  |  |  Signup.test.js # sign up component tests
+|  |  |  Spoonacular.test.js # Spoonacular handler tests
+|  |  |  AuthHandler.test.js # Auth handler tests
 |  |  assets/ # contains our fonts, icons, images
 |  |  components/
 |  |  |  classes/ # contains our data classes
